@@ -1,0 +1,6 @@
+tags*
+*.temp
+*.a
+*.rar
+*.exe
+*.o

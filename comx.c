@@ -122,7 +122,7 @@ void ConfigureSerialPort() {
     scanf("%d", &choice);
     stopBits = (choice == 2) ? ONE5STOPBITS : (choice == 3 ? TWOSTOPBITS : ONESTOPBIT);
 
-    printf("1:nano\n2:odd\n3:even\ncheck bit: ");
+    printf("1:none\n2:odd\n3:even\ncheck bit: ");
     scanf("%d", &choice);
     parity = (choice == 2) ? ODDPARITY : (choice == 3 ? EVENPARITY : NOPARITY);
 }

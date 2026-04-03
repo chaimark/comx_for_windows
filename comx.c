@@ -14,7 +14,7 @@
             continue;                                                                                                  \
     } while (0)
 
-
+// 串口信息
 HANDLE hSerial = INVALID_HANDLE_VALUE;
 DWORD  baudRate = 1500000;
 BYTE   byteSize = 8;
@@ -189,14 +189,14 @@ void ConfigureSerialPort() {
     choice = getUserInt(1);
     parity = (choice == 2) ? ODDPARITY : (choice == 3 ? EVENPARITY : NOPARITY);
 
-	// 显示设置结果
-	printf("\nprot:%s\n",userInput);
-	printf("band Rate:%ld\n",baudRate);
-	printf("byte Size:%d\n",byteSize);
-	printf("stop Bit:%d\n",stopBits + 1);
-	printf("check bit:%d\n",choice);
-	printf("continue the Enter any key:");
-	getch();
+    // 显示设置结果
+    printf("\nprot:%s\n", userInput);
+    printf("band Rate:%ld\n", baudRate);
+    printf("byte Size:%d\n", byteSize);
+    printf("stop Bit:%d\n", stopBits + 1);
+    printf("check bit:%d\n", choice);
+    printf("continue the Enter any key:");
+    getch();
 }
 
 BOOL OpenSerialPort() {
@@ -236,9 +236,6 @@ BOOL OpenSerialPort() {
     }
 
     printf("\nserial %s ok\n", portName);
-    printf("\nIf your system supports xterm\n");
-    printf("please enter the following command after logging into the shell:\n");
-    printf("\033[1;31mexport TERM=linux\n\033[0m");
     return TRUE;
 }
 
@@ -293,15 +290,21 @@ EXIT_INTERACTIVE:
     SetConsoleMode(hStdin, oldMode);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     signal(SIGINT, SignalHandler);
+    if (argc < 3) {
+        return -1;
+    }
     do {
-        system("cls");
         ListAvailablePorts();
         printf("===== windows tty for Terminal =====\n");
         ConfigureSerialPort();
-		
-	} while (!OpenSerialPort());
+        printf("\n\nyou can input the cmd of shell when you login shell");
+		printf("\n\033[1;31m stty rows %s cols %s\n \033[0m", argv[1], argv[2]);
+  	    printf("\nIf your system supports xterm");
+		printf("\nplease enter the following command after logging into the shell");
+		printf("\n\033[1;31m export TERM=xterm\n \033[0m");
+  	} while (!OpenSerialPort());
 
     SetTerminalUTF8();
     InteractiveMode();

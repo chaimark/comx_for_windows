@@ -4,9 +4,17 @@
 #include "./C_MyLib/JsonDataAnalyzeLib.h"
 #include "./C_MyLib/JsonSetLib.h"
 #include "./C_MyLib/StrLib.h"
+#include <ctype.h>
 #include <signal.h>
 
-// 全局变量
+#define stdin_clean                                                                                                    \
+    do {                                                                                                               \
+        int c;                                                                                                         \
+        while ((c = getchar()) != '\n' && c != EOF)                                                                    \
+            continue;                                                                                                  \
+    } while (0)
+
+
 HANDLE hSerial = INVALID_HANDLE_VALUE;
 DWORD  baudRate = 1500000;
 BYTE   byteSize = 8;
@@ -39,10 +47,64 @@ void SignalHandler(int signum) {
     }
 }
 
-void clsInputSpace(void) {
-    int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF)
-        ;
+/**
+ * 检查字符串是否表示一个合法的整数（支持可选的正负号）
+ * 例如："123", "-456", "+789" 均为合法
+ * 空字符串或包含非数字字符的字符串不合法
+ */
+int is_valid_integer(const char* str) {
+    if (str == NULL || *str == '\0')
+        return 0; // 空字符串非法
+
+    // 跳过可选的正负号
+    if (*str == '+' || *str == '-')
+        str++;
+
+    // 至少需要一位数字
+    if (*str == '\0')
+        return 0;
+
+    // 检查剩余字符是否全是数字
+    while (*str) {
+        if (!isdigit((unsigned char)*str))
+            return 0;
+        str++;
+    }
+    return 1;
+}
+
+int getUserInt(long int default_value) {
+    char input[100]; // 存储用户输入的行
+    int  value;      // 最终要赋值的变量
+
+    while (1) {
+        memset(&input, 0, ARR_SIZE(input));
+        value = 0;
+        printf("please int number ( %ld ) : ", default_value);
+
+        // 读取一行输入，包括可能的空格
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("read error\n");
+            return 1;
+        }
+
+        // 去掉末尾的换行符
+        size_t len = strlen(input);
+        if (len > 0 && input[len - 1] == '\n')
+            input[len - 1] = '\0';
+
+        // 情况1：空输入（只按了回车）
+        if (strlen(input) == 0) {
+            value = default_value;
+        } else if (is_valid_integer(input)) {
+            value = atoi(input); // 转换为 int
+        } else {
+            printf("input error：'%s' \n", input);
+            continue;
+        }
+        break;
+    }
+    return value;
 }
 
 // 线程函数：接收串口数据 (异步增强版)
@@ -106,24 +168,35 @@ void ConfigureSerialPort() {
     printf("\n--- tty set menu ---\n");
     printf("please tty number (key COM3): ");
     char userInput[10];
+    // 读取一行输入，包括可能的空格
     scanf("%s", userInput);
+    stdin_clean;
     snprintf(portName, sizeof(portName), "\\\\.\\%s", userInput);
 
-    printf("Input bandRate (key 1500000): ");
-    scanf("%lu", &baudRate);
+    printf("Input bandRate (key 115200)\n");
+    baudRate = (DWORD)getUserInt(1500000);
 
-    printf("bata bit (5-8): ");
-    int choice;
-    scanf("%d", &choice);
+    int choice = 8;
+    printf("byte Size (5-8)\n");
+    choice = getUserInt(8);
     byteSize = (choice >= 5 && choice <= 8) ? (BYTE)choice : 8;
 
-    printf("1:1\n2:1.5\n3:2\nstop bit :");
-    scanf("%d", &choice);
+    printf("1:1\n2:1.5\n3:2\nstop bit\n");
+    choice = getUserInt(1);
     stopBits = (choice == 2) ? ONE5STOPBITS : (choice == 3 ? TWOSTOPBITS : ONESTOPBIT);
 
-    printf("1:none\n2:odd\n3:even\ncheck bit: ");
-    scanf("%d", &choice);
+    printf("1:none\n2:odd\n3:even\ncheck bit\n");
+    choice = getUserInt(1);
     parity = (choice == 2) ? ODDPARITY : (choice == 3 ? EVENPARITY : NOPARITY);
+
+	// 显示设置结果
+	printf("\nprot:%s\n",userInput);
+	printf("band Rate:%ld\n",baudRate);
+	printf("byte Size:%d\n",byteSize);
+	printf("stop Bit:%d\n",stopBits + 1);
+	printf("check bit:%d\n",choice);
+	printf("continue the Enter any key:");
+	getch();
 }
 
 BOOL OpenSerialPort() {
@@ -165,8 +238,8 @@ BOOL OpenSerialPort() {
     printf("\nserial %s ok\n", portName);
     printf("\nIf your system supports xterm\n");
     printf("please enter the following command after logging into the shell:\n");
-	printf("\033[1;31mexport TERM=linux\n\033[0m");
-	return TRUE;
+    printf("\033[1;31mexport TERM=linux\n\033[0m");
+    return TRUE;
 }
 
 void InteractiveMode() {
@@ -227,9 +300,8 @@ int main() {
         ListAvailablePorts();
         printf("===== windows tty for Terminal =====\n");
         ConfigureSerialPort();
-        clsInputSpace();
-
-    } while (!OpenSerialPort());
+		
+	} while (!OpenSerialPort());
 
     SetTerminalUTF8();
     InteractiveMode();

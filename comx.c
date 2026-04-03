@@ -165,7 +165,7 @@ BOOL OpenSerialPort() {
     printf("\nserial %s ok\n", portName);
     printf("\nIf your system supports xterm\n");
     printf("please enter the following command after logging into the shell:\n");
-	printf("\033[1;31mexport TERM=xterm\n\033[0m");
+	printf("\033[1;31mexport TERM=linux\n\033[0m");
 	return TRUE;
 }
 

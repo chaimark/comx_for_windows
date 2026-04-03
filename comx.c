@@ -42,9 +42,7 @@ void SetTerminalGBK() {
 
 // 信号处理函数
 void SignalHandler(int signum) {
-    if (signum == SIGINT) {
-        g_KeepRunning = FALSE;
-    }
+    return;
 }
 
 /**
@@ -240,13 +238,11 @@ BOOL OpenSerialPort() {
 }
 
 void InteractiveMode() {
-    printf("\n--- Press ctrl + C to exit ---\n\n");
+    printf("\n--- Press Ctrl+A then Ctrl+C to exit ---\n\n");
 
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
     DWORD  oldMode;
     GetConsoleMode(hStdin, &oldMode);
-
-    // 开启虚拟终端输入，这对 Vim 的转义序列至关重要
     SetConsoleMode(hStdin, ENABLE_VIRTUAL_TERMINAL_INPUT | ENABLE_EXTENDED_FLAGS);
 
     HANDLE hThread = CreateThread(NULL, 0, ReadSerialThread, NULL, 0, NULL);
@@ -254,35 +250,52 @@ void InteractiveMode() {
 
     INPUT_RECORD ir;
     DWORD        count, dwWritten;
+    int          seq_state = 0;  // 0:等待Ctrl+A, 1:已收到Ctrl+A等待Ctrl+C
 
     while (1) {
-        // 阻塞等待键盘事件，不消耗 CPU
         if (ReadConsoleInput(hStdin, &ir, 1, &count) && count > 0) {
             if (!(ir.EventType == KEY_EVENT && ir.Event.KeyEvent.bKeyDown)) {
                 continue;
             }
             char ch = ir.Event.KeyEvent.uChar.AsciiChar;
 
-            // Ctrl+C 退出
-            if ((ch == 3) || (g_KeepRunning == FALSE))
-                goto EXIT_INTERACTIVE;
-
-            if (ch != 0) {
-                // 异步写入：丢进内核缓冲区就走，不等待硬件响应
-                if (!WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite)) {
-                    if (GetLastError() != ERROR_IO_PENDING) {
-                        printf("\n[Error] write err\n");
-                        goto EXIT_INTERACTIVE;
+            // 序列检测状态机
+            if (seq_state == 0) {
+                if (ch == 1) {           // Ctrl+A
+                    seq_state = 1;
+                }
+                // 其他字符（包括单独的 Ctrl+C）直接发送
+                if (ch != 0) {
+                    if (!WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite)) {
+                        if (GetLastError() != ERROR_IO_PENDING) {
+                            printf("\n[Error] write err\n");
+                            goto EXIT_INTERACTIVE;
+                        }
                     }
+                }
+            } else { // seq_state == 1，等待 Ctrl+C
+                if (ch == 3) {           // Ctrl+C
+                    // 序列正确，退出程序
+                    g_KeepRunning = FALSE;   // 通知读取线程退出
+                    goto EXIT_INTERACTIVE;
+                } else {
+                    // 收到其他按键：先发送之前缓存的 Ctrl+A（如果需要发送的话）
+                    // 注意：之前的 Ctrl+A 被忽略了，这里可以选择发送 Ctrl+A 再发送当前字符
+                    // 为了行为直观，这里将 Ctrl+A 和当前字符都发送
+                    char ctrlA = 1;
+                    WriteFile(hSerial, &ctrlA, 1, &dwWritten, &osWrite);
+                    if (ch != 0) {
+                        WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite);
+                    }
+                    seq_state = 0;       // 重置状态
                 }
             }
         }
     }
 
 EXIT_INTERACTIVE:
-    // 等待线程自己退出 (500毫秒)
     if (WaitForSingleObject(hThread, 500) == WAIT_TIMEOUT) {
-        TerminateThread(hThread, 0); // 只有超时了才强制杀掉
+        TerminateThread(hThread, 0);
     }
     CloseHandle(hThread);
     CloseHandle(osRead.hEvent);

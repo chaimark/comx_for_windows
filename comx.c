@@ -306,7 +306,8 @@ EXIT_INTERACTIVE:
 int main(int argc, char* argv[]) {
     signal(SIGINT, SignalHandler);
     if (argc < 3) {
-        return -1;
+		printf("%s row col\n", argv[0]);
+		return -1;
     }
     do {
         ListAvailablePorts();

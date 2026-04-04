@@ -84,9 +84,9 @@ int Arr_sizeItemNum(struct _JsonArray This) {
     }
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
-    int   ItemNum = 0;
-    char* HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
-    char* EndItem = HeadItem;
+    int   ItemNum       = 0;
+    char* HeadItem      = This.JsonString.Name._char + 1; // 获取第一个元素位置
+    char* EndItem       = HeadItem;
     bool  isStringArray = false;
     if (myStrstrCont(This.JsonString.Name._char, "\"", This.JsonString.MaxLen, 2) != NULL) {
         isStringArray = true;
@@ -99,7 +99,7 @@ int Arr_sizeItemNum(struct _JsonArray This) {
                 if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
                     ItemNum++; // 如果是‘,’，则说明是一个元素结束 ItemNum++;
                     HeadItem = EndItem + 1;
-                    EndItem = HeadItem;
+                    EndItem  = HeadItem;
                     continue;
                 }
             } else {
@@ -107,7 +107,7 @@ int Arr_sizeItemNum(struct _JsonArray This) {
                     (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
                     ItemNum++;                  // 如果是‘,’，则说明是一个元素结束 ItemNum++;
                     HeadItem = EndItem + 1;
-                    EndItem = HeadItem;
+                    EndItem  = HeadItem;
                     continue;
                 }
             }
@@ -129,8 +129,8 @@ void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
     ItemNum++;
-    char* HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
-    char* EndItem = HeadItem;
+    char* HeadItem      = This.JsonString.Name._char + 1; // 获取第一个元素位置
+    char* EndItem       = HeadItem;
     bool  isStringArray = false;
     if (myStrstrCont(This.JsonString.Name._char, "\"", This.JsonString.MaxLen, 2) != NULL) {
         isStringArray = true;
@@ -144,7 +144,7 @@ void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
                     ItemNum--; // 如果是‘,’，则说明是一个元素结束 ItemNum--;
                     if (ItemNum != 0) {
                         HeadItem = EndItem + 1;
-                        EndItem = HeadItem;
+                        EndItem  = HeadItem;
                         continue;
                     }
                 }
@@ -154,7 +154,7 @@ void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
                     ItemNum--;                  // 如果是‘,’，则说明是一个元素结束 ItemNum--;
                     if (ItemNum != 0) {
                         HeadItem = EndItem + 1;
-                        EndItem = HeadItem;
+                        EndItem  = HeadItem;
                         continue;
                     }
                 }
@@ -166,11 +166,11 @@ void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
         }
         EndItem++;
     }
-    char Temp = *(EndItem - 1);
+    char Temp      = *(EndItem - 1);
     *(EndItem - 1) = '\0';
     memset(OutStr.Name._char, 0, OutStr.MaxLen);
     copyString(OutStr.Name._char, HeadItem, OutStr.MaxLen, strlen(HeadItem));
-    *(EndItem - 1) = Temp;
+    *(EndItem - 1)    = Temp;
     int NowLineMaxLen = strlen(OutStr.Name._char);
     // 找第一个非空字符
     for (int i = 0; i < NowLineMaxLen; i++) {
@@ -188,7 +188,7 @@ void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
             break;
         }
     }
-    *(EndItem + 1) = '\0';
+    *(EndItem + 1)   = '\0';
     size_t GetStrLen = 0;
     for (GetStrLen = 0; GetStrLen < strlen(HeadItem); GetStrLen++) {
         OutStr.Name._char[GetStrLen] = *(HeadItem + GetStrLen);
@@ -214,12 +214,12 @@ void Arr_getArray(struct _JsonArray This, strnew OutStr, int ItemNum) {
 }
 JsonArray newJsonArrayByString(strnew DataInit) {
     JsonArray Temp;
-    Temp.JsonString = DataInit;
-    Temp.ItemNum = -1;
+    Temp.JsonString  = DataInit;
+    Temp.ItemNum     = -1;
     Temp.sizeItemNum = Arr_sizeItemNum;
-    Temp.isJsonNull = Arr_isJsonNull;
-    Temp.get = Arr_get;
-    Temp.getArray = Arr_getArray;
+    Temp.isJsonNull  = Arr_isJsonNull;
+    Temp.get         = Arr_get;
+    Temp.getArray    = Arr_getArray;
     return Temp;
 }
 
@@ -230,7 +230,7 @@ JsonArray newJsonArrayByString(strnew DataInit) {
 //==========================================================================================//
 
 int Obj_sizeStr(struct _JsonObject This) {
-    (void)This;
+    (void)_THIS_MY_;
     return 0;
 }
 signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {
@@ -243,7 +243,7 @@ signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {
         while ((*KeyP) == ' ') {
             KeyP++;
         }
-        char Temp = *(KeyP + 4);
+        char Temp   = *(KeyP + 4);
         *(KeyP + 4) = '\0';
         if ((strcmp(KeyP, "null") == 0) || (strcmp(KeyP, "NULL") == 0) || (strcmp(KeyP, "Null") == 0)) {
             ResOver = true;
@@ -286,7 +286,7 @@ bool Obj_getBool(struct _JsonObject This, char Key[]) {
         while ((*KeyP) == ' ') {
             KeyP++;
         }
-        char Temp = *(KeyP + 4);
+        char Temp   = *(KeyP + 4);
         *(KeyP + 4) = '\0';
         if ((strcmp(KeyP, "true") == 0) || (strcmp(KeyP, "TRUE") == 0) || (strcmp(KeyP, "True") == 0)) {
             ResBool = true;
@@ -316,7 +316,7 @@ void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
             }
         }
         char Temp = *EndP;
-        *EndP = '\0';
+        *EndP     = '\0';
         memset(OutStr.Name._char, 0, OutStr.MaxLen);
         copyString(OutStr.Name._char, KeyP, OutStr.MaxLen, strlen(KeyP));
         *EndP = Temp;
@@ -335,7 +335,7 @@ struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strnew OutSt
         }
         char* EndP = NULL;
         if ((EndP = getDoubleChrOnString(KeyP, '[', ']')) != NULL) {
-            char Temp = *(EndP + 1);
+            char Temp   = *(EndP + 1);
             *(EndP + 1) = '\0';
             if (OutStr.Name._char != This.JsonString.Name._char) {
                 memset(tempJsonArr.JsonString.Name._char, 0, tempJsonArr.JsonString.MaxLen);
@@ -343,7 +343,7 @@ struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strnew OutSt
                 *(EndP + 1) = Temp;
             } else {
                 tempJsonArr.JsonString.Name._char = KeyP;
-                tempJsonArr.JsonString.MaxLen = strlen(KeyP);
+                tempJsonArr.JsonString.MaxLen     = strlen(KeyP);
             }
         }
     }
@@ -361,7 +361,7 @@ struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew Out
         }
         char* EndP = NULL;
         if ((EndP = getDoubleChrOnString(KeyP, '{', '}')) != NULL) {
-            char Temp = *(EndP + 1);
+            char Temp   = *(EndP + 1);
             *(EndP + 1) = '\0';
             if (OutStr.Name._char != This.JsonString.Name._char) {
                 memset(tempJsonObj.JsonString.Name._char, 0, tempJsonObj.JsonString.MaxLen);
@@ -369,7 +369,7 @@ struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew Out
                 *(EndP + 1) = Temp;
             } else {
                 tempJsonObj.JsonString.Name._char = KeyP;
-                tempJsonObj.JsonString.MaxLen = strlen(KeyP);
+                tempJsonObj.JsonString.MaxLen     = strlen(KeyP);
             }
         }
     }
@@ -379,13 +379,13 @@ struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew Out
 JsonObject newJsonObjectByString(strnew DataInit) {
     JsonObject Temp;
     Temp.JsonString = DataInit;
-    Temp.sizeStr = Obj_sizeStr;
+    Temp.sizeStr    = Obj_sizeStr;
     Temp.isJsonNull = Obj_isJsonNull;
-    Temp.getInt = Obj_getInt;
-    Temp.getDouble = Obj_getDouble;
-    Temp.getBool = Obj_getBool;
-    Temp.getString = Obj_getString;
-    Temp.getArray = Obj_getArray;
-    Temp.getObject = Obj_getObject;
+    Temp.getInt     = Obj_getInt;
+    Temp.getDouble  = Obj_getDouble;
+    Temp.getBool    = Obj_getBool;
+    Temp.getString  = Obj_getString;
+    Temp.getArray   = Obj_getArray;
+    Temp.getObject  = Obj_getObject;
     return Temp;
 }

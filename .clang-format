@@ -1,0 +1,45 @@
+# 基于某种预定义样式
+BasedOnStyle: LLVM
+
+# 语言设置
+Language: Cpp
+
+# 缩进设置
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never  # 使用空格而不是制表符
+
+# 大括号设置
+BreakBeforeBraces: Attach  # 大括号单独一行
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+
+# 控制语句设置
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+
+# 空格设置
+SpaceBeforeParens: ControlStatements  # 控制语句后加空格
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+
+# 换行设置
+ColumnLimit: 120  # 行宽限制
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# 指针和引用对齐
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# 包含文件排序
+SortIncludes: true
+
+# 注释设置
+ReflowComments: true
+
+# 其他设置
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: true

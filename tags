@@ -1,0 +1,217 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/mnt/e/work/git_room/comx_for_windows/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+<C-Down>	.vimrc	/^nnoremap <C-Down> :m+<CR>==$/;"	m
+<C-Up>	.vimrc	/^nnoremap <C-Up>   :m-2<CR>==$/;"	m
+<C-j>	.vimrc	/^nmap <silent> <C-j> <Plug>(ale_next_wrap)$/;"	m
+<C-k>	.vimrc	/^nmap <silent> <C-k> <Plug>(ale_previous_wrap)$/;"	m
+ARR_SIZE	C_MyLib/StrLib.h	/^#define ARR_SIZE(/;"	d
+ASCIIToHEX2	C_MyLib/NumberBaseLib.c	/^int ASCIIToHEX2(const strnew asc, strnew hex) {$/;"	f	typeref:typename:int
+AddCsToJsonAndPushJsonStr	C_MyLib/JsonCheckFun.c	/^void AddCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {$/;"	f	typeref:typename:void
+AddJsonItemData	C_MyLib/JsonSetLib.c	/^void AddJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {$/;"	f	typeref:typename:void
+Arr_get	C_MyLib/JsonDataAnalyzeLib.c	/^static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {$/;"	f	typeref:typename:void	file:
+Arr_getArray	C_MyLib/JsonDataAnalyzeLib.c	/^static void Arr_getArray(struct _JsonArray This, strnew OutStr, int ItemNum) {$/;"	f	typeref:typename:void	file:
+Arr_isJsonNull	C_MyLib/JsonDataAnalyzeLib.c	/^static signed char Arr_isJsonNull(struct _JsonArray This) {$/;"	f	typeref:typename:signed char	file:
+Arr_sizeItemNum	C_MyLib/JsonDataAnalyzeLib.c	/^static int Arr_sizeItemNum(struct _JsonArray This) {$/;"	f	typeref:typename:int	file:
+Buff	C_MyLib/NumberBaseLib.c	/^        uint8_t Buff[8];$/;"	m	union:BuffToFloatOrDouble::__anon7b73729f010a	typeref:typename:uint8_t[8]	file:
+Buff8	C_MyLib/NumberBaseLib.c	/^        uint64_t Buff8;$/;"	m	union:DoubleOrFloatToBuff::__anon7b73729f020a	typeref:typename:uint64_t	file:
+BuffToFloatOrDouble	C_MyLib/NumberBaseLib.c	/^double BuffToFloatOrDouble(strnew OutBuff, bool IsDouble) {$/;"	f	typeref:typename:double
+CC	build.cmd	/^set CC=gcc$/;"	v
+CFLAGS	build.cmd	/^set CFLAGS=-O0 -Wall$/;"	v
+ConfigureSerialPort	comx.c	/^void ConfigureSerialPort() {$/;"	f	typeref:typename:void
+DoubleOrFloatToBuff	C_MyLib/NumberBaseLib.c	/^void DoubleOrFloatToBuff(strnew OutBuff, double Number, bool IsDouble) {$/;"	f	typeref:typename:void
+GET_TYPE	C_MyLib/StrLib.h	/^#define GET_TYPE(/;"	d
+GET_TYPE_MACRO	C_MyLib/StrLib.h	/^#define GET_TYPE_MACRO(/;"	d
+HEX2ToASCII	C_MyLib/NumberBaseLib.c	/^int HEX2ToASCII(const strnew hex, strnew asc) {$/;"	f	typeref:typename:int
+INITGUID	comx.c	/^#define INITGUID$/;"	d	file:
+IPstrToHexArray	C_MyLib/NumberBaseLib.c	/^void IPstrToHexArray(strnew IpHex, const char* Ipstr) { \/\/ IP字符串转16进制$/;"	f	typeref:typename:void
+InteractiveMode	comx.c	/^void InteractiveMode() {$/;"	f	typeref:typename:void
+ItemNum	C_MyLib/JsonDataAnalyzeLib.h	/^    int    ItemNum;$/;"	m	struct:_JsonArray	typeref:typename:int
+JsonArray	C_MyLib/JsonDataAnalyzeLib.h	/^} JsonArray;$/;"	t	typeref:struct:_JsonArray
+JsonCheckFun	C_MyLib/JsonCheckFun.h	/^#define JsonCheckFun$/;"	d
+JsonObject	C_MyLib/JsonDataAnalyzeLib.h	/^} JsonObject;$/;"	t	typeref:struct:_JsonObject
+JsonString	C_MyLib/JsonDataAnalyzeLib.h	/^    strnew JsonString;$/;"	m	struct:_JsonArray	typeref:typename:strnew
+JsonString	C_MyLib/JsonDataAnalyzeLib.h	/^    strnew JsonString;$/;"	m	struct:_JsonObject	typeref:typename:strnew
+ListAvailablePorts	comx.c	/^void ListAvailablePorts() {$/;"	f	typeref:typename:void
+MAX_STACK_SIZE	C_MyLib/JsonDataAnalyzeLib.c	/^#define MAX_STACK_SIZE /;"	d	file:
+MaxLen	C_MyLib/StrLib.h	/^    int MaxLen;$/;"	m	struct:New_Arr	typeref:typename:int
+MoveDataOnBuff	C_MyLib/StrLib.c	/^bool MoveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft) {$/;"	f	typeref:typename:bool
+NEW_NAME	C_MyLib/StrLib.h	/^#define NEW_NAME(/;"	d
+NUMBERBASELIC_H	C_MyLib/NumberBaseLib.h	/^#define NUMBERBASELIC_H$/;"	d
+Name	C_MyLib/StrLib.h	/^    } Name;$/;"	m	struct:New_Arr	typeref:union:New_Arr::_newclass
+New_Arr	C_MyLib/StrLib.h	/^typedef struct New_Arr {$/;"	s
+New_Str_Obj	C_MyLib/StrLib.c	/^strnew New_Str_Obj(void* Master, int SizeNum, int SizeType) {$/;"	f	typeref:typename:strnew
+OBJS	build.cmd	/^    set OBJS=!OBJS! ".\/outflie\/%%~nf.o"$/;"	v
+OBJS	build.cmd	/^set OBJS=!OBJS! ".\/outflie\/comx.o"$/;"	v
+OBJS	build.cmd	/^set OBJS=$/;"	v
+OUTPUT	build.cmd	/^set OUTPUT=comx.exe$/;"	v
+Obj_getArray	C_MyLib/JsonDataAnalyzeLib.c	/^static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strnew OutStr) {$/;"	f	typeref:struct:_JsonArray	file:
+Obj_getBool	C_MyLib/JsonDataAnalyzeLib.c	/^static bool Obj_getBool(struct _JsonObject This, char Key[]) {$/;"	f	typeref:typename:bool	file:
+Obj_getDouble	C_MyLib/JsonDataAnalyzeLib.c	/^static double Obj_getDouble(struct _JsonObject This, char Key[]) {$/;"	f	typeref:typename:double	file:
+Obj_getInt	C_MyLib/JsonDataAnalyzeLib.c	/^static int Obj_getInt(struct _JsonObject This, char Key[]) {$/;"	f	typeref:typename:int	file:
+Obj_getObject	C_MyLib/JsonDataAnalyzeLib.c	/^static struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew OutStr) {$/;"	f	typeref:struct:_JsonObject	file:
+Obj_getString	C_MyLib/JsonDataAnalyzeLib.c	/^static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {$/;"	f	typeref:typename:void	file:
+Obj_isJsonNull	C_MyLib/JsonDataAnalyzeLib.c	/^static signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {$/;"	f	typeref:typename:signed char	file:
+Obj_sizeStr	C_MyLib/JsonDataAnalyzeLib.c	/^static int Obj_sizeStr(struct _JsonObject This) {$/;"	f	typeref:typename:int	file:
+OpenSerialPort	comx.c	/^BOOL OpenSerialPort() {$/;"	f	typeref:typename:BOOL
+ReadSerialThread	comx.c	/^DWORD WINAPI ReadSerialThread(LPVOID lpParam) {$/;"	f	typeref:typename:DWORD WINAPI
+STRLIB_H	C_MyLib/StrLib.h	/^#define STRLIB_H /;"	d
+SetTerminalGBK	comx.c	/^void SetTerminalGBK() {$/;"	f	typeref:typename:void
+SetTerminalUTF8	comx.c	/^void SetTerminalUTF8() {$/;"	f	typeref:typename:void
+SignalHandler	comx.c	/^void SignalHandler(int signum) {$/;"	f	typeref:typename:void
+SizeType	C_MyLib/StrLib.h	/^    int SizeType;$/;"	m	struct:New_Arr	typeref:typename:int
+Stack	C_MyLib/JsonDataAnalyzeLib.c	/^} Stack;$/;"	t	typeref:struct:__anon3fd9b3030108	file:
+StringSlice	C_MyLib/StrLib.c	/^void StringSlice(strnew OutStr, strnew Mather, int start, int end) {$/;"	f	typeref:typename:void
+TempDouble	C_MyLib/NumberBaseLib.c	/^        double   TempDouble;$/;"	m	union:DoubleOrFloatToBuff::__anon7b73729f020a	typeref:typename:double	file:
+TempDouble	C_MyLib/NumberBaseLib.c	/^        double  TempDouble;$/;"	m	union:BuffToFloatOrDouble::__anon7b73729f010a	typeref:typename:double	file:
+TempFloat	C_MyLib/NumberBaseLib.c	/^        float    TempFloat;$/;"	m	union:DoubleOrFloatToBuff::__anon7b73729f020a	typeref:typename:float	file:
+TempFloat	C_MyLib/NumberBaseLib.c	/^        float   TempFloat;$/;"	m	union:BuffToFloatOrDouble::__anon7b73729f010a	typeref:typename:float	file:
+This	C_MyLib/StrLib.h	/^#define This /;"	d
+TimeStuClass	C_MyLib/StrLib.h	/^} TimeStuClass;$/;"	t	typeref:struct:_TimeStuClass
+TimestampToRTCData	C_MyLib/StrLib.c	/^TimeStuClass TimestampToRTCData(uint32_t timestamp) {$/;"	f	typeref:typename:TimeStuClass
+Type_T	C_MyLib/StrLib.h	/^} Type_T;$/;"	t	typeref:struct:_Type_T
+U8_Connect_U8	C_MyLib/NumberBaseLib.c	/^uint16_t U8_Connect_U8(uint8_t H_Part_Input, uint8_t L_Part_Input) {$/;"	f	typeref:typename:uint16_t
+_InitType	C_MyLib/StrLib.c	/^Type_T _InitType(void* var, const char* type) {$/;"	f	typeref:typename:Type_T
+_JSONSETLIB_H	C_MyLib/JsonSetLib.h	/^#define _JSONSETLIB_H$/;"	d
+_JSON_DATA_ANALYZE_LIB_H	C_MyLib/JsonDataAnalyzeLib.h	/^#define _JSON_DATA_ANALYZE_LIB_H$/;"	d
+_JsonArray	C_MyLib/JsonDataAnalyzeLib.h	/^typedef struct _JsonArray {$/;"	s
+_JsonObject	C_MyLib/JsonDataAnalyzeLib.h	/^typedef struct _JsonObject {$/;"	s
+_TimeStuClass	C_MyLib/StrLib.h	/^typedef struct _TimeStuClass {$/;"	s
+_Type_T	C_MyLib/StrLib.h	/^typedef struct _Type_T {$/;"	s
+__anon3fd9b3030108	C_MyLib/JsonDataAnalyzeLib.c	/^typedef struct {$/;"	s	file:
+__anon7b73729f010a	C_MyLib/NumberBaseLib.c	/^    union {$/;"	u	function:BuffToFloatOrDouble	file:
+__anon7b73729f020a	C_MyLib/NumberBaseLib.c	/^    union {$/;"	u	function:DoubleOrFloatToBuff	file:
+_char	C_MyLib/StrLib.h	/^        char*          _char;     \/\/ 字符型指针$/;"	m	union:New_Arr::_newclass	typeref:typename:char *
+_cschar	C_MyLib/StrLib.h	/^        const char*    _cschar;   \/\/ 字符型指针只读数据$/;"	m	union:New_Arr::_newclass	typeref:typename:const char *
+_double	C_MyLib/StrLib.h	/^        double*        _double;   \/\/ 双精度浮点型指针$/;"	m	union:New_Arr::_newclass	typeref:typename:double *
+_float	C_MyLib/StrLib.h	/^        float*         _float;    \/\/ 单精度浮点型指针$/;"	m	union:New_Arr::_newclass	typeref:typename:float *
+_getKeyName	C_MyLib/JsonDataAnalyzeLib.c	/^static void _getKeyName(strnew SonStr, char Key[]) {$/;"	f	typeref:typename:void	file:
+_int	C_MyLib/StrLib.h	/^        int*           _int;      \/\/ 整型指针$/;"	m	union:New_Arr::_newclass	typeref:typename:int *
+_int16_t	C_MyLib/StrLib.h	/^        int16_t*       _int16_t;  \/\/ 16 位$/;"	m	union:New_Arr::_newclass	typeref:typename:int16_t *
+_int32_t	C_MyLib/StrLib.h	/^        int32_t*       _int32_t;  \/\/ 32 位$/;"	m	union:New_Arr::_newclass	typeref:typename:int32_t *
+_int64_t	C_MyLib/StrLib.h	/^        int64_t*       _int64_t;  \/\/ 64 位$/;"	m	union:New_Arr::_newclass	typeref:typename:int64_t *
+_int8_t	C_MyLib/StrLib.h	/^        int8_t*        _int8_t;   \/\/  8 位$/;"	m	union:New_Arr::_newclass	typeref:typename:int8_t *
+_newclass	C_MyLib/StrLib.h	/^    union _newclass {$/;"	u	struct:New_Arr
+_uchar	C_MyLib/StrLib.h	/^        unsigned char* _uchar;    \/\/ 无符号字符型指针$/;"	m	union:New_Arr::_newclass	typeref:typename:unsigned char *
+_uint	C_MyLib/StrLib.h	/^        unsigned int*  _uint;     \/\/ 无符号整型指针$/;"	m	union:New_Arr::_newclass	typeref:typename:unsigned int *
+_uint16_t	C_MyLib/StrLib.h	/^        uint16_t*      _uint16_t; \/\/ 无符号整 16 位$/;"	m	union:New_Arr::_newclass	typeref:typename:uint16_t *
+_uint32_t	C_MyLib/StrLib.h	/^        uint32_t*      _uint32_t; \/\/ 无符号整 32 位$/;"	m	union:New_Arr::_newclass	typeref:typename:uint32_t *
+_uint64_t	C_MyLib/StrLib.h	/^        uint64_t*      _uint64_t; \/\/ 无符号整 64 位$/;"	m	union:New_Arr::_newclass	typeref:typename:uint64_t *
+_uint8_t	C_MyLib/StrLib.h	/^        uint8_t*       _uint8_t;  \/\/ 无符号整  8 位$/;"	m	union:New_Arr::_newclass	typeref:typename:uint8_t *
+_void	C_MyLib/StrLib.h	/^        void*          _void;     \/\/ 无定义形指针$/;"	m	union:New_Arr::_newclass	typeref:typename:void *
+anyArrayToSameBaseNumber	C_MyLib/NumberBaseLib.c	/^static uint64_t anyArrayToSameBaseNumber(uint8_t* InputStr, int StrSize) {$/;"	f	typeref:typename:uint64_t	file:
+anyBaseArrayToAnyBaseNumber	C_MyLib/NumberBaseLib.c	/^int64_t anyBaseArrayToAnyBaseNumber(strnew IntArray, int IntputBase, int OutputBase) {$/;"	f	typeref:typename:int64_t
+anyBaseNumberToAnyBaseArray	C_MyLib/NumberBaseLib.c	/^int anyBaseNumberToAnyBaseArray(uint64_t Number, int IntputBase, int OutputBase, strnew OutArray/;"	f	typeref:typename:int
+anyBaseNumberToSameArray	C_MyLib/NumberBaseLib.c	/^static uint64_t anyBaseNumberToSameArray(strnew Output, uint64_t InputNumber) {$/;"	f	typeref:typename:uint64_t	file:
+anyBaseToAnyBase	C_MyLib/NumberBaseLib.c	/^uint64_t anyBaseToAnyBase(uint64_t Number, int IntputBase, int OutputBase) {$/;"	f	typeref:typename:uint64_t
+baudRate	comx.c	/^DWORD  baudRate = 1500000;$/;"	v	typeref:typename:DWORD
+build.cmd	README.md	/^## build.cmd $/;"	s
+byteSize	comx.c	/^BYTE   byteSize = 8;$/;"	v	typeref:typename:BYTE
+calculate_days	C_MyLib/StrLib.c	/^int calculate_days(int year, int month, int day) {$/;"	f	typeref:typename:int
+catString	C_MyLib/StrLib.c	/^int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {$/;"	f	typeref:typename:int
+checkOfCsJsonStrIsRight	C_MyLib/JsonCheckFun.c	/^bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {$/;"	f	typeref:typename:bool
+clean_strnew	C_MyLib/StrLib.c	/^void clean_strnew(strnew This) {$/;"	f	typeref:typename:void
+comx for windows	README.md	/^## comx for windows$/;"	s
+copyString	C_MyLib/StrLib.c	/^bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {$/;"	f	typeref:typename:bool
+data	C_MyLib/JsonDataAnalyzeLib.c	/^    char data[MAX_STACK_SIZE];$/;"	m	struct:__anon3fd9b3030108	typeref:typename:char[]	file:
+day	C_MyLib/StrLib.h	/^    uint32_t day;    \/** 日 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+doneAsciiStrToAnyBaseNumberData	C_MyLib/NumberBaseLib.c	/^int doneAsciiStrToAnyBaseNumberData(const char AscArray[], int OutputBase) {$/;"	f	typeref:typename:int
+doneAsciiToDouble	C_MyLib/NumberBaseLib.c	/^double doneAsciiToDouble(char AscArray[]) {$/;"	f	typeref:typename:double
+doneBaseNumberDataToAsciiStr	C_MyLib/NumberBaseLib.c	/^int doneBaseNumberDataToAsciiStr(strnew AscArray, int NumberData, int IntputBase) {$/;"	f	typeref:typename:int
+doneDoubleToAscii	C_MyLib/NumberBaseLib.c	/^void doneDoubleToAscii(char AscArray[], const char From[], double InputData) {$/;"	f	typeref:typename:void
+doubleChStrToShortChStr	C_MyLib/NumberBaseLib.c	/^int doubleChStrToShortChStr(const strnew inputArray, strnew OutputArray) {$/;"	f	typeref:typename:int
+g:ale_c_cppcheck_options	.vimrc	/^let g:ale_c_cppcheck_options = '--suppress=danglingLifetime'$/;"	v
+g:ale_echo_msg_error_str	.vimrc	/^let g:ale_echo_msg_error_str = 'E'$/;"	v
+g:ale_echo_msg_format	.vimrc	/^let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'$/;"	v
+g:ale_echo_msg_warning_str	.vimrc	/^let g:ale_echo_msg_warning_str = 'W'$/;"	v
+g:ale_fixers	.vimrc	/^let g:ale_fixers = {$/;"	v
+g:ale_lint_on_enter	.vimrc	/^let g:ale_lint_on_enter = 1$/;"	v
+g:ale_lint_on_insert_leave	.vimrc	/^let g:ale_lint_on_insert_leave = 1$/;"	v
+g:ale_lint_on_text_changed	.vimrc	/^let g:ale_lint_on_text_changed = 'always'$/;"	v
+g:ale_linters	.vimrc	/^let g:ale_linters = {$/;"	v
+g:ale_sign_error	.vimrc	/^let g:ale_sign_error = '✗'$/;"	v
+g:ale_sign_warning	.vimrc	/^let g:ale_sign_warning = '⚠'$/;"	v
+g:clang_format#auto_format	.vimrc	/^let g:clang_format#auto_format = 0$/;"	v
+g:clang_format#code_style	.vimrc	/^let g:clang_format#code_style = 'llvm'$/;"	v
+g:clang_format#command	.vimrc	/^let g:clang_format#command = 'clang-format'$/;"	v
+g:clang_format#detect_style_file	.vimrc	/^let g:clang_format#detect_style_file = 1$/;"	v
+g:shfmt_extra_args	.vimrc	/^let g:shfmt_extra_args = '-i 4'   $/;"	v
+g:shfmt_optimize	.vimrc	/^let g:shfmt_optimize = '1'$/;"	v
+g_KeepRunning	comx.c	/^volatile BOOL g_KeepRunning = TRUE;$/;"	v	typeref:typename:volatile BOOL
+get	C_MyLib/JsonDataAnalyzeLib.h	/^    void (*get)(struct _JsonArray This, strnew OutStr, int ItemNum);      \/\/ 获取Json 某元/;"	m	struct:_JsonArray	typeref:typename:void (*)(struct _JsonArray This,strnew OutStr,int ItemNum)
+getArray	C_MyLib/JsonDataAnalyzeLib.h	/^    struct _JsonArray (*getArray)(struct _JsonObject This, char Key[], strnew OutStr); \/\/ 获取/;"	m	struct:_JsonObject	typeref:struct:_JsonArray (*)(struct _JsonObject This,char Key[],strnew OutStr)
+getArray	C_MyLib/JsonDataAnalyzeLib.h	/^    void (*getArray)(struct _JsonArray This, strnew OutStr, int ItemNum); \/\/ 获取Json 某元/;"	m	struct:_JsonArray	typeref:typename:void (*)(struct _JsonArray This,strnew OutStr,int ItemNum)
+getBool	C_MyLib/JsonDataAnalyzeLib.h	/^    bool (*getBool)(struct _JsonObject This, char Key[]);                              \/\/ 获取/;"	m	struct:_JsonObject	typeref:typename:bool (*)(struct _JsonObject This,char Key[])
+getDouble	C_MyLib/JsonDataAnalyzeLib.h	/^    double (*getDouble)(struct _JsonObject This, char Key[]);                          \/\/ 获取/;"	m	struct:_JsonObject	typeref:typename:double (*)(struct _JsonObject This,char Key[])
+getDoubleChrOnString	C_MyLib/JsonDataAnalyzeLib.c	/^char* getDoubleChrOnString(char* MotherString, char HeadChr, char EndChr) {$/;"	f	typeref:typename:char *
+getFromTypeCheckDoubleOrFloat	C_MyLib/JsonSetLib.c	/^bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {$/;"	f	typeref:typename:bool
+getInt	C_MyLib/JsonDataAnalyzeLib.h	/^    int (*getInt)(struct _JsonObject This, char Key[]);                                \/\/ 获取/;"	m	struct:_JsonObject	typeref:typename:int (*)(struct _JsonObject This,char Key[])
+getKeyName	C_MyLib/JsonDataAnalyzeLib.c	/^#define getKeyName(/;"	d	file:
+getNowType	C_MyLib/JsonSetLib.c	/^char getNowType(const char* NowAddr, char* UserFromNow) {$/;"	f	typeref:typename:char
+getObject	C_MyLib/JsonDataAnalyzeLib.h	/^    struct _JsonObject (*getObject)(struct _JsonObject This, char Key[], strnew OutStr); \/\/ 获/;"	m	struct:_JsonObject	typeref:struct:_JsonObject (*)(struct _JsonObject This,char Key[],strnew OutStr)
+getPartOfSetPointOnRing	C_MyLib/NumberBaseLib.c	/^float getPartOfSetPointOnRing(uint32_t SetPoint, uint32_t Min_Ring, uint32_t Max_Ring) {$/;"	f	typeref:typename:float
+getString	C_MyLib/JsonDataAnalyzeLib.h	/^    void (*getString)(struct _JsonObject This, char Key[], strnew OutStr);             \/\/ 获取/;"	m	struct:_JsonObject	typeref:typename:void (*)(struct _JsonObject This,char Key[],strnew OutStr)
+getTimeNumber_UTCByRTCTime	C_MyLib/StrLib.c	/^uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String) {$/;"	f	typeref:typename:uint32_t
+getUserInt	comx.c	/^int getUserInt(long int default_value) {$/;"	f	typeref:typename:int
+get_timestamp	C_MyLib/StrLib.c	/^uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour, u/;"	f	typeref:typename:uint32_t
+hSerial	comx.c	/^HANDLE hSerial = INVALID_HANDLE_VALUE;$/;"	v	typeref:typename:HANDLE
+hour	C_MyLib/StrLib.h	/^    uint32_t hour;   \/** 时 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+id	demo.rc	/^id ICON "demo.ico"/;"	i
+initStack	C_MyLib/JsonDataAnalyzeLib.c	/^void initStack(Stack* s) {$/;"	f	typeref:typename:void
+isEmpty	C_MyLib/JsonDataAnalyzeLib.c	/^int isEmpty(Stack* s) {$/;"	f	typeref:typename:int
+isJsonNull	C_MyLib/JsonDataAnalyzeLib.h	/^    signed char (*isJsonNull)(struct _JsonArray This);                    \/\/ 判断Json 是否/;"	m	struct:_JsonArray	typeref:typename:signed char (*)(struct _JsonArray This)
+isJsonNull	C_MyLib/JsonDataAnalyzeLib.h	/^    signed char (*isJsonNull)(struct _JsonObject This, char Key[]);                    \/\/ 判断/;"	m	struct:_JsonObject	typeref:typename:signed char (*)(struct _JsonObject This,char Key[])
+isLeapYear	C_MyLib/StrLib.c	/^int isLeapYear(uint32_t year) {$/;"	f	typeref:typename:int
+is_valid_integer	comx.c	/^int is_valid_integer(const char* str) {$/;"	f	typeref:typename:int
+main	comx.c	/^int main(int argc, char* argv[]) {$/;"	f	typeref:typename:int
+minute	C_MyLib/StrLib.h	/^    uint32_t minute; \/** 分 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+month	C_MyLib/StrLib.h	/^    uint32_t month;  \/** 月 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+myStrstr	C_MyLib/StrLib.c	/^char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize) {$/;"	f	typeref:typename:char *
+myStrstrCont	C_MyLib/StrLib.c	/^char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum) {$/;"	f	typeref:typename:char *
+newJsonArrayByString	C_MyLib/JsonDataAnalyzeLib.c	/^JsonArray newJsonArrayByString(strnew DataInit) {$/;"	f	typeref:typename:JsonArray
+newJsonObjectByString	C_MyLib/JsonDataAnalyzeLib.c	/^JsonObject newJsonObjectByString(strnew DataInit) {$/;"	f	typeref:typename:JsonObject
+newString	C_MyLib/StrLib.h	/^#define newString(/;"	d
+newType	C_MyLib/StrLib.h	/^#define newType(/;"	d
+newType1	C_MyLib/StrLib.h	/^#define newType1(/;"	d
+newType2	C_MyLib/StrLib.h	/^#define newType2(/;"	d
+newType_X	C_MyLib/StrLib.h	/^#define newType_X(/;"	d
+newstrobj	C_MyLib/StrLib.h	/^#define newstrobj(/;"	d
+numberArrayToStrArray	C_MyLib/NumberBaseLib.c	/^void numberArrayToStrArray(strnew StrArray, const strnew NumberArray, int NeedLen) {$/;"	f	typeref:typename:void
+osRead	comx.c	/^OVERLAPPED osRead = {0};$/;"	v	typeref:typename:OVERLAPPED
+osWrite	comx.c	/^OVERLAPPED osWrite = {0};$/;"	v	typeref:typename:OVERLAPPED
+parity	comx.c	/^BYTE   parity = NOPARITY;$/;"	v	typeref:typename:BYTE
+peek	C_MyLib/JsonDataAnalyzeLib.c	/^char peek(Stack* s) {$/;"	f	typeref:typename:char
+pop	C_MyLib/JsonDataAnalyzeLib.c	/^char pop(Stack* s) {$/;"	f	typeref:typename:char
+portName	comx.c	/^char   portName[30] = "COM3";$/;"	v	typeref:typename:char[30]
+push	C_MyLib/JsonDataAnalyzeLib.c	/^void push(Stack* s, char ch) {$/;"	f	typeref:typename:void
+readDataBit	C_MyLib/NumberBaseLib.c	/^bool readDataBit(uint64_t InputNumber, int8_t BitNumber) {$/;"	f	typeref:typename:bool
+second	C_MyLib/StrLib.h	/^    uint32_t second; \/** 秒 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+setDataBit	C_MyLib/NumberBaseLib.c	/^uint64_t setDataBit(uint64_t InputNumber, int8_t BitNumber, bool Value) {$/;"	f	typeref:typename:uint64_t
+shortChStrToDoubleChStr	C_MyLib/NumberBaseLib.c	/^int shortChStrToDoubleChStr(const strnew inputArray, strnew OutputArray) {$/;"	f	typeref:typename:int
+sizeItemNum	C_MyLib/JsonDataAnalyzeLib.h	/^    int (*sizeItemNum)(struct _JsonArray This);                           \/\/ 获取Json 数组/;"	m	struct:_JsonArray	typeref:typename:int (*)(struct _JsonArray This)
+sizeStr	C_MyLib/JsonDataAnalyzeLib.h	/^    int (*sizeStr)(struct _JsonObject This);                                           \/\/ 获取/;"	m	struct:_JsonObject	typeref:typename:int (*)(struct _JsonObject This)
+stdin_clean	comx.c	/^#define stdin_clean /;"	d	file:
+stopBits	comx.c	/^BYTE   stopBits = ONESTOPBIT;$/;"	v	typeref:typename:BYTE
+strArrayToNumberArray	C_MyLib/NumberBaseLib.c	/^void strArrayToNumberArray(strnew NumberArray, const strnew StrArray, int NeedLen) {$/;"	f	typeref:typename:void
+strnew	C_MyLib/StrLib.h	/^} strnew;$/;"	t	typeref:struct:New_Arr
+strnew_malloc	C_MyLib/StrLib.h	/^#define strnew_malloc(/;"	d
+swapChr	C_MyLib/StrLib.c	/^void swapChr(char* a, char* b) {$/;"	f	typeref:typename:void
+swapLowHight_Of_Char	C_MyLib/StrLib.c	/^char swapLowHight_Of_Char(char InputCh) {$/;"	f	typeref:typename:char
+swapStr	C_MyLib/StrLib.c	/^void swapStr(char* InputStr, int StrLen) {$/;"	f	typeref:typename:void
+top	C_MyLib/JsonDataAnalyzeLib.c	/^    int  top;$/;"	m	struct:__anon3fd9b3030108	typeref:typename:int	file:
+type	C_MyLib/StrLib.h	/^    const char* type;$/;"	m	struct:_Type_T	typeref:typename:const char *
+var	C_MyLib/StrLib.h	/^    void*       var;$/;"	m	struct:_Type_T	typeref:typename:void *
+week	C_MyLib/StrLib.h	/^    uint32_t week;   \/** 周 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+year	C_MyLib/StrLib.h	/^    uint32_t year;   \/** 年 *\/$/;"	m	struct:_TimeStuClass	typeref:typename:uint32_t
+使用方法1：	README.md	/^## 使用方法1：$/;"	s
+使用方法2：	README.md	/^## 使用方法2：$/;"	s
+示例图	README.md	/^## 示例图$/;"	s
+该文件夹是我自己写的库	C_MyLib/README.md	/^## 该文件夹是我自己写的库$/;"	s

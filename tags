@@ -4,15 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/mnt/e/work/git_room/comx_for_windows/	//
+!_TAG_PROC_CWD	/home/leige/git_room/comx_for_windows/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	//
-<C-Down>	.vimrc	/^nnoremap <C-Down> :m+<CR>==$/;"	m
-<C-Up>	.vimrc	/^nnoremap <C-Up>   :m-2<CR>==$/;"	m
-<C-j>	.vimrc	/^nmap <silent> <C-j> <Plug>(ale_next_wrap)$/;"	m
-<C-k>	.vimrc	/^nmap <silent> <C-k> <Plug>(ale_previous_wrap)$/;"	m
 ARR_SIZE	C_MyLib/StrLib.h	/^#define ARR_SIZE(/;"	d
 ASCIIToHEX2	C_MyLib/NumberBaseLib.c	/^int ASCIIToHEX2(const strnew asc, strnew hex) {$/;"	f	typeref:typename:int
 AddCsToJsonAndPushJsonStr	C_MyLib/JsonCheckFun.c	/^void AddCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {$/;"	f	typeref:typename:void
@@ -128,23 +124,6 @@ doneAsciiToDouble	C_MyLib/NumberBaseLib.c	/^double doneAsciiToDouble(char AscArr
 doneBaseNumberDataToAsciiStr	C_MyLib/NumberBaseLib.c	/^int doneBaseNumberDataToAsciiStr(strnew AscArray, int NumberData, int IntputBase) {$/;"	f	typeref:typename:int
 doneDoubleToAscii	C_MyLib/NumberBaseLib.c	/^void doneDoubleToAscii(char AscArray[], const char From[], double InputData) {$/;"	f	typeref:typename:void
 doubleChStrToShortChStr	C_MyLib/NumberBaseLib.c	/^int doubleChStrToShortChStr(const strnew inputArray, strnew OutputArray) {$/;"	f	typeref:typename:int
-g:ale_c_cppcheck_options	.vimrc	/^let g:ale_c_cppcheck_options = '--suppress=danglingLifetime'$/;"	v
-g:ale_echo_msg_error_str	.vimrc	/^let g:ale_echo_msg_error_str = 'E'$/;"	v
-g:ale_echo_msg_format	.vimrc	/^let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'$/;"	v
-g:ale_echo_msg_warning_str	.vimrc	/^let g:ale_echo_msg_warning_str = 'W'$/;"	v
-g:ale_fixers	.vimrc	/^let g:ale_fixers = {$/;"	v
-g:ale_lint_on_enter	.vimrc	/^let g:ale_lint_on_enter = 1$/;"	v
-g:ale_lint_on_insert_leave	.vimrc	/^let g:ale_lint_on_insert_leave = 1$/;"	v
-g:ale_lint_on_text_changed	.vimrc	/^let g:ale_lint_on_text_changed = 'always'$/;"	v
-g:ale_linters	.vimrc	/^let g:ale_linters = {$/;"	v
-g:ale_sign_error	.vimrc	/^let g:ale_sign_error = '✗'$/;"	v
-g:ale_sign_warning	.vimrc	/^let g:ale_sign_warning = '⚠'$/;"	v
-g:clang_format#auto_format	.vimrc	/^let g:clang_format#auto_format = 0$/;"	v
-g:clang_format#code_style	.vimrc	/^let g:clang_format#code_style = 'llvm'$/;"	v
-g:clang_format#command	.vimrc	/^let g:clang_format#command = 'clang-format'$/;"	v
-g:clang_format#detect_style_file	.vimrc	/^let g:clang_format#detect_style_file = 1$/;"	v
-g:shfmt_extra_args	.vimrc	/^let g:shfmt_extra_args = '-i 4'   $/;"	v
-g:shfmt_optimize	.vimrc	/^let g:shfmt_optimize = '1'$/;"	v
 g_KeepRunning	comx.c	/^volatile BOOL g_KeepRunning = TRUE;$/;"	v	typeref:typename:volatile BOOL
 get	C_MyLib/JsonDataAnalyzeLib.h	/^    void (*get)(struct _JsonArray This, strnew OutStr, int ItemNum);      \/\/ 获取Json 某元/;"	m	struct:_JsonArray	typeref:typename:void (*)(struct _JsonArray This,strnew OutStr,int ItemNum)
 getArray	C_MyLib/JsonDataAnalyzeLib.h	/^    struct _JsonArray (*getArray)(struct _JsonObject This, char Key[], strnew OutStr); \/\/ 获取/;"	m	struct:_JsonObject	typeref:struct:_JsonArray (*)(struct _JsonObject This,char Key[],strnew OutStr)
@@ -214,4 +193,4 @@ year	C_MyLib/StrLib.h	/^    uint32_t year;   \/** 年 *\/$/;"	m	struct:_TimeStuC
 使用方法1：	README.md	/^## 使用方法1：$/;"	s
 使用方法2：	README.md	/^## 使用方法2：$/;"	s
 示例图	README.md	/^## 示例图$/;"	s
-该文件夹是我自己写的库	C_MyLib/README.md	/^## 该文件夹是我自己写的库$/;"	s
+该文件夹是我自己写的库（自用）	C_MyLib/README.md	/^## 该文件夹是我自己写的库（自用）$/;"	s

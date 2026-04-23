@@ -105,46 +105,6 @@ int getUserInt(long int default_value) {
     return value;
 }
 
-// 线程函数：接收串口数据 (异步增强版)
-DWORD WINAPI ReadSerialThread(LPVOID lpParam) {
-    char  buffer[1024];
-    DWORD bytesRead;
-    BOOL  fWaitingOnRead = FALSE;
-
-    while (g_KeepRunning) {
-        if (!fWaitingOnRead) {
-            // 发起异步读取请求
-            if (!ReadFile(hSerial, buffer, sizeof(buffer) - 1, &bytesRead, &osRead)) {
-                if (GetLastError() != ERROR_IO_PENDING) {
-                    printf("\n[Error] read eeror for comx\n");
-                    break;
-                }
-                fWaitingOnRead = TRUE;
-            } else if (bytesRead > 0) {
-                // 立即读取成功
-                fwrite(buffer, 1, bytesRead, stdout);
-                fflush(stdout);
-            }
-        }
-
-        if (fWaitingOnRead) {
-            // 等待读取完成事件，超时设为 100ms 保证线程活跃
-            DWORD wait = WaitForSingleObject(osRead.hEvent, 100);
-            if (wait == WAIT_OBJECT_0) {
-                if (GetOverlappedResult(hSerial, &osRead, &bytesRead, FALSE)) {
-                    if (bytesRead > 0) {
-                        fwrite(buffer, 1, bytesRead, stdout);
-                        fflush(stdout);
-                    }
-                }
-                fWaitingOnRead = FALSE;
-                ResetEvent(osRead.hEvent);
-            }
-        }
-    }
-    return 0;
-}
-
 void ListAvailablePorts() {
     HDEVINFO hDevInfo = SetupDiGetClassDevs(&GUID_DEVCLASS_PORTS, 0, 0, DIGCF_PRESENT);
     if (hDevInfo == INVALID_HANDLE_VALUE)
@@ -237,6 +197,44 @@ BOOL OpenSerialPort() {
     return TRUE;
 }
 
+// 线程函数：接收串口数据
+DWORD WINAPI ReadSerialThread(LPVOID lpParam) {
+    char  buffer[1024];
+    DWORD bytesRead;
+    BOOL  fWaitingOnRead = FALSE;
+
+    while (g_KeepRunning) {
+        if (!fWaitingOnRead) {
+            // 发起异步读取请求
+            if (!ReadFile(hSerial, buffer, sizeof(buffer) - 1, &bytesRead, &osRead)) {
+                if (GetLastError() != ERROR_IO_PENDING) {
+                    printf("\n[Error] read eeror for comx\n");
+                    break;
+                }
+                fWaitingOnRead = TRUE;
+            } else if (bytesRead > 0) {
+                // 立即读取成功
+                fwrite(buffer, 1, bytesRead, stdout);
+                fflush(stdout);
+            }
+        } else {
+            // 等待读取完成事件，超时设为 100ms 保证线程活跃
+            DWORD wait = WaitForSingleObject(osRead.hEvent, 100);
+            if (wait == WAIT_OBJECT_0) {
+                if (GetOverlappedResult(hSerial, &osRead, &bytesRead, FALSE)) {
+                    if (bytesRead > 0) {
+                        fwrite(buffer, 1, bytesRead, stdout);
+                        fflush(stdout);
+                    }
+                }
+                fWaitingOnRead = FALSE;
+                ResetEvent(osRead.hEvent);
+            }
+        }
+    }
+    return 0;
+}
+
 void InteractiveMode() {
     printf("\n--- Press Ctrl+A then Ctrl+C to exit ---\n\n");
 
@@ -253,44 +251,48 @@ void InteractiveMode() {
     int          seq_state = 0; // 0:等待Ctrl+A, 1:已收到Ctrl+A等待Ctrl+C
 
     while (1) {
-        if (ReadConsoleInput(hStdin, &ir, 1, &count) && count > 0) {
-            if (!(ir.EventType == KEY_EVENT && ir.Event.KeyEvent.bKeyDown)) {
-                continue;
-            }
-            char ch = ir.Event.KeyEvent.uChar.AsciiChar;
+        if (!(ReadConsoleInput(hStdin, &ir, 1, &count) && count > 0)) {
+            continue;
+        }
+        if (!(ir.EventType == KEY_EVENT && ir.Event.KeyEvent.bKeyDown)) {
+            continue;
+        }
 
-            // 序列检测状态机
-            if (seq_state == 0) {
-                if (ch == 1) { // Ctrl+A
-                    seq_state = 1;
-                }
-                // 其他字符（包括单独的 Ctrl+C）直接发送
-                if (ch != 0) {
-                    if (!WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite)) {
-                        if (GetLastError() != ERROR_IO_PENDING) {
-                            printf("\n[Error] write err\n");
-                            goto EXIT_INTERACTIVE;
-                        }
+        char ch = ir.Event.KeyEvent.uChar.AsciiChar;
+        // 序列检测状态机
+        if (seq_state == 0) {
+            if (ch == 1) { // Ctrl+A
+                seq_state = 1;
+            }
+            // 其他字符（包括单独的 Ctrl+C）直接发送
+            if (ch != 0) {
+                if (!WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite)) {
+                    if (GetLastError() != ERROR_IO_PENDING) {
+                        printf("\n[Error] write err\n");
+                        goto EXIT_INTERACTIVE;
                     }
-                }
-            } else {
-                // seq_state == 1，等待 Ctrl+C
-                if (ch == 3) { // Ctrl+C
-                    // 序列正确，退出程序
-                    g_KeepRunning = FALSE; // 通知读取线程退出
-                    goto EXIT_INTERACTIVE;
-                } else {
-                    // 收到其他按键：先发送之前缓存的 Ctrl+A（如果需要发送的话）
-                    // 注意：之前的 Ctrl+A 被忽略了，这里可以选择发送 Ctrl+A 再发送当前字符
-                    // 为了行为直观，这里将 Ctrl+A 和当前字符都发送
-                    char ctrlA = 1;
-                    WriteFile(hSerial, &ctrlA, 1, &dwWritten, &osWrite);
-                    if (ch != 0) {
-                        WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite);
-                    }
-                    seq_state = 0; // 重置状态
                 }
             }
+            continue;
+        }
+
+        if (seq_state == 1) {
+            // 等待 Ctrl+C
+            if (ch == 3) { // Ctrl+C
+                // 序列正确，退出程序
+                g_KeepRunning = FALSE; // 通知读取线程退出
+                goto EXIT_INTERACTIVE;
+            }
+            // 收到其他按键：先发送之前缓存的 Ctrl+A（如果需要发送的话）
+            // 注意：之前的 Ctrl+A 被忽略了，这里可以选择发送 Ctrl+A 再发送当前字符
+            // 为了行为直观，这里将 Ctrl+A 和当前字符都发送
+            char ctrlA = 1;
+            WriteFile(hSerial, &ctrlA, 1, &dwWritten, &osWrite);
+            if (ch != 0) {
+                WriteFile(hSerial, &ch, 1, &dwWritten, &osWrite);
+            }
+            seq_state = 0; // 重置状态
+            continue;
         }
     }
 

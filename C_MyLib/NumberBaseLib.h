@@ -6,16 +6,16 @@ XxxxXxxxx <==> 局部变量
 xxxxXxxx() <==> 函数
 xxxxx_xxxx <==> typedef(数据类型)
 */
-#ifndef NUMBERBASELIC_H
-#define NUMBERBASELIC_H
+#ifndef __NUMBERBASELIC_H__
+#define __NUMBERBASELIC_H__
 
 #include "StrLib.h"
 #include <stdint.h>
 // 将 uint8_t 数组 转换成 Double Or Float
-extern double BuffToFloatOrDouble(strnew OutBuff, bool IsDouble);
+extern double buffToFloatOrDouble(strnew OutBuff, bool IsDouble);
 
 // 将 Double Or Float 存到 char 数组 中
-extern void DoubleOrFloatToBuff(strnew OutBuff, double Number, bool IsDouble);
+extern void doubleOrFloatToBuff(strnew OutBuff, double Number, bool IsDouble);
 
 // 将数组串转字符串 0x01 0x02 ==> 0x31 0x32(需要注意: NeedLen 是 NumberArray 中需要转换的长度)
 extern void numberArrayToStrArray(strnew StrArray, const strnew NumberArray, int NeedLen);
@@ -67,6 +67,6 @@ extern uint16_t U8_Connect_U8(uint8_t H_Part, uint8_t L_Part);
 extern float getPartOfSetPointOnRing(uint32_t SetPoint, uint32_t Min_Ring, uint32_t Max_Ring);
 
 // 给定一个 ip 字符串 192.168.1.1 ==> [c0] [a8] [01] [01]
-extern void IPstrToHexArray(strnew IpHex, const char* Ipstr);
+extern void iPstrToHexArray(strnew IpHex, const char* Ipstr);
 
 #endif

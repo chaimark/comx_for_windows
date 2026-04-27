@@ -42,4 +42,5 @@ ReflowComments: true
 # 其他设置
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: true
+AlignConsecutiveDeclarations: false
+

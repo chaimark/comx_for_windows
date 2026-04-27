@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-double BuffToFloatOrDouble(strnew OutBuff, bool IsDouble) {
+double buffToFloatOrDouble(strnew OutBuff, bool IsDouble) {
     union {
         double  TempDouble;
         float   TempFloat;
@@ -25,7 +25,7 @@ double BuffToFloatOrDouble(strnew OutBuff, bool IsDouble) {
         return (double)converter.TempFloat;
     }
 }
-void DoubleOrFloatToBuff(strnew OutBuff, double Number, bool IsDouble) {
+void doubleOrFloatToBuff(strnew OutBuff, double Number, bool IsDouble) {
     uint8_t BuffLen = 0;
     union {
         double   TempDouble;
@@ -356,7 +356,7 @@ float getPartOfSetPointOnRing(uint32_t SetPoint, uint32_t Min_Ring, uint32_t Max
 }
 
 // 给定一个 ip 字符串 192.168.1.1 ==> [c0] [a8] [01] [01]
-void IPstrToHexArray(strnew IpHex, const char* Ipstr) { // IP字符串转16进制
+void iPstrToHexArray(strnew IpHex, const char* Ipstr) { // IP字符串转16进制
     char IP_String[] = {"255.255.255.255.."};
     memset(IP_String, 0, strlen("255.255.255.255.."));
     memcpy(IP_String, Ipstr, strlen(Ipstr));

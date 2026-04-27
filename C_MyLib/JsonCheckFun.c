@@ -1,7 +1,7 @@
 #include "JsonCheckFun.h"
 #include "stdio.h"
 
-void AddCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
+void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
     int CheckNum = 0;
     int AddrOver = strlen(InputJsonStrObj.JsonString.Name._char);
     if ((AddrOver + (int)strlen(",\"NowCheckNum\":xxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
@@ -12,9 +12,9 @@ void AddCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
         CheckNum += InputJsonStrObj.JsonString.Name._char[i];
     }
     InputJsonStrObj.JsonString.Name._char[AddrOver - 1] = '\0';
-    AddJsonItemData(InputJsonStrObj.JsonString, ",");
-    AddJsonItemData(InputJsonStrObj.JsonString, "NowCheckNum:%d", (CheckNum % 256));
-    AddJsonItemData(InputJsonStrObj.JsonString, "}");
+    addJsonItemData(InputJsonStrObj.JsonString, ",");
+    addJsonItemData(InputJsonStrObj.JsonString, "NowCheckNum:%d", (CheckNum % 256));
+    addJsonItemData(InputJsonStrObj.JsonString, "}");
     return;
 }
 bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {

@@ -1,5 +1,5 @@
-#ifndef _JSON_DATA_ANALYZE_LIB_H
-#define _JSON_DATA_ANALYZE_LIB_H
+#ifndef __JSONDATAANALYZELIB_H__
+#define __JSONDATAANALYZELIB_H__
 
 #include "StrLib.h"
 #include <stdint.h>

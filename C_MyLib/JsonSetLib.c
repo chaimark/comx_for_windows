@@ -74,7 +74,7 @@ bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
 }
 #endif
 
-void AddJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {
+void addJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {
     char KeyName[200] = {0};
     // 查找 :
     char*       Addr_OverName = strchr(FromStr, ':');

@@ -1,6 +1,5 @@
-
-#ifndef STRLIB_H // 如果 STRLIB_H 未定义
-#define STRLIB_H // 定义 STRLIB_H
+#ifndef __STRLIB_H__ // 如果 STRLIB_H 未定义
+#define __STRLIB_H__ // 定义 STRLIB_H
 
 #include "stdint.h"
 #include <stdbool.h>
@@ -21,7 +20,7 @@
 */
 // 类定义
 typedef struct New_Arr {
-    union _newclass {
+    union _Name {
         int8_t*        _int8_t;   //  8 位
         int16_t*       _int16_t;  // 16 位
         int32_t*       _int32_t;  // 32 位
@@ -55,11 +54,11 @@ extern strnew New_Str_Obj(void* Master, int SizeNum, int SizeType); // 建立对
     name.SizeType = 1;
 
 // 清理对象
-void clean_strnew(strnew This);
+void cleanStrnew(strnew This);
 // 注意：NameStr.Name._char 是由 malloc 申请的空间
 // 不能直接使用 NameStr.Name._char = "aaa"，会导致 free 清理失败
 #define strnew_malloc(NameStr, Len)                                                                                    \
-    __attribute__((cleanup(clean_strnew))) strnew NameStr = {0};                                                       \
+    __attribute__((cleanup(cleanStrnew))) strnew NameStr = {0};                                                       \
     NameStr.SizeType = 1;                                                                                              \
     NameStr.Name._char = (char*)malloc(Len);                                                                           \
     NameStr.MaxLen = Len
@@ -72,8 +71,8 @@ extern char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int 
 extern void  swapChr(char* a, char* b);
 extern void  swapStr(char* IntputStr, int StrLen);
 extern char  swapLowHight_Of_Char(char InputCh);
-extern bool  MoveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
-extern void  StringSlice(strnew OutStr, strnew Mather, int start, int end);
+extern bool  moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
+extern void  stringSlice(strnew OutStr, strnew Mather, int start, int end);
 ///////////////////////////////////////////////////////////
 extern int      isLeapYear(uint32_t year);
 extern uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour,
@@ -88,7 +87,7 @@ typedef struct _TimeStuClass {
     uint32_t minute; /** 分 */
     uint32_t second; /** 秒 */
 } TimeStuClass;
-extern TimeStuClass TimestampToRTCData(uint32_t timestamp);
+extern TimeStuClass timestampToRTCData(uint32_t timestamp);
 ///////////////////////////////////////////////////////////
 
 #ifdef _Alignas

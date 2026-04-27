@@ -17,14 +17,14 @@ char*    myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int Cont
 void     swapChr(char* a, char* b);
 void     swapStr(char* IntputStr, int StrLen);
 char     swapLowHight_Of_Char(char InputCh);
-bool     MoveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
-void     StringSlice(strnew OutStr, strnew Mather, int start, int end);
+bool     moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
+void     stringSlice(strnew OutStr, strnew Mather, int start, int end);
 uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
 /*******************************************************************************************************************/
 /*******************************************************************************************************************/
 /*******************************************************************************************************************/
 /*-----------------------------------建立数组对象----------------------------------*/
-void clean_strnew(strnew This) {
+void cleanStrnew(strnew This) {
     // 释放私有数据的内存
     if (This.Name._char) {
         free(This.Name._char);
@@ -171,7 +171,7 @@ char swapLowHight_Of_Char(char InputCh) {
 }
 
 // 实现将数组左移或右移动某个长度的函数
-bool MoveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft) {
+bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft) {
     if (ShiftLen > IntptBuff.MaxLen) {
         return false;
     }
@@ -192,7 +192,7 @@ bool MoveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft) {
     }
     return true;
 }
-void StringSlice(strnew OutStr, strnew Mather, int start, int end) {
+void stringSlice(strnew OutStr, strnew Mather, int start, int end) {
     int NeedLen = (end >= start ? (end - start) : (start - end));
     if ((NeedLen + start) > Mather.MaxLen) {
         return;
@@ -269,7 +269,7 @@ uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String) {
     return timestamp;
 }
 // 将时间戳转换为时间结构体
-TimeStuClass TimestampToRTCData(uint32_t timestamp) {
+TimeStuClass timestampToRTCData(uint32_t timestamp) {
     TimeStuClass TempRTCData = {0};
     // Calculate seconds, minutes, hours, day, month, year from timestamp
     uint32_t remaining_seconds = timestamp;

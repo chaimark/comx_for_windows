@@ -77,7 +77,7 @@ bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
 void addJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {
     char KeyName[200] = {0};
     // 查找 :
-    char*       Addr_OverName = strchr(FromStr, ':');
+    char* Addr_OverName = strchr(FromStr, ':');
     const char* Addr_Start = strchr(FromStr, ',');
     if ((Addr_Start != NULL) && (Addr_Start < Addr_OverName)) {
         Addr_Start++;

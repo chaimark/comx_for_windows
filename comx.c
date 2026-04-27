@@ -16,11 +16,11 @@
 
 // 串口信息
 HANDLE hSerial = INVALID_HANDLE_VALUE;
-DWORD  baudRate = 1500000;
-BYTE   byteSize = 8;
-BYTE   stopBits = ONESTOPBIT;
-BYTE   parity = NOPARITY;
-char   portName[30] = "COM3";
+DWORD baudRate = 1500000;
+BYTE byteSize = 8;
+BYTE stopBits = ONESTOPBIT;
+BYTE parity = NOPARITY;
+char portName[30] = "COM3";
 
 // 异步操作所需的重叠结构
 OVERLAPPED osRead = {0};
@@ -73,7 +73,7 @@ int is_valid_integer(const char* str) {
 
 int getUserInt(long int default_value) {
     char input[100]; // 存储用户输入的行
-    int  value;      // 最终要赋值的变量
+    int value;       // 最终要赋值的变量
 
     while (1) {
         memset(&input, 0, ARR_SIZE(input));
@@ -199,9 +199,9 @@ BOOL OpenSerialPort() {
 
 // 线程函数：接收串口数据
 DWORD WINAPI ReadSerialThread(LPVOID lpParam) {
-    char  buffer[1024];
+    char buffer[1024];
     DWORD bytesRead;
-    BOOL  fWaitingOnRead = FALSE;
+    BOOL fWaitingOnRead = FALSE;
 
     while (g_KeepRunning) {
         if (!fWaitingOnRead) {
@@ -239,7 +239,7 @@ void InteractiveMode() {
     printf("\n--- Press Ctrl+A then Ctrl+C to exit ---\n\n");
 
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-    DWORD  oldMode;
+    DWORD oldMode;
     GetConsoleMode(hStdin, &oldMode);
     SetConsoleMode(hStdin, ENABLE_VIRTUAL_TERMINAL_INPUT | ENABLE_EXTENDED_FLAGS);
 
@@ -247,8 +247,8 @@ void InteractiveMode() {
     SetThreadPriority(hThread, THREAD_PRIORITY_HIGHEST);
 
     INPUT_RECORD ir;
-    DWORD        count, dwWritten;
-    int          seq_state = 0; // 0:等待Ctrl+A, 1:已收到Ctrl+A等待Ctrl+C
+    DWORD count, dwWritten;
+    int seq_state = 0; // 0:等待Ctrl+A, 1:已收到Ctrl+A等待Ctrl+C
 
     while (1) {
         if (!(ReadConsoleInput(hStdin, &ir, 1, &count) && count > 0)) {

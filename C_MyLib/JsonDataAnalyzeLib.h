@@ -6,7 +6,7 @@
 // Json数组类
 typedef struct _JsonArray {
     strnew JsonString;
-    int    ItemNum;
+    int ItemNum;
     int (*sizeItemNum)(struct _JsonArray This);                           // 获取Json 数组个数
     signed char (*isJsonNull)(struct _JsonArray This);                    // 判断Json 是否为空
     void (*get)(struct _JsonArray This, strnew OutStr, int ItemNum);      // 获取Json 某元素

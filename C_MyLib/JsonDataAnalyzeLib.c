@@ -8,7 +8,7 @@
 #define MAX_STACK_SIZE 100 // 定义栈的最大容量
 typedef struct {
     char data[MAX_STACK_SIZE];
-    int  top;
+    int top;
 } Stack;
 // 初始化栈
 void initStack(Stack* s) {
@@ -74,7 +74,7 @@ static void _getKeyName(strnew SonStr, char Key[]) {
 
 
 //==========================================================================================//
-JsonArray  newJsonArrayByString(strnew DataInit);
+JsonArray newJsonArrayByString(strnew DataInit);
 JsonObject newJsonObjectByString(strnew DataInit);
 //==========================================================================================//
 static int Arr_sizeItemNum(struct _JsonArray This) {
@@ -83,10 +83,10 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
     }
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
-    int   ItemNum = 0;
+    int ItemNum = 0;
     char* HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
     char* EndItem = HeadItem;
-    bool  isStringArray = false;
+    bool isStringArray = false;
     if (myStrstrCont(This.JsonString.Name._char, "\"", This.JsonString.MaxLen, 2) != NULL) {
         isStringArray = true;
     }
@@ -130,7 +130,7 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
     ItemNum++;
     char* HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
     char* EndItem = HeadItem;
-    bool  isStringArray = false;
+    bool isStringArray = false;
     if (myStrstrCont(This.JsonString.Name._char, "\"", This.JsonString.MaxLen, 2) != NULL) {
         isStringArray = true;
     }

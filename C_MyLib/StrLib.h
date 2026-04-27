@@ -21,22 +21,22 @@
 // 类定义
 typedef struct New_Arr {
     union _Name {
-        int8_t*        _int8_t;   //  8 位
-        int16_t*       _int16_t;  // 16 位
-        int32_t*       _int32_t;  // 32 位
-        int64_t*       _int64_t;  // 64 位
-        uint8_t*       _uint8_t;  // 无符号整  8 位
-        uint16_t*      _uint16_t; // 无符号整 16 位
-        uint32_t*      _uint32_t; // 无符号整 32 位
-        uint64_t*      _uint64_t; // 无符号整 64 位
-        void*          _void;     // 无定义形指针
-        const char*    _cschar;   // 字符型指针只读数据
-        char*          _char;     // 字符型指针
-        int*           _int;      // 整型指针
-        float*         _float;    // 单精度浮点型指针
-        double*        _double;   // 双精度浮点型指针
-        unsigned int*  _uint;     // 无符号整型指针
-        unsigned char* _uchar;    // 无符号字符型指针
+        int8_t* _int8_t;       //  8 位
+        int16_t* _int16_t;     // 16 位
+        int32_t* _int32_t;     // 32 位
+        int64_t* _int64_t;     // 64 位
+        uint8_t* _uint8_t;     // 无符号整  8 位
+        uint16_t* _uint16_t;   // 无符号整 16 位
+        uint32_t* _uint32_t;   // 无符号整 32 位
+        uint64_t* _uint64_t;   // 无符号整 64 位
+        void* _void;           // 无定义形指针
+        const char* _cschar;   // 字符型指针只读数据
+        char* _char;           // 字符型指针
+        int* _int;             // 整型指针
+        float* _float;         // 单精度浮点型指针
+        double* _double;       // 双精度浮点型指针
+        unsigned int* _uint;   // 无符号整型指针
+        unsigned char* _uchar; // 无符号字符型指针
     } Name;
     int MaxLen;
     int SizeType;
@@ -46,7 +46,7 @@ typedef struct New_Arr {
 extern strnew New_Str_Obj(void* Master, int SizeNum, int SizeType); // 建立对象的函数
 #define NEW_NAME(ArrName) New_Str_Obj(ArrName, ARR_SIZE(ArrName), sizeof(ArrName[0]))
 #define newString(name, Len)                                                                                           \
-    char   Str##name[Len] = {0};                                                                                       \
+    char Str##name[Len] = {0};                                                                                         \
     strnew name = NEW_NAME(Str##name);
 
 #define newstrobj(name, TypeSize)                                                                                      \
@@ -58,23 +58,23 @@ void cleanStrnew(strnew This);
 // 注意：NameStr.Name._char 是由 malloc 申请的空间
 // 不能直接使用 NameStr.Name._char = "aaa"，会导致 free 清理失败
 #define strnew_malloc(NameStr, Len)                                                                                    \
-    __attribute__((cleanup(cleanStrnew))) strnew NameStr = {0};                                                       \
+    __attribute__((cleanup(cleanStrnew))) strnew NameStr = {0};                                                        \
     NameStr.SizeType = 1;                                                                                              \
     NameStr.Name._char = (char*)malloc(Len);                                                                           \
     NameStr.MaxLen = Len
 
 /*-----------------------------------外部接口----------------------------------*/
-extern int   catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
-extern bool  copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
+extern int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
+extern bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
 extern char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize);
 extern char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum);
-extern void  swapChr(char* a, char* b);
-extern void  swapStr(char* IntputStr, int StrLen);
-extern char  swapLowHight_Of_Char(char InputCh);
-extern bool  moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
-extern void  stringSlice(strnew OutStr, strnew Mather, int start, int end);
+extern void swapChr(char* a, char* b);
+extern void swapStr(char* IntputStr, int StrLen);
+extern char swapLowHight_Of_Char(char InputCh);
+extern bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
+extern void stringSlice(strnew OutStr, strnew Mather, int start, int end);
 ///////////////////////////////////////////////////////////
-extern int      isLeapYear(uint32_t year);
+extern int isLeapYear(uint32_t year);
 extern uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour,
                               uint32_t NowMinute, uint32_t NowSecond);
 extern uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
@@ -104,7 +104,7 @@ extern TimeStuClass timestampToRTCData(uint32_t timestamp);
     default: "unknown"))
 
 typedef struct _Type_T {
-    void*       var;
+    void* var;
     const char* type;
 } Type_T;
 

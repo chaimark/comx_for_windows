@@ -10,15 +10,15 @@ Type_T _InitType(void* var, const char* type) {
 }
 #endif
 /*-----------------------------------函数说明----------------------------------*/
-int      catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
-bool     copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
-char*    myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize);
-char*    myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum);
-void     swapChr(char* a, char* b);
-void     swapStr(char* IntputStr, int StrLen);
-char     swapLowHight_Of_Char(char InputCh);
-bool     moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
-void     stringSlice(strnew OutStr, strnew Mather, int start, int end);
+int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
+bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
+char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize);
+char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum);
+void swapChr(char* a, char* b);
+void swapStr(char* IntputStr, int StrLen);
+char swapLowHight_Of_Char(char InputCh);
+bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
+void stringSlice(strnew OutStr, strnew Mather, int start, int end);
 uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
 /*******************************************************************************************************************/
 /*******************************************************************************************************************/
@@ -98,8 +98,8 @@ bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {
 // 查找子字符串
 char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize) {
     char* p_star = NULL;
-    int   TempAdd = 0;
-    int   TempStart = 0;
+    int TempAdd = 0;
+    int TempStart = 0;
     do {
         for (TempAdd = TempStart; TempAdd < MotherMaxSize; TempAdd++) {
             if (MotherStr[TempAdd] != '\0') {
@@ -247,7 +247,7 @@ uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String) {
     sscanf(RTCTime_String.Name._char, "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &min, &sec);
     // 计算自1970-01-01 00:00:00以来的秒数(UTC时间戳)
     static const int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    uint32_t         days = 0;
+    uint32_t days = 0;
 
     // 计算从1970到当前年份的天数
     for (int y = 1970; y < year; y++) {

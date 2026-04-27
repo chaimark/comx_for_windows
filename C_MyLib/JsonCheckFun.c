@@ -23,7 +23,7 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     if (JsonObj.isJsonNull(&JsonObj, "NowCheckNum") < 0) {
         return false;
     }
-    int   NowCheckNum = JsonObj.getInt(&JsonObj, "NowCheckNum");
+    int NowCheckNum = JsonObj.getInt(&JsonObj, "NowCheckNum");
     char* PEnd = strstr(JsonObj.JsonString.Name._char, ",\"NowCheckNum\"");
     if ((PEnd == NULL) || (PEnd >= JsonObj.JsonString.Name._char + JsonObj.JsonString.MaxLen - 1)) {
         return false;

@@ -59,9 +59,10 @@ void cleanStrnew(strnew This);
 // 不能直接使用 NameStr.Name._char = "aaa"，会导致 free 清理失败
 #define strnew_malloc(NameStr, Len)                                                                                    \
     __attribute__((cleanup(cleanStrnew))) strnew NameStr = {0};                                                        \
-    NameStr.SizeType = 1;                                                                                              \
     NameStr.Name._char = (char*)malloc(Len);                                                                           \
-    NameStr.MaxLen = Len
+    NameStr.MaxLen = Len;                                                                                              \
+    NameStr.SizeType = 1;                                                                                              \
+    memset(NameStr.Name._char, 0, Len)
 
 /*-----------------------------------外部接口----------------------------------*/
 extern int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);

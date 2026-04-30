@@ -1,7 +1,7 @@
 #ifndef __STRLIB_H__ // 如果 STRLIB_H 未定义
 #define __STRLIB_H__ // 定义 STRLIB_H
 
-#include "stdint.h"
+#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -74,22 +74,6 @@ extern void swapStr(char* IntputStr, int StrLen);
 extern char swapLowHight_Of_Char(char InputCh);
 extern bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
 extern void stringSlice(strnew OutStr, strnew Mather, int start, int end);
-///////////////////////////////////////////////////////////
-extern int isLeapYear(uint32_t year);
-extern uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour,
-                              uint32_t NowMinute, uint32_t NowSecond);
-extern uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
-typedef struct _TimeStuClass {
-    uint32_t year;   /** 年 */
-    uint32_t month;  /** 月 */
-    uint32_t day;    /** 日 */
-    uint32_t week;   /** 周 */
-    uint32_t hour;   /** 时 */
-    uint32_t minute; /** 分 */
-    uint32_t second; /** 秒 */
-} TimeStuClass;
-extern TimeStuClass timestampToRTCData(uint32_t timestamp);
-///////////////////////////////////////////////////////////
 
 #ifdef _Alignas
 #define GET_TYPE(var)                                                                                                  \

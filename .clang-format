@@ -11,6 +11,7 @@ UseTab: Never  # 使用空格而不是制表符
 
 # 大括号设置
 BreakBeforeBraces: Attach  # 大括号单独一行
+AllowShortLoopsOnASingleLine: true
 AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: false
 

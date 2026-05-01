@@ -26,16 +26,16 @@ SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
 
 # 换行设置
-ColumnLimit: 120  # 行宽限制
+ColumnLimit: 0  # 行宽限制
 MaxEmptyLinesToKeep: 2
 KeepEmptyLinesAtTheStartOfBlocks: false
 
 # 指针和引用对齐
-PointerAlignment: Left
+PointerAlignment: Right 
 ReferenceAlignment: Left
 
 # 包含文件排序
-SortIncludes: true
+SortIncludes: falsh
 
 # 注释设置
 ReflowComments: true

@@ -35,7 +35,7 @@ PointerAlignment: Right
 ReferenceAlignment: Left
 
 # 包含文件排序
-SortIncludes: falsh
+SortIncludes: false
 
 # 注释设置
 ReflowComments: true

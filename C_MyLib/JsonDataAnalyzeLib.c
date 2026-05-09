@@ -11,28 +11,28 @@ typedef struct {
     int top;
 } Stack;
 // 初始化栈
-void initStack(Stack* s) {
+void initStack(Stack *s) {
     s->top = -1;
 }
 // 判断栈是否为空
-int isEmpty(Stack* s) {
+int isEmpty(Stack *s) {
     return s->top == -1;
 }
 // 入栈
-void push(Stack* s, char ch) {
+void push(Stack *s, char ch) {
     if (s->top < MAX_STACK_SIZE - 1) {
         s->data[++(s->top)] = ch;
     }
 }
 // 出栈
-char pop(Stack* s) {
+char pop(Stack *s) {
     if (!isEmpty(s)) {
         return s->data[(s->top)--];
     }
     return '\0'; // 返回一个空字符
 }
 // 获取栈顶元素
-char peek(Stack* s) {
+char peek(Stack *s) {
     if (!isEmpty(s)) {
         return s->data[s->top];
     }
@@ -42,10 +42,10 @@ char peek(Stack* s) {
 //==========================================================================================//
 
 // 查找双重字符位置
-char* getDoubleChrOnString(char* MotherString, char HeadChr, char EndChr) {
+char *getDoubleChrOnString(char *MotherString, char HeadChr, char EndChr) {
     Stack s;
     initStack(&s);
-    char* result = NULL;
+    char *result = NULL;
     for (int i = 0; (MotherString[i] != '\0'); i++) {
         if (MotherString[i] == HeadChr) {
             push(&s, HeadChr);
@@ -68,8 +68,8 @@ static void _getKeyName(strnew SonStr, char Key[]) {
     catString(SonStr.Name._char, Key, SonStr.MaxLen, strlen(Key));
     catString(SonStr.Name._char, "\":", SonStr.MaxLen, 2);
 }
-#define getKeyName(name, len, key)                                                                                     \
-    char name[len] = {0};                                                                                              \
+#define getKeyName(name, len, key) \
+    char name[len] = {0};          \
     _getKeyName(NEW_NAME(name), key)
 
 
@@ -84,8 +84,8 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
     int ItemNum = 0;
-    char* HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
-    char* EndItem = HeadItem;
+    char *HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
+    char *EndItem = HeadItem;
     bool isStringArray = false;
     if (myStrstrCont(This.JsonString.Name._char, "\"", This.JsonString.MaxLen, 2) != NULL) {
         isStringArray = true;
@@ -96,7 +96,7 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
                 push(&s, *EndItem);
             } else if (isStringArray == false) {
                 if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
-                    ItemNum++; // 如果是‘,’，则说明是一个元素结束 ItemNum++;
+                    ItemNum++;                                       // 如果是‘,’，则说明是一个元素结束 ItemNum++;
                     HeadItem = EndItem + 1;
                     EndItem = HeadItem;
                     continue;
@@ -128,8 +128,8 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
     ItemNum++;
-    char* HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
-    char* EndItem = HeadItem;
+    char *HeadItem = This.JsonString.Name._char + 1; // 获取第一个元素位置
+    char *EndItem = HeadItem;
     bool isStringArray = false;
     if (myStrstrCont(This.JsonString.Name._char, "\"", This.JsonString.MaxLen, 2) != NULL) {
         isStringArray = true;
@@ -140,7 +140,7 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
                 push(&s, *EndItem);
             } else if (isStringArray == false) {
                 if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
-                    ItemNum--; // 如果是‘,’，则说明是一个元素结束 ItemNum--;
+                    ItemNum--;                                       // 如果是‘,’，则说明是一个元素结束 ItemNum--;
                     if (ItemNum != 0) {
                         HeadItem = EndItem + 1;
                         EndItem = HeadItem;
@@ -235,7 +235,7 @@ static int Obj_sizeStr(struct _JsonObject This) {
 static signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {
     signed char ResOver = -1;
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         ResOver = false;
         KeyP += strlen(SonStr);
@@ -253,7 +253,7 @@ static signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {
 }
 static int Obj_getInt(struct _JsonObject This, char Key[]) {
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         KeyP += strlen(SonStr);
         while ((*KeyP) == ' ') {
@@ -266,7 +266,7 @@ static int Obj_getInt(struct _JsonObject This, char Key[]) {
 }
 static double Obj_getDouble(struct _JsonObject This, char Key[]) {
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         KeyP += strlen(SonStr);
         while ((*KeyP) == ' ') {
@@ -279,7 +279,7 @@ static double Obj_getDouble(struct _JsonObject This, char Key[]) {
 static bool Obj_getBool(struct _JsonObject This, char Key[]) {
     bool ResBool = false;
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         KeyP += strlen(SonStr);
         while ((*KeyP) == ' ') {
@@ -299,13 +299,13 @@ static bool Obj_getBool(struct _JsonObject This, char Key[]) {
 // 不支持原地转换，避免破环 json 数据
 static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         KeyP += strlen(SonStr);
         while ((*KeyP) == ' ') {
             KeyP++;
         }
-        char* EndP = ++KeyP;
+        char *EndP = ++KeyP;
         while (EndP - This.JsonString.Name._char < This.JsonString.MaxLen) {
             EndP = strchr(EndP, '"');
             if (*(EndP - 1) != '\\') {
@@ -326,13 +326,13 @@ static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
 static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strnew OutStr) {
     JsonArray tempJsonArr = newJsonArrayByString(OutStr);
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         KeyP += strlen(SonStr);
         while ((*KeyP) == ' ') {
             KeyP++;
         }
-        char* EndP = NULL;
+        char *EndP = NULL;
         if ((EndP = getDoubleChrOnString(KeyP, '[', ']')) != NULL) {
             char Temp = *(EndP + 1);
             *(EndP + 1) = '\0';
@@ -352,13 +352,13 @@ static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strne
 static struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew OutStr) {
     JsonObject tempJsonObj = newJsonObjectByString(OutStr);
     getKeyName(SonStr, 50, Key);
-    char* KeyP = NULL;
+    char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
         KeyP += strlen(SonStr);
         while ((*KeyP) == ' ') {
             KeyP++;
         }
-        char* EndP = NULL;
+        char *EndP = NULL;
         if ((EndP = getDoubleChrOnString(KeyP, '{', '}')) != NULL) {
             char Temp = *(EndP + 1);
             *(EndP + 1) = '\0';

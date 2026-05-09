@@ -19,9 +19,9 @@ static void init_crc16_tab(void) {
     }
 } /* init_crc16_tab */
 
-uint16_t get_crc_modbus(const unsigned char* input_str, size_t num_bytes) {
+uint16_t get_crc_modbus(const unsigned char *input_str, size_t num_bytes) {
     uint16_t crc = CRC_START_MODBUS;
-    const unsigned char* ptr = input_str;
+    const unsigned char *ptr = input_str;
     init_crc16_tab();
     if (ptr != NULL)
         for (size_t a = 0; a < num_bytes; a++) {
@@ -32,7 +32,7 @@ uint16_t get_crc_modbus(const unsigned char* input_str, size_t num_bytes) {
 
 bool is_crc_modbus(strnew InputBuf) {
     InputBuf.MaxLen -= 2;
-    uint16_t crc = get_crc_modbus((const unsigned char*)InputBuf.Name._char, InputBuf.MaxLen);
+    uint16_t crc = get_crc_modbus((const unsigned char *)InputBuf.Name._char, InputBuf.MaxLen);
     if (crc == U8_Connect_U8(InputBuf.Name._char[InputBuf.MaxLen], InputBuf.Name._char[InputBuf.MaxLen + 1])) {
         return true;
     } else {

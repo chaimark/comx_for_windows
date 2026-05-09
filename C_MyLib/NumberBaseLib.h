@@ -67,6 +67,6 @@ extern uint16_t U8_Connect_U8(uint8_t H_Part, uint8_t L_Part);
 extern float getPartOfSetPointOnRing(uint32_t SetPoint, uint32_t Min_Ring, uint32_t Max_Ring);
 
 // 给定一个 ip 字符串 192.168.1.1 ==> [c0] [a8] [01] [01]
-extern void iPstrToHexArray(strnew IpHex, const char* Ipstr);
+extern void iPstrToHexArray(strnew IpHex, const char *Ipstr);
 
 #endif

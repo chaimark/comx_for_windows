@@ -6,7 +6,7 @@
 // #define IsOpenFloatHelp_Ability
 
 #ifdef IsOpenFloatHelp_Ability
-char getNowType(const char* NowAddr, char* UserFromNow) {
+char getNowType(const char *NowAddr, char *UserFromNow) {
     if ((*NowAddr != '%') && (NowAddr + 1 != NULL)) {
         return 0;
     }
@@ -50,7 +50,7 @@ bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
     if (strchr(FromStr.Name._char, '%') == NULL) {
         return false;
     }
-    const char* NowAddr = FromStr.Name._char;
+    const char *NowAddr = FromStr.Name._char;
     do {
         if (strchr(NowAddr, '%') == NULL) {
             break;
@@ -74,11 +74,11 @@ bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
 }
 #endif
 
-void addJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {
+void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
     char KeyName[200] = {0};
     // 查找 :
-    char* Addr_OverName = strchr(FromStr, ':');
-    const char* Addr_Start = strchr(FromStr, ',');
+    char *Addr_OverName = strchr(FromStr, ':');
+    const char *Addr_Start = strchr(FromStr, ',');
     if ((Addr_Start != NULL) && (Addr_Start < Addr_OverName)) {
         Addr_Start++;
         catString(KeyName, FromStr, 100, (Addr_Start - FromStr));
@@ -100,6 +100,11 @@ void addJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {
     // 初始化可变参数列表
     va_list args;
     va_start(args, FromStr);
+    if (Addr_Over > 2) {
+        JsonStringSpace.Name._char[Addr_Over - 1] = ',';
+    } else if (Addr_Over == 2) {
+        JsonStringSpace.Name._char[Addr_Over--] = '\0';
+    }
     vsprintf(&JsonStringSpace.Name._char[Addr_Over], KeyName, args);
     // 结束可变参数处理
     va_end(args);
@@ -119,4 +124,5 @@ void addJsonItemData(strnew JsonStringSpace, const char* FromStr, ...) {
         }
     }
 #endif
+    catString(JsonStringSpace.Name._char, "}", JsonStringSpace.MaxLen, 1);
 }

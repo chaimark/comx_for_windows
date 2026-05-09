@@ -157,7 +157,7 @@ static uint64_t anyBaseNumberToSameArray(strnew Output, uint64_t InputNumber) {
         Add_i--;
     }
     if (OutLen != 0) {
-        swapStr((char*)TempArray, OutLen);
+        swapStr((char *)TempArray, OutLen);
         for (Add_i = 0; (Add_i < 16) && ((uint64_t)Add_i < OutLen); Add_i++) {
             Output.Name._uint8_t[Add_i] = TempArray[Add_i];
         }
@@ -165,7 +165,7 @@ static uint64_t anyBaseNumberToSameArray(strnew Output, uint64_t InputNumber) {
     return OutLen;
 }
 // 任意进制数组 转 对应进制数 返回数 12345600 ==> 654321
-static uint64_t anyArrayToSameBaseNumber(uint8_t* InputStr, int StrSize) {
+static uint64_t anyArrayToSameBaseNumber(uint8_t *InputStr, int StrSize) {
     uint8_t TempArray[16] = {0}; // uint64_t也只有16位数 0x0000000000000001
     uint64_t ResNumber = 0;
     // 输入的数组长度大于16直接返回
@@ -198,7 +198,7 @@ int anyBaseNumberToAnyBaseArray(uint64_t Number, int IntputBase, int OutputBase,
 // 任意进制数组 转 任意进制数 Array:12345600 ==> 12345600
 int64_t anyBaseArrayToAnyBaseNumber(strnew IntArray, int IntputBase, int OutputBase) {
     swapStr(IntArray.Name._char, IntArray.MaxLen); // 先将数组从从大端模式改为小端
-    int64_t TempNum = anyArrayToSameBaseNumber((uint8_t*)IntArray.Name._char, IntArray.MaxLen);
+    int64_t TempNum = anyArrayToSameBaseNumber((uint8_t *)IntArray.Name._char, IntArray.MaxLen);
     TempNum = anyBaseToAnyBase(TempNum, IntputBase, OutputBase);
     return TempNum;
 }
@@ -356,14 +356,14 @@ float getPartOfSetPointOnRing(uint32_t SetPoint, uint32_t Min_Ring, uint32_t Max
 }
 
 // 给定一个 ip 字符串 192.168.1.1 ==> [c0] [a8] [01] [01]
-void iPstrToHexArray(strnew IpHex, const char* Ipstr) { // IP字符串转16进制
+void iPstrToHexArray(strnew IpHex, const char *Ipstr) { // IP字符串转16进制
     char IP_String[] = {"255.255.255.255.."};
     memset(IP_String, 0, strlen("255.255.255.255.."));
     memcpy(IP_String, Ipstr, strlen(Ipstr));
     catString(IP_String, ".", strlen("255.255.255.255.."), 1); // 字符串拼接
     char Str[4] = {0};
-    char* P_piont = NULL;
-    char* Head = IP_String;
+    char *P_piont = NULL;
+    char *Head = IP_String;
     int temp = 0;
     for (int i = 0; i < 4; i++) {
         memset(Str, 0, 3);

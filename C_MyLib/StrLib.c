@@ -1,7 +1,7 @@
 #include "StrLib.h"
 #include <stdint.h>
 #ifdef _Alignas
-Type_T _InitType(void* var, const char* type) {
+Type_T _InitType(void *var, const char *type) {
     Type_T Temp;
     Temp.var = var;
     Temp.type = type;
@@ -9,12 +9,12 @@ Type_T _InitType(void* var, const char* type) {
 }
 #endif
 /*-----------------------------------函数说明----------------------------------*/
-int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
-bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize);
-char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize);
-char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum);
-void swapChr(char* a, char* b);
-void swapStr(char* IntputStr, int StrLen);
+int catString(char *OutStr, const char *IntStr, int MaxSize, int IntSize);
+bool copyString(char *OutStr, const char *IntStr, int MaxSize, int IntSize);
+char *myStrstr(char *MotherStr, char *SonStr, int MotherMaxSize);
+char *myStrstrCont(char *MotherStr, char *SonStr, int MotherMaxSize, int ContNum);
+void swapChr(char *a, char *b);
+void swapStr(char *IntputStr, int StrLen);
 char swapLowHight_Of_Char(char InputCh);
 bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
 void stringSlice(strnew OutStr, strnew Mather, int start, int end);
@@ -31,7 +31,7 @@ void cleanStrnew(strnew This) {
     }
 }
 // 新建数组对象 (返回一个结构体数据)
-strnew New_Str_Obj(void* Master, int SizeNum, int SizeType) {
+strnew New_Str_Obj(void *Master, int SizeNum, int SizeType) {
     strnew newArray = {0};
     newArray.SizeType = SizeType;
     newArray.MaxLen = SizeNum;
@@ -41,7 +41,7 @@ strnew New_Str_Obj(void* Master, int SizeNum, int SizeType) {
 
 /*-----------------------------------函数定义----------------------------------*/
 // 追加字符
-int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {
+int catString(char *OutStr, const char *IntStr, int MaxSize, int IntSize) {
     int AddrNow = 0;
     // 找出"\0"
     while ((OutStr[AddrNow] != '\0') && (AddrNow < MaxSize)) {
@@ -73,7 +73,7 @@ int catString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {
     }
 }
 // 复制字符串
-bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {
+bool copyString(char *OutStr, const char *IntStr, int MaxSize, int IntSize) {
     int run = 0;
     if (MaxSize >= IntSize) {
         for (run = 0; run < IntSize; run++) { // last reserved for'\0'
@@ -95,8 +95,8 @@ bool copyString(char* OutStr, const char* IntStr, int MaxSize, int IntSize) {
     }
 }
 // 查找子字符串
-char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize) {
-    char* p_star = NULL;
+char *myStrstr(char *MotherStr, char *SonStr, int MotherMaxSize) {
+    char *p_star = NULL;
     int TempAdd = 0;
     int TempStart = 0;
     do {
@@ -127,9 +127,9 @@ char* myStrstr(char* MotherStr, char* SonStr, int MotherMaxSize) {
 }
 
 // 查找第N个子字符串
-char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum) {
-    char* p_star = NULL;
-    char* p_end = (MotherStr + MotherMaxSize);
+char *myStrstrCont(char *MotherStr, char *SonStr, int MotherMaxSize, int ContNum) {
+    char *p_star = NULL;
+    char *p_end = (MotherStr + MotherMaxSize);
     for (int Task_i = 0; Task_i < ContNum; Task_i++) {
         p_star = NULL;
         if ((p_star = myStrstr(MotherStr, SonStr, MotherMaxSize)) != NULL) {
@@ -142,14 +142,14 @@ char* myStrstrCont(char* MotherStr, char* SonStr, int MotherMaxSize, int ContNum
 }
 
 //  交换两个字符
-void swapChr(char* a, char* b) {
+void swapChr(char *a, char *b) {
     char temp = *a;
     *a = *b;
     *b = temp;
 }
 
 // 实现字符串逆序的函数
-void swapStr(char* InputStr, int StrLen) {
+void swapStr(char *InputStr, int StrLen) {
     int start = 0;
     int end = StrLen - 1;
 

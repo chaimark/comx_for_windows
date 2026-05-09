@@ -11,10 +11,7 @@ void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
     for (int i = 0; i < AddrOver; i++) {
         CheckNum += InputJsonStrObj.JsonString.Name._char[i];
     }
-    InputJsonStrObj.JsonString.Name._char[AddrOver - 1] = '\0';
-    addJsonItemData(InputJsonStrObj.JsonString, ",");
     addJsonItemData(InputJsonStrObj.JsonString, "NowCheckNum:%d", (CheckNum % 256));
-    addJsonItemData(InputJsonStrObj.JsonString, "}");
     return;
 }
 bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
@@ -24,7 +21,7 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         return false;
     }
     int NowCheckNum = JsonObj.getInt(&JsonObj, "NowCheckNum");
-    char* PEnd = strstr(JsonObj.JsonString.Name._char, ",\"NowCheckNum\"");
+    char *PEnd = strstr(JsonObj.JsonString.Name._char, ",\"NowCheckNum\"");
     if ((PEnd == NULL) || (PEnd >= JsonObj.JsonString.Name._char + JsonObj.JsonString.MaxLen - 1)) {
         return false;
     }

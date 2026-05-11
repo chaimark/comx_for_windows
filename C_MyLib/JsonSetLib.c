@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+
 // #define IsOpenFloatHelp_Ability
 
 #ifdef IsOpenFloatHelp_Ability
@@ -74,6 +75,30 @@ bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
 }
 #endif
 
+static bool isNeedBySignDivde(strnew InputString, int Addr_Over) {
+    int ReFlag = 1; // 先预留，并寻找最后一个字符 '}'
+    for (int i = Addr_Over; i > 0; i--) {
+        if (InputString.Name._char[i] == ' ' || InputString.Name._char[i] == '\0') {
+            continue;
+        }
+        if (InputString.Name._char[i] == '\n' || InputString.Name._char[i] == '\r') {
+            continue;
+        }
+        if ((ReFlag > 0) && ((InputString.Name._char[i] == '}') || (InputString.Name._char[i] == ']'))) {
+            ReFlag--;
+            continue;
+        }
+        if (ReFlag < 1) {
+            if ((InputString.Name._char[i] != '{') && (InputString.Name._char[i] != '[')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
 void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
     char KeyName[200] = {0};
     // 查找 :
@@ -101,7 +126,11 @@ void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
     va_list args;
     va_start(args, FromStr);
     if (Addr_Over > 2) {
-        JsonStringSpace.Name._char[Addr_Over - 1] = ',';
+        if (isNeedBySignDivde(JsonStringSpace, Addr_Over) == false) {
+            JsonStringSpace.Name._char[Addr_Over--] = '\0';
+        } else {
+            JsonStringSpace.Name._char[Addr_Over - 1] = ',';
+        }
     } else if (Addr_Over == 2) {
         JsonStringSpace.Name._char[Addr_Over--] = '\0';
     }
@@ -124,5 +153,9 @@ void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
         }
     }
 #endif
-    catString(JsonStringSpace.Name._char, "}", JsonStringSpace.MaxLen, 1);
+    if (JsonStringSpace.Name._char[0] == '{') {
+        catString(JsonStringSpace.Name._char, "}", JsonStringSpace.MaxLen, 1);
+    } else {
+        catString(JsonStringSpace.Name._char, "]", JsonStringSpace.MaxLen, 1);
+    }
 }

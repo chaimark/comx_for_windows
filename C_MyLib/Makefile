@@ -7,8 +7,8 @@ BUILD_DIR ?= .
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
-    CFLAGS += -g -O0
-    LDFLAGS += -g
+    CFLAGS += -g3 -O0
+    LDFLAGS += -g3
 endif
 
 # 获取所有 .c 文件和对应的 .o 文件

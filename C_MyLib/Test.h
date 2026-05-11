@@ -22,12 +22,12 @@ testClass newTestClass(void);
 void cleanTestClass(testClass This);
 
 // 安全宏 - 防止忘记释放
-#define AUTO_TestClass __attribute__((cleanup(clean_testClass))) testClass
-#define SCOPE_testClass(name, code)       \
-    do {                                  \
-        testClass name = new_testClass(); \
-        code;                             \
-        clean_testClass(&name);           \
+#define AUTO_TestClass __attribute__((cleanup(cleanTestClass))) testClass
+#define SCOPE_testClass(name, code)      \
+    do {                                 \
+        testClass name = newTestClass(); \
+        code;                            \
+        cleanTestClass(&name);           \
     } while (0)
 
 #endif

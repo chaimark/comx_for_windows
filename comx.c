@@ -4,11 +4,11 @@
 #include <ctype.h>
 #include <signal.h>
 
-#define stdin_clean                                                                                                    \
-    do {                                                                                                               \
-        int c;                                                                                                         \
-        while ((c = getchar()) != '\n' && c != EOF)                                                                    \
-            continue;                                                                                                  \
+#define stdin_clean                                 \
+    do {                                            \
+        int c;                                      \
+        while ((c = getchar()) != '\n' && c != EOF) \
+            continue;                               \
     } while (0)
 
 // 串口信息
@@ -47,7 +47,7 @@ void SignalHandler(int signum) {
  * 例如："123", "-456", "+789" 均为合法
  * 空字符串或包含非数字字符的字符串不合法
  */
-int is_valid_integer(const char* str) {
+int is_valid_integer(const char *str) {
     if (str == NULL || *str == '\0')
         return 0; // 空字符串非法
 
@@ -303,7 +303,7 @@ EXIT_INTERACTIVE:
     SetConsoleMode(hStdin, oldMode);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     signal(SIGINT, SignalHandler);
     if (argc != 3) {
         printf("%s row col\n", argv[0]);

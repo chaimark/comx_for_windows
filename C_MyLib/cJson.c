@@ -585,5 +585,3 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     }
     return ((CheckNum == NowCheckNum) ? true : false);
 }
-
-

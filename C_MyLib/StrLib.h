@@ -29,7 +29,7 @@ typedef struct New_Arr {
         uint16_t *_uint16_t;   // 无符号整 16 位
         uint32_t *_uint32_t;   // 无符号整 32 位
         uint64_t *_uint64_t;   // 无符号整 64 位
-        void *_void;           // 无定义形指针
+        const void *_void;     // 无定义形指针
         const char *_cschar;   // 字符型指针只读数据
         char *_char;           // 字符型指针
         int *_int;             // 整型指针
@@ -43,7 +43,7 @@ typedef struct New_Arr {
 } strnew;
 
 // 建立对象
-extern strnew New_Str_Obj(void *Master, int SizeNum, int SizeType); // 建立对象的函数
+extern strnew New_Str_Obj(const void *Master, int SizeNum, int SizeType); // 建立对象的函数
 #define NEW_NAME(ArrName) New_Str_Obj(ArrName, ARR_SIZE(ArrName), sizeof(ArrName[0]))
 #define newString(name, Len)   \
     char Str##name[Len] = {0}; \

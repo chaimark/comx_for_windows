@@ -31,7 +31,7 @@ void cleanStrnew(strnew This) {
     }
 }
 // 新建数组对象 (返回一个结构体数据)
-strnew New_Str_Obj(void *Master, int SizeNum, int SizeType) {
+strnew New_Str_Obj(const void *Master, int SizeNum, int SizeType) {
     strnew newArray = {0};
     newArray.SizeType = SizeType;
     newArray.MaxLen = SizeNum;

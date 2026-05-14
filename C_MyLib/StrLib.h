@@ -29,7 +29,8 @@ typedef struct New_Arr {
         uint16_t *_uint16_t;   // 无符号整 16 位
         uint32_t *_uint32_t;   // 无符号整 32 位
         uint64_t *_uint64_t;   // 无符号整 64 位
-        const void *_void;     // 无定义形指针
+        void *_void;           // 无定义形指针
+        const void *_csvoid;   // 无定义形只读指针
         const char *_cschar;   // 字符型指针只读数据
         char *_char;           // 字符型指针
         int *_int;             // 整型指针

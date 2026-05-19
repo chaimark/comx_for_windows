@@ -1,6 +1,21 @@
 #ifndef __CJSON__
 #define __CJSON__
 
+/*
+ * JsonArray_T 和 JsonObject_T 中的 pdata 是私有变量指针，
+ * 在 newJsonArrayByString 中 malloc 申请一个 int。
+ * 使用 JsonArray 定义时会自动 free 申请的空间。
+ *
+ * 安全使用规则: JsonObject
+ * 1. newJsonXXXXXXByString 过的 JsonArray/JsonObject 不能被覆盖
+ * 2. 函数局部 JsonArray/JsonObject 赋值给全局变量 JsonArray_T/JsonObject_T 时,
+ *    必须使用 函数 reSetJsonArray()/reSetJsonObject() 转换成 JsonObject_T
+ *    reSetJsonArray()/reSetJsonObject() 转换后 pdata == NULL 无需关心 pdata,
+ *    私有变量 pdata 不允许访问，JsonArray_T 也不会被 free,
+ *    This.sizeItemNum() 与 Thisi.sizeStr() 访问 pdata == NULL
+ */
+
+
 #include "StrLib.h"
 #include <stdint.h>
 /***************** Json 处理 *****************/
@@ -18,7 +33,11 @@ typedef struct _JsonArray_T {
 extern JsonArray_T newJsonArrayByString(strnew DataInit); // 建立对象数组的函数
 extern void cleanJsonArrayClass(JsonArray_T *_ClearPrt_);
 #define JsonArray __attribute__((cleanup(cleanJsonArrayClass))) JsonArray_T
-
+static inline JsonArray_T reSetJsonArray(JsonArray_T InputClass) {
+    JsonArray_T empty = InputClass;
+    empty.pdata = NULL;
+    return empty;
+}
 //==========================================================================================//
 //==========================================================================================//
 //==========================================================================================//
@@ -42,7 +61,11 @@ typedef struct _JsonObject_T {
 extern JsonObject_T newJsonObjectByString(strnew DataInit); // 建立对象的函数
 extern void cleanJsonObjectClass(JsonObject_T *_ClearPrt_);
 #define JsonObject __attribute__((cleanup(cleanJsonObjectClass))) JsonObject_T
-
+static inline JsonObject_T reSetJsonObject(JsonObject_T InputClass) {
+    JsonObject_T empty = InputClass;
+    empty.pdata = NULL;
+    return empty;
+}
 /***************** Json 构建 *****************/
 extern void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...);
 #define newRootJsonObject(JsonStringSpace) JsonStringSpace.Name._char[0] = '{'

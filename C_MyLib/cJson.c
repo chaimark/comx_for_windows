@@ -252,7 +252,7 @@ void cleanJsonObjectClass(JsonObject_T *_ClearPrt_) {
 }
 //==========================================================================================//
 static int Arr_sizeItemNum(struct _JsonArray_T This) {
-    if (This.pdata->ItemNum != -1) {
+    if (This.pdata != NULL && This.pdata->ItemNum != -1) {
         return This.pdata->ItemNum;
     }
     Stack s;       // 定义栈
@@ -291,8 +291,10 @@ static int Arr_sizeItemNum(struct _JsonArray_T This) {
         }
         EndItem++;
     }
-    This.pdata->ItemNum = (This.isJsonNull(&This) ? 0 : ItemNum);
-    return This.pdata->ItemNum;
+    if (This.pdata != NULL) {
+        This.pdata->ItemNum = (This.isJsonNull(&This) ? 0 : ItemNum);
+    }
+    return (This.isJsonNull(&This) ? 0 : ItemNum);
 }
 static signed char Arr_isJsonNull(struct _JsonArray_T This) {
     char *StartP = NULL;

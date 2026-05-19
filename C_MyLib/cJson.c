@@ -233,27 +233,10 @@ static void _getKeyName(strnew SonStr, char Key[]) {
 //==========================================================================================//
 JsonArray_T newJsonArrayByString(strnew DataInit);
 JsonObject_T newJsonObjectByString(strnew DataInit);
-typedef struct _PRIVATE {
-    int ItemNum;
-} PRIVATE;
-void cleanJsonArrayClass(JsonArray_T *_ClearPrt_) {
-    // 释放私有数据的内存
-    if ((*_ClearPrt_).pdata != NULL) {
-        free((*_ClearPrt_).pdata);
-        (*_ClearPrt_).pdata = NULL;
-    }
-}
-void cleanJsonObjectClass(JsonObject_T *_ClearPrt_) {
-    // 释放私有数据的内存
-    if ((*_ClearPrt_).pdata != NULL) {
-        free((*_ClearPrt_).pdata);
-        (*_ClearPrt_).pdata = NULL;
-    }
-}
 //==========================================================================================//
 static int Arr_sizeItemNum(struct _JsonArray_T This) {
-    if (This.pdata != NULL && This.pdata->ItemNum != -1) {
-        return This.pdata->ItemNum;
+    if (This.ItemNum != -1) {
+        return This.ItemNum;
     }
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
@@ -291,10 +274,8 @@ static int Arr_sizeItemNum(struct _JsonArray_T This) {
         }
         EndItem++;
     }
-    if (This.pdata != NULL) {
-        This.pdata->ItemNum = (This.isJsonNull(&This) ? 0 : ItemNum);
-    }
-    return (This.isJsonNull(&This) ? 0 : ItemNum);
+    This.ItemNum = (This.isJsonNull(&This) ? 0 : ItemNum);
+    return ItemNum;
 }
 static signed char Arr_isJsonNull(struct _JsonArray_T This) {
     char *StartP = NULL;
@@ -401,8 +382,7 @@ static void Arr_getArray(struct _JsonArray_T This, strnew OutStr, int ItemNum) {
 JsonArray_T newJsonArrayByString(strnew DataInit) {
     JsonArray_T Temp;
     Temp.JsonString = DataInit;
-    Temp.pdata = (struct _PRIVATE *)malloc(sizeof(struct _PRIVATE));
-    Temp.pdata->ItemNum = -1;
+    Temp.ItemNum = -1;
     Temp.sizeItemNum = Arr_sizeItemNum;
     Temp.isJsonNull = Arr_isJsonNull;
     Temp.get = Arr_get;
@@ -567,8 +547,7 @@ static struct _JsonObject_T Obj_getObject(struct _JsonObject_T This, char Key[],
 JsonObject_T newJsonObjectByString(strnew DataInit) {
     JsonObject_T Temp;
     Temp.JsonString = DataInit;
-    Temp.pdata = (struct _PRIVATE *)malloc(sizeof(struct _PRIVATE));
-    Temp.pdata->ItemNum = -1;
+    Temp.ItemNum = -1;
     Temp.sizeStr = Obj_sizeStr;
     Temp.isJsonNull = Obj_isJsonNull;
     Temp.getInt = Obj_getInt;

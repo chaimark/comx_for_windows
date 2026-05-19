@@ -18,8 +18,8 @@ typedef struct _testClass {
 } testClass;
 
 // 基础API
-testClass newTestClass(void);
-void cleanTestClass(testClass This);
+extern testClass newTestClass(void);
+extern void cleanTestClass(testClass This);
 
 // 安全宏 - 防止忘记释放
 #define AUTO_TestClass __attribute__((cleanup(cleanTestClass))) testClass

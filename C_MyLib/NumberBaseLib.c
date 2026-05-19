@@ -255,7 +255,7 @@ int doneAsciiStrToAnyBaseNumberData(const char AscArray[], int OutputBase) {
     while ((AscArray[NumStrNowLen] >= '0') && (AscArray[NumStrNowLen] <= '9')) {
         NumStrNowLen++;
     }
-    if (NumStrNowLen > strlen(AscArray) || NumStrNowLen == 0) {
+    if ((size_t)NumStrNowLen > strlen(AscArray) || NumStrNowLen == 0) {
         return 0;
     }
     strnew_malloc(NumStr, NumStrNowLen);

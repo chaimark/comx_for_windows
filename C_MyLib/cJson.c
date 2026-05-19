@@ -8,7 +8,7 @@
 // #define IsOpenFloatHelp_Ability
 
 #ifdef IsOpenFloatHelp_Ability
-char getNowType(const char *NowAddr, char *UserFromNow) {
+static char getNowType(const char *NowAddr, char *UserFromNow) {
     if ((*NowAddr != '%') && (NowAddr + 1 != NULL)) {
         return 0;
     }
@@ -47,7 +47,7 @@ char getNowType(const char *NowAddr, char *UserFromNow) {
     return 0;
 }
 
-bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
+static bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
     // 没有 % 退出
     if (strchr(FromStr.Name._char, '%') == NULL) {
         return false;
@@ -169,28 +169,28 @@ typedef struct {
     int top;
 } Stack;
 // 初始化栈
-void initStack(Stack *s) {
+static void initStack(Stack *s) {
     s->top = -1;
 }
 // 判断栈是否为空
-int isEmpty(Stack *s) {
+static bool isEmpty(Stack *s) {
     return s->top == -1;
 }
 // 入栈
-void push(Stack *s, char ch) {
+static void push(Stack *s, char ch) {
     if (s->top < MAX_STACK_SIZE - 1) {
         s->data[++(s->top)] = ch;
     }
 }
 // 出栈
-char pop(Stack *s) {
+static char pop(Stack *s) {
     if (!isEmpty(s)) {
         return s->data[(s->top)--];
     }
     return '\0'; // 返回一个空字符
 }
 // 获取栈顶元素
-char peek(Stack *s) {
+static char peek(Stack *s) {
     if (!isEmpty(s)) {
         return s->data[s->top];
     }
@@ -200,7 +200,7 @@ char peek(Stack *s) {
 //==========================================================================================//
 
 // 查找双重字符位置
-char *getDoubleChrOnString(char *MotherString, char HeadChr, char EndChr) {
+static char *getDoubleChrOnString(char *MotherString, char HeadChr, char EndChr) {
     Stack s;
     initStack(&s);
     char *result = NULL;
@@ -230,14 +230,30 @@ static void _getKeyName(strnew SonStr, char Key[]) {
     char name[len] = {0};          \
     _getKeyName(NEW_NAME(name), key)
 
-
 //==========================================================================================//
-JsonArray newJsonArrayByString(strnew DataInit);
-JsonObject newJsonObjectByString(strnew DataInit);
+JsonArray_T newJsonArrayByString(strnew DataInit);
+JsonObject_T newJsonObjectByString(strnew DataInit);
+typedef struct _PRIVATE {
+    int ItemNum;
+} PRIVATE;
+void cleanJsonArrayClass(JsonArray_T *_ClearPrt_) {
+    // 释放私有数据的内存
+    if ((*_ClearPrt_).pdata != NULL) {
+        free((*_ClearPrt_).pdata);
+        (*_ClearPrt_).pdata = NULL;
+    }
+}
+void cleanJsonObjectClass(JsonObject_T *_ClearPrt_) {
+    // 释放私有数据的内存
+    if ((*_ClearPrt_).pdata != NULL) {
+        free((*_ClearPrt_).pdata);
+        (*_ClearPrt_).pdata = NULL;
+    }
+}
 //==========================================================================================//
-static int Arr_sizeItemNum(struct _JsonArray This) {
-    if (This.ItemNum != -1) {
-        return This.ItemNum;
+static int Arr_sizeItemNum(struct _JsonArray_T This) {
+    if (This.pdata->ItemNum != -1) {
+        return This.pdata->ItemNum;
     }
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
@@ -269,16 +285,16 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
                 }
             }
         } else {
-            if (*EndItem == '}' || *EndItem == ']') { // 如果当前栈不为空，则在遇到 } 或者 ] 出栈，
+            if ((*EndItem == '}' || *EndItem == ']') && ((peek(&s) == '{') || (peek(&s) == '['))) { // 如果当前栈不为空，则在遇到 } 或者 ] 出栈，
                 pop(&s);
             }
         }
         EndItem++;
     }
-    This.ItemNum = (This.isJsonNull(&This) ? 0 : ItemNum);
-    return This.ItemNum;
+    This.pdata->ItemNum = (This.isJsonNull(&This) ? 0 : ItemNum);
+    return This.pdata->ItemNum;
 }
-static signed char Arr_isJsonNull(struct _JsonArray This) {
+static signed char Arr_isJsonNull(struct _JsonArray_T This) {
     char *StartP = NULL;
     StartP = strchr(This.JsonString.Name._char, '[');
     if (StartP == NULL) {
@@ -291,7 +307,7 @@ static signed char Arr_isJsonNull(struct _JsonArray This) {
     return ((StartP[i] != ']' && StartP[i] != '\0') ? false : true);
 }
 
-static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
+static void Arr_get(struct _JsonArray_T This, strnew OutStr, int ItemNum) {
     Stack s;       // 定义栈
     initStack(&s); // 初始化栈
     ItemNum++;
@@ -367,7 +383,7 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
         OutStr.Name._char[OutStr.MaxLen - 1] = '\0';
     }
 }
-static void Arr_getArray(struct _JsonArray This, strnew OutStr, int ItemNum) {
+static void Arr_getArray(struct _JsonArray_T This, strnew OutStr, int ItemNum) {
     if (OutStr.Name._char == This.JsonString.Name._char) {
         return;
     }
@@ -380,10 +396,11 @@ static void Arr_getArray(struct _JsonArray This, strnew OutStr, int ItemNum) {
     OutStr.MaxLen += 1;
     OutStr.Name._char[strlen(OutStr.Name._char)] = '\0';
 }
-JsonArray newJsonArrayByString(strnew DataInit) {
-    JsonArray Temp;
+JsonArray_T newJsonArrayByString(strnew DataInit) {
+    JsonArray_T Temp;
     Temp.JsonString = DataInit;
-    Temp.ItemNum = -1;
+    Temp.pdata = (struct _PRIVATE *)malloc(sizeof(struct _PRIVATE));
+    Temp.pdata->ItemNum = -1;
     Temp.sizeItemNum = Arr_sizeItemNum;
     Temp.isJsonNull = Arr_isJsonNull;
     Temp.get = Arr_get;
@@ -397,11 +414,12 @@ JsonArray newJsonArrayByString(strnew DataInit) {
 //==========================================================================================//
 //==========================================================================================//
 
-static int Obj_sizeStr(struct _JsonObject This) {
+static int Obj_sizeStr(struct _JsonObject_T This) {
+    // 未完成 用于计算 obj 的键值对
     (void)_THIS_MY_;
     return 0;
 }
-static signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {
+static signed char Obj_isJsonNull(struct _JsonObject_T This, char Key[]) {
     signed char ResOver = -1;
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
@@ -420,7 +438,7 @@ static signed char Obj_isJsonNull(struct _JsonObject This, char Key[]) {
     }
     return ResOver;
 }
-static int Obj_getInt(struct _JsonObject This, char Key[]) {
+static int Obj_getInt(struct _JsonObject_T This, char Key[]) {
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
@@ -433,7 +451,7 @@ static int Obj_getInt(struct _JsonObject This, char Key[]) {
     }
     return 0;
 }
-static double Obj_getDouble(struct _JsonObject This, char Key[]) {
+static double Obj_getDouble(struct _JsonObject_T This, char Key[]) {
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
@@ -445,7 +463,7 @@ static double Obj_getDouble(struct _JsonObject This, char Key[]) {
     }
     return 0.0;
 }
-static bool Obj_getBool(struct _JsonObject This, char Key[]) {
+static bool Obj_getBool(struct _JsonObject_T This, char Key[]) {
     bool ResBool = false;
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
@@ -466,7 +484,7 @@ static bool Obj_getBool(struct _JsonObject This, char Key[]) {
     return ResBool;
 }
 // 不支持原地转换，避免破环 json 数据
-static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
+static void Obj_getString(struct _JsonObject_T This, char Key[], strnew OutStr) {
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
@@ -492,8 +510,8 @@ static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
     return;
 }
 // 注意输出地址与原json字符串地址一致时，会破坏原数据
-static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strnew OutStr) {
-    JsonArray tempJsonArr = newJsonArrayByString(OutStr);
+static struct _JsonArray_T Obj_getArray(struct _JsonObject_T This, char Key[], strnew OutStr) {
+    JsonArray_T tempJsonArr = newJsonArrayByString(OutStr);
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
@@ -518,8 +536,8 @@ static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strne
     return tempJsonArr;
 }
 // 注意输出地址与原json字符串地址一致时，会破坏原数据
-static struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew OutStr) {
-    JsonObject tempJsonObj = newJsonObjectByString(OutStr);
+static struct _JsonObject_T Obj_getObject(struct _JsonObject_T This, char Key[], strnew OutStr) {
+    JsonObject_T tempJsonObj = newJsonObjectByString(OutStr);
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
     if ((KeyP = strstr(This.JsonString.Name._char, SonStr)) != NULL) {
@@ -544,9 +562,11 @@ static struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], str
     return tempJsonObj;
 }
 
-JsonObject newJsonObjectByString(strnew DataInit) {
-    JsonObject Temp;
+JsonObject_T newJsonObjectByString(strnew DataInit) {
+    JsonObject_T Temp;
     Temp.JsonString = DataInit;
+    Temp.pdata = (struct _PRIVATE *)malloc(sizeof(struct _PRIVATE));
+    Temp.pdata->ItemNum = -1;
     Temp.sizeStr = Obj_sizeStr;
     Temp.isJsonNull = Obj_isJsonNull;
     Temp.getInt = Obj_getInt;
@@ -560,7 +580,7 @@ JsonObject newJsonObjectByString(strnew DataInit) {
 
 //==========================================================================================//
 //==========================================================================================//
-void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
+void addCsToJsonAndPushJsonStr(JsonObject_T InputJsonStrObj) {
     int CheckNum = 0;
     int AddrOver = strlen(InputJsonStrObj.JsonString.Name._char);
     if ((AddrOver + (int)strlen(",\"NowCheckNum\":xxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
@@ -574,7 +594,7 @@ void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
     return;
 }
 bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
-    JsonObject JsonObj = newJsonObjectByString(JsonInputStr);
+    JsonObject_T JsonObj = newJsonObjectByString(JsonInputStr);
     // 如果 NowCheckNum 不存在 直接退出
     if (JsonObj.isJsonNull(&JsonObj, "NowCheckNum") < 0) {
         return false;

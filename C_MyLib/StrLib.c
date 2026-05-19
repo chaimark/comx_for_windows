@@ -35,7 +35,7 @@ strnew New_Str_Obj(const void *Master, int SizeNum, int SizeType) {
     strnew newArray = {0};
     newArray.SizeType = SizeType;
     newArray.MaxLen = SizeNum;
-    newArray.Name._void = Master;
+    newArray.Name._csvoid = Master;
     return newArray;
 }
 

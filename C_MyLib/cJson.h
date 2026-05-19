@@ -41,7 +41,7 @@ typedef struct _JsonObject_T {
 // 建立对象示例
 extern JsonObject_T newJsonObjectByString(strnew DataInit); // 建立对象的函数
 extern void cleanJsonObjectClass(JsonObject_T *_ClearPrt_);
-#define JsonObject __attribute__((cleanup(cleanJsonObjectClassClass))) JsonObject
+#define JsonObject __attribute__((cleanup(cleanJsonObjectClassClass))) JsonObject_T
 
 /***************** Json 构建 *****************/
 extern void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...);

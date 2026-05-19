@@ -279,7 +279,16 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
     return This.ItemNum;
 }
 static signed char Arr_isJsonNull(struct _JsonArray This) {
-    return ((strcmp(This.JsonString.Name._char, "[]") == 0) ? true : false);
+    char *StartP = NULL;
+    StartP = strchr(This.JsonString.Name._char, '[');
+    if (StartP == NULL) {
+        return false;
+    }
+    int i = 0;
+    while (!(StartP[i] != ' ' && StartP[i] != '\t') && (StartP[i] != '\0') && (StartP[i] != ']')) {
+        i++;
+    }
+    return ((StartP[i] != ']' && StartP[i] != '\0') ? false : true);
 }
 
 static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
@@ -331,7 +340,8 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
     int NowLineMaxLen = strlen(OutStr.Name._char);
     // 找第一个非空字符
     for (int i = 0; i < NowLineMaxLen; i++) {
-        if ((OutStr.Name._char[i] != '\0') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') &&
+        if ((OutStr.Name._char[i] != '\0') &&
+            (OutStr.Name._char[i] != '\t') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') &&
             (OutStr.Name._char[i] != '\r') && (OutStr.Name._char[i] != '\n') && (OutStr.Name._char[i] != '\"')) {
             HeadItem = &OutStr.Name._char[i];
             break;
@@ -339,7 +349,8 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
     }
     // 找最后一个非空指挥
     for (int i = (NowLineMaxLen - 1); i > 0; i--) {
-        if ((OutStr.Name._char[i] != '\0') && (OutStr.Name._char[i] != ']') && (OutStr.Name._char[i] != ' ') &&
+        if ((OutStr.Name._char[i] != '\0') &&
+            (OutStr.Name._char[i] != '\t') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') &&
             (OutStr.Name._char[i] != '\r') && (OutStr.Name._char[i] != '\n') && (OutStr.Name._char[i] != '\"')) {
             EndItem = &OutStr.Name._char[i];
             break;

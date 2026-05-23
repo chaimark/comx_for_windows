@@ -57,13 +57,13 @@ extern strnew New_Str_Obj(const void *Master, int SizeNum, int SizeType); // 建
 // 清理对象
 void cleanStrnew(strnew This);
 // 注意：NameStr.Name._char 是由 malloc 申请的空间
-// 不能直接使用 NameStr.Name._char = "aaa"，会导致 free 清理失败
+// 不能直接覆盖 NameStr.Name._char 会导致 free 清理失败
 #define strnew_malloc(NameStr, Len)                             \
     __attribute__((cleanup(cleanStrnew))) strnew NameStr = {0}; \
-    NameStr.Name._char = (char *)malloc(Len);                   \
     NameStr.MaxLen = Len;                                       \
+    NameStr.Name._char = (char *)malloc(NameStr.MaxLen);        \
     NameStr.SizeType = 1;                                       \
-    memset(NameStr.Name._char, 0, Len)
+    memset(NameStr.Name._char, 0, NameStr.MaxLen)
 
 /*-----------------------------------外部接口----------------------------------*/
 extern int catString(char *OutStr, const char *IntStr, int MaxSize, int IntSize);

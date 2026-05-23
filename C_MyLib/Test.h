@@ -22,7 +22,8 @@ extern testClass newTestClass(void);
 extern void cleanTestClass(testClass This);
 
 // 安全宏 - 防止忘记释放
-#define AUTO_TestClass __attribute__((cleanup(cleanTestClass))) testClass
+#define testClass_malloc(name) \
+    __attribute__((cleanup(cleanTestClass))) testClass name = newTestClass();
 #define SCOPE_testClass(name, code)      \
     do {                                 \
         testClass name = newTestClass(); \

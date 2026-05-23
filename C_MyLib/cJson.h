@@ -28,12 +28,12 @@ extern void cleanJsonArrayClass(JsonArray *_ClearPrt_);
 typedef struct _JsonObject {
     strnew JsonString;
     int ItemNum;
-    int (*sizeStr)(struct _JsonObject This);                                               // 获取Json 键值对的个数
-    signed char (*isJsonNull)(struct _JsonObject This, char Key[]);                        // 判断Json 是否为空
-    int (*getInt)(struct _JsonObject This, char Key[]);                                    // 获取Json int
-    double (*getDouble)(struct _JsonObject This, char Key[]);                              // 获取Json double
-    bool (*getBool)(struct _JsonObject This, char Key[]);                                  // 获取Json bool
-    void (*getString)(struct _JsonObject This, char Key[], strnew OutStr);                 // 获取Json string
+    int (*sizeStr)(struct _JsonObject This);                                             // 获取Json 键值对的个数
+    signed char (*isJsonNull)(struct _JsonObject This, char Key[]);                      // 判断Json 是否为空
+    int (*getInt)(struct _JsonObject This, char Key[]);                                  // 获取Json int
+    double (*getDouble)(struct _JsonObject This, char Key[]);                            // 获取Json double
+    bool (*getBool)(struct _JsonObject This, char Key[]);                                // 获取Json bool
+    void (*getString)(struct _JsonObject This, char Key[], strnew OutStr);               // 获取Json string
     struct _JsonArray (*getArray)(struct _JsonObject This, char Key[], strnew OutStr);   // 获取Json array
     struct _JsonObject (*getObject)(struct _JsonObject This, char Key[], strnew OutStr); // 获取Json object
 } JsonObject;

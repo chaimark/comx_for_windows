@@ -1,5 +1,14 @@
 #include "EventGroupLib.h"
 #define NowNode This.Head->prev
+char * test(){
+	char s[10] = {0};
+	return s;
+}
+strnew test1(){
+	char s[10] = {0};
+    strnew s1 = NEW_NAME(s);
+	return s1;
+}
 // 添加事件
 int _addEvent(struct _EventGroup This, strnew Name) {
     itemevent_t *Temp = (itemevent_t *)malloc(sizeof(itemevent_t));

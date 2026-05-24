@@ -1,6 +1,6 @@
-// =======================================================
-// GCC 栈逃逸追踪检测插件 - 智能标准库过滤完全体（零误报）
-// =======================================================
+// =================================================================
+// GCC 栈逃逸追踪检测插件 - 前向污点分析（工业级防误报完全体）
+// =================================================================
 #include "config.h"
 #include "system.h"
 #include "coretypes.h"
@@ -23,20 +23,8 @@ extern gcc::context *g;
 
 namespace {
 
-// 判定是否为局部非静态栈变量
-bool is_local_stack_var(tree decl) {
-    if (!decl)
-        return false;
-    if (TREE_CODE(decl) == SSA_NAME) {
-        decl = SSA_NAME_VAR(decl);
-    }
-    if (!decl)
-        return false;
-    return (TREE_CODE(decl) == VAR_DECL && !TREE_STATIC(decl) && !DECL_EXTERNAL(decl));
-}
-
-// 提取核心的基础变量 (剥离字段、数组引用)
-tree get_base_decl(tree node) {
+// 剥离并获取基础变量节点
+tree get_base_var(tree node) {
     if (!node)
         return NULL_TREE;
     while (TREE_CODE(node) == COMPONENT_REF || TREE_CODE(node) == ARRAY_REF ||
@@ -45,58 +33,117 @@ tree get_base_decl(tree node) {
         node = TREE_OPERAND(node, 0);
     }
     if (TREE_CODE(node) == SSA_NAME) {
-        return SSA_NAME_VAR(node) ? DECL_ORIGIN(SSA_NAME_VAR(node)) : NULL_TREE;
+        return SSA_NAME_VAR(node);
     }
-    return node ? DECL_ORIGIN(node) : NULL_TREE;
+    return node;
 }
 
-// 检查某个表达式中是否直接包含指定栈变量的地址
-bool expr_contains_stack_addr(tree expr, tree stack_var) {
-    if (!expr || !stack_var)
+// 核心判定机制：评估一个表达式是否真正携带了本地栈的“内存地址”
+bool expr_is_stack_address(tree expr, const std::set<tree>& stack_vars, const std::set<tree>& tainted_vars) {
+    if (!expr)
         return false;
-    if (TREE_CODE(expr) == ADDR_EXPR) {
-        return get_base_decl(TREE_OPERAND(expr, 0)) == stack_var;
+
+    // 【修复点】使用 INTEGRAL_TYPE_P 覆盖 int/char，使用 SCALAR_FLOAT_TYPE_P 覆盖 float/double
+    tree type = TREE_TYPE(expr);
+    if (type && (INTEGRAL_TYPE_P(type) || SCALAR_FLOAT_TYPE_P(type)) && !POINTER_TYPE_P(type)) {
+        return false;
     }
-    for (unsigned i = 0; i < TREE_OPERAND_LENGTH(expr); i++) {
-        if (expr_contains_stack_addr(TREE_OPERAND(expr, i), stack_var))
+
+    // 剥离外层包裹
+    while (CONVERT_EXPR_P(expr) || TREE_CODE(expr) == VIEW_CONVERT_EXPR || TREE_CODE(expr) == NOP_EXPR) {
+        expr = TREE_OPERAND(expr, 0);
+    }
+
+    // 场景 A: 显式取地址操作（如 &local_buf）
+    if (TREE_CODE(expr) == ADDR_EXPR) {
+        tree op = TREE_OPERAND(expr, 0);
+        // 如果是常量字符串（.rodata区），绝对安全，直接放行
+        if (TREE_CODE(op) == STRING_CST)
+            return false;
+
+        tree base = get_base_var(op);
+        if (base && stack_vars.count(base))
             return true;
     }
+
+    // 场景 B: 变量本身就是一个被污染的指针、或者本地数组名本身
+    tree base = get_base_var(expr);
+    if (base) {
+        if (stack_vars.count(base) && TREE_CODE(TREE_TYPE(base)) == ARRAY_TYPE) {
+            return true;
+        }
+        if (tainted_vars.count(base)) {
+            return true;
+        }
+    }
+
+    // 场景 C: 递归检索子表达式
+    for (unsigned i = 0; i < TREE_OPERAND_LENGTH(expr); i++) {
+        if (expr_is_stack_address(TREE_OPERAND(expr, i), stack_vars, tainted_vars))
+            return true;
+    }
+
     return false;
 }
 
-// 核心智能常识库：判定某个函数的特定参数是否具有将地址泄漏到返回值的风险
+// 判定当前写入的目的地（左值）是否属于“外部逃逸通道”
+bool is_escape_sink_lhs(tree lhs) {
+    if (!lhs)
+        return false;
+
+    tree base = lhs;
+    while (TREE_CODE(base) == COMPONENT_REF || TREE_CODE(base) == ARRAY_REF ||
+           TREE_CODE(base) == VIEW_CONVERT_EXPR || CONVERT_EXPR_P(base)) {
+        base = TREE_OPERAND(base, 0);
+    }
+
+    // 1. 全局变量或静态变量
+    if (TREE_CODE(base) == VAR_DECL && (TREE_STATIC(base) || DECL_EXTERNAL(base) || TREE_PUBLIC(base))) {
+        return true;
+    }
+
+    // 2. 指针解引用写入（如 *ptr = ...）
+    if (TREE_CODE(base) == MEM_REF) {
+        tree ptr = TREE_OPERAND(base, 0);
+        while (TREE_CODE(ptr) == SSA_NAME || CONVERT_EXPR_P(ptr) || TREE_CODE(ptr) == VIEW_CONVERT_EXPR) {
+            if (TREE_CODE(ptr) == SSA_NAME) {
+                tree var = SSA_NAME_VAR(ptr);
+                if (var && (TREE_CODE(var) == PARM_DECL || TREE_STATIC(var) || DECL_EXTERNAL(var) || TREE_PUBLIC(var)))
+                    return true;
+                break;
+            }
+            ptr = TREE_OPERAND(ptr, 0);
+        }
+        if (TREE_CODE(ptr) == PARM_DECL)
+            return true;
+        if (TREE_CODE(ptr) == VAR_DECL && (TREE_STATIC(ptr) || DECL_EXTERNAL(ptr) || TREE_PUBLIC(ptr)))
+            return true;
+    }
+
+    return false;
+}
+
+// 智能标准库参数过滤器
 bool call_argument_can_leak(const char *fname, unsigned arg_idx) {
     if (!fname)
-        return true; // 无法确定函数名时，选择保守策略
-
-    // 1. 常见标准字符串查找与拷贝函数
-    if (strcmp(fname, "strstr") == 0) {
-        // strstr(haystack, needle) -> 只有 haystack (arg 0) 会作为返回值的一部分返回，针串(arg 1)是安全的
+        return true;
+    if (strcmp(fname, "strstr") == 0)
         return (arg_idx == 0);
-    }
     if (strcmp(fname, "memcpy") == 0 || strcmp(fname, "memmove") == 0 ||
         strcmp(fname, "strcpy") == 0 || strcmp(fname, "strncpy") == 0 ||
         strcmp(fname, "strcat") == 0 || strcmp(fname, "strncat") == 0) {
-        // 这些函数均返回 dest (arg 0)，源缓冲区 (arg 1) 绝不会通过返回值泄漏
         return (arg_idx == 0);
     }
-
-    // 2. 返回纯算术值/长度/比较结果的函数，绝不可能泄漏指针地址
     if (strcmp(fname, "strlen") == 0 || strcmp(fname, "strcmp") == 0 ||
         strcmp(fname, "strncmp") == 0 || strcmp(fname, "strcasecmp") == 0 ||
         strcmp(fname, "strncasecmp") == 0 || strcmp(fname, "memcmp") == 0 ||
         strcmp(fname, "atoi") == 0 || strcmp(fname, "atol") == 0 ||
-        strcmp(fname, "strtol") == 0 || strcmp(fname, "strtoul") == 0) {
-        return false;
-    }
-
-    // 3. 常见的打印输出函数
-    if (strcmp(fname, "printf") == 0 || strcmp(fname, "sprintf") == 0 ||
+        strcmp(fname, "strtol") == 0 || strcmp(fname, "strtoul") == 0 ||
+        strcmp(fname, "printf") == 0 || strcmp(fname, "sprintf") == 0 ||
         strcmp(fname, "snprintf") == 0 || strcmp(fname, "fprintf") == 0) {
         return false;
     }
-
-    return true; // 自定义函数（如 New_Str_Obj）默认采取严格数据流审计
+    return true;
 }
 
 const pass_data exit_defense_pass_data = {
@@ -109,126 +156,136 @@ struct exit_defense_pass : public gimple_opt_pass {
     }
 
     virtual unsigned int execute(function *fun) override {
-        // 1. 收集当前函数的所有局部栈变量
-        std::vector<tree> local_stack_vars;
+        std::set<tree> stack_vars;   // 仅存放真正的本地物理栈变量（作为判定目标）
+        std::set<tree> tainted_vars; // 存放接收了栈地址、处于扩散阶段的中间指针/结构体
+
+        // 步骤 1：收集当前函数所有局部栈变量
         tree var;
         unsigned int i;
         FOR_EACH_LOCAL_DECL(fun, i, var) {
-            if (is_local_stack_var(var)) {
-                local_stack_vars.push_back(DECL_ORIGIN(var));
+            if (TREE_CODE(var) == VAR_DECL && !TREE_STATIC(var) && !DECL_EXTERNAL(var)) {
+                stack_vars.insert(var);
             }
         }
-        if (local_stack_vars.empty())
+        if (stack_vars.empty())
             return 0;
 
-        // 2. 逆向数据流追溯：找出当前函数中所有“最终参与了返回”的变量集合
-        std::set<tree> returned_entities;
+        // 步骤 2：不动点迭代扩散污点（仅追踪地址的流向）
+        bool changed = true;
+        while (changed) {
+            changed = false;
+            basic_block bb;
+            FOR_EACH_BB_FN(bb, fun) {
+                for (gimple_stmt_iterator gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)) {
+                    gimple *stmt = gsi_stmt(gsi);
+
+                    if (is_gimple_assign(stmt)) {
+                        tree lhs = gimple_assign_lhs(stmt);
+                        if (!lhs)
+                            continue;
+
+                        bool rhs_has_stack = false;
+                        for (unsigned j = 1; j < gimple_num_ops(stmt); j++) {
+                            if (expr_is_stack_address(gimple_op(stmt, j), stack_vars, tainted_vars)) {
+                                rhs_has_stack = true;
+                                break;
+                            }
+                        }
+
+                        if (rhs_has_stack && !is_escape_sink_lhs(lhs)) {
+                            tree lhs_base = get_base_var(lhs);
+                            if (lhs_base && !tainted_vars.count(lhs_base)) {
+                                tainted_vars.insert(lhs_base);
+                                changed = true;
+                            }
+                        }
+                    } else if (gimple_code(stmt) == GIMPLE_CALL) {
+                        gcall *call_stmt = as_a<gcall *>(stmt);
+                        tree lhs = gimple_call_lhs(call_stmt);
+                        if (!lhs)
+                            continue;
+
+                        tree fndecl = gimple_call_fndecl(call_stmt);
+                        const char *fname = (fndecl && DECL_NAME(fndecl)) ? IDENTIFIER_POINTER(DECL_NAME(fndecl)) : NULL;
+
+                        bool args_has_stack = false;
+                        for (unsigned j = 0; j < gimple_call_num_args(call_stmt); j++) {
+                            if (call_argument_can_leak(fname, j) && expr_is_stack_address(gimple_call_arg(call_stmt, j), stack_vars, tainted_vars)) {
+                                args_has_stack = true;
+                                break;
+                            }
+                        }
+
+                        if (args_has_stack && !is_escape_sink_lhs(lhs)) {
+                            tree lhs_base = get_base_var(lhs);
+                            if (lhs_base && !tainted_vars.count(lhs_base)) {
+                                tainted_vars.insert(lhs_base);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 步骤 3：精确安全审计与收网拦截
         basic_block bb;
         FOR_EACH_BB_FN(bb, fun) {
             for (gimple_stmt_iterator gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)) {
                 gimple *stmt = gsi_stmt(gsi);
 
+                // 拦截 1: 显式 Return 逃逸
                 if (gimple_code(stmt) == GIMPLE_RETURN) {
                     greturn *ret_stmt = as_a<greturn *>(stmt);
                     tree retval = gimple_return_retval(ret_stmt);
-                    if (retval) {
-                        tree base = get_base_decl(retval);
-                        if (base)
-                            returned_entities.insert(base);
+                    if (retval && expr_is_stack_address(retval, stack_vars, tainted_vars)) {
+                        warning_at(gimple_location(stmt), 0,
+                                   "Security Alert: Function capturing local stack address returns a value that leaks from the scope.");
                     }
                 }
+                // 拦截 2: 赋值给外部终点 (全局变量或指针传出参数)
+                else if (is_gimple_assign(stmt)) {
+                    tree lhs = gimple_assign_lhs(stmt);
+                    if (!lhs)
+                        continue;
 
-                if (is_gimple_assign(stmt)) {
-                    tree lhs_base = get_base_decl(gimple_assign_lhs(stmt));
-                    if (lhs_base && TREE_CODE(lhs_base) == RESULT_DECL) {
-                        tree rhs_base = get_base_decl(gimple_assign_rhs1(stmt));
-                        if (rhs_base)
-                            returned_entities.insert(rhs_base);
-                    }
-                }
-            }
-        }
-
-        // 多轮扩散解决多级临时变量中转
-        bool changed = true;
-        while (changed) {
-            changed = false;
-            FOR_EACH_BB_FN(bb, fun) {
-                for (gimple_stmt_iterator gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)) {
-                    gimple *stmt = gsi_stmt(gsi);
-                    if (is_gimple_assign(stmt)) {
-                        tree lhs_base = get_base_decl(gimple_assign_lhs(stmt));
-                        if (lhs_base && returned_entities.count(lhs_base)) {
-                            for (unsigned j = 1; j < gimple_num_ops(stmt); j++) {
-                                tree rhs_base = get_base_decl(gimple_op(stmt, j));
-                                if (rhs_base && !returned_entities.count(rhs_base)) {
-                                    returned_entities.insert(rhs_base);
-                                    changed = true;
-                                }
-                            }
+                    bool rhs_has_stack = false;
+                    for (unsigned j = 1; j < gimple_num_ops(stmt); j++) {
+                        if (expr_is_stack_address(gimple_op(stmt, j), stack_vars, tainted_vars)) {
+                            rhs_has_stack = true;
+                            break;
                         }
                     }
-                }
-            }
-        }
 
-        // 3. 最终收网：结合标准库过滤器进行精准拦截
-        FOR_EACH_BB_FN(bb, fun) {
-            for (gimple_stmt_iterator gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)) {
-                gimple *stmt = gsi_stmt(gsi);
-
-                // 检查普通赋值语句
-                if (is_gimple_assign(stmt)) {
-                    tree lhs_base = get_base_decl(gimple_assign_lhs(stmt));
-                    if (lhs_base && returned_entities.count(lhs_base)) {
-                        for (tree stack_var : local_stack_vars) {
-                            bool has_leak = false;
-                            for (unsigned j = 1; j < gimple_num_ops(stmt); j++) {
-                                if (expr_contains_stack_addr(gimple_op(stmt, j), stack_var)) {
-                                    has_leak = true;
-                                    break;
-                                }
-                            }
-                            if (has_leak) {
-                                warning_at(gimple_location(stmt), 0,
-                                           "Security Alert: Local stack memory flows into a structure field or variable that is returned.");
-                                break;
-                            }
-                        }
+                    if (rhs_has_stack && is_escape_sink_lhs(lhs)) {
+                        warning_at(gimple_location(stmt), 0,
+                                   "Security Alert: Local stack memory flows into an escaping destination (global variable or out-parameter).");
                     }
                 }
-
-                // 检查函数调用语句
+                // 拦截 3: 函数调用直接将堆栈地址送入外部逃逸通道
                 else if (gimple_code(stmt) == GIMPLE_CALL) {
                     gcall *call_stmt = as_a<gcall *>(stmt);
                     tree lhs = gimple_call_lhs(call_stmt);
-                    tree lhs_base = lhs ? get_base_decl(lhs) : NULL_TREE;
 
-                    if (lhs_base && returned_entities.count(lhs_base)) {
-                        // 提取函数名
-                        tree fndecl = gimple_call_fndecl(call_stmt);
-                        const char *fname = (fndecl && DECL_NAME(fndecl)) ? IDENTIFIER_POINTER(DECL_NAME(fndecl)) : NULL;
+                    tree fndecl = gimple_call_fndecl(call_stmt);
+                    const char *fname = (fndecl && DECL_NAME(fndecl)) ? IDENTIFIER_POINTER(DECL_NAME(fndecl)) : NULL;
 
-                        for (tree stack_var : local_stack_vars) {
-                            bool param_leak = false;
-                            for (unsigned j = 0; j < gimple_call_num_args(call_stmt); j++) {
-                                // 同时满足：该参数位置允许泄漏 && 参数表达式确实包含栈变量地址
-                                if (call_argument_can_leak(fname, j) &&
-                                    expr_contains_stack_addr(gimple_call_arg(call_stmt, j), stack_var)) {
-                                    param_leak = true;
-                                    break;
-                                }
-                            }
-                            if (param_leak) {
-                                warning_at(gimple_location(stmt), 0,
-                                           "Security Alert: Function capturing local stack address returns a value that leaks from the scope.");
-                                break;
-                            }
+                    bool args_has_stack = false;
+                    for (unsigned j = 0; j < gimple_call_num_args(call_stmt); j++) {
+                        if (call_argument_can_leak(fname, j) && expr_is_stack_address(gimple_call_arg(call_stmt, j), stack_vars, tainted_vars)) {
+                            args_has_stack = true;
+                            break;
                         }
+                    }
+
+                    if (args_has_stack && lhs && is_escape_sink_lhs(lhs)) {
+                        warning_at(gimple_location(stmt), 0,
+                                   "Security Alert: Function call passes local stack memory to an escaping destination.");
                     }
                 }
             }
         }
+
         return 0;
     }
 };

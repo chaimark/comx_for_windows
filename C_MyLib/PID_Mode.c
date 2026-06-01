@@ -1,31 +1,34 @@
 #include "PID_Mode.h"
 
-// PID 初始化函数
-void pid_init(PIDController *pid, double Kp, double Ki, double Kd, double setpoint) {
-    pid->Kp = Kp;
-    pid->Ki = Ki;
-    pid->Kd = Kd;
-    pid->setpoint = setpoint;
-    pid->integral = 0.0;
-    pid->previous_error = 0.0;
-}
-
 // PID 计算函数
-double pid_compute(PIDController *pid, double current_value, double dt) {
+double _pid_compute(struct _PIDController This, double NowValue, double dt) {
     // 计算误差
-    double error = pid->setpoint - current_value;
+    double error = This.setpoint - NowValue;
 
     // 计算积分项
-    pid->integral += error * dt;
+    This.integral += error * dt;
 
     // 计算微分项
-    double derivative = (error - pid->previous_error) / dt;
+    double derivative = (error - This.previous_error) / dt;
 
     // 计算 PID 输出
-    double output = pid->Kp * error + pid->Ki * pid->integral + pid->Kd * derivative;
+    double output = This.Kp * error + This.Ki * This.integral + This.Kd * derivative;
 
     // 更新上一次的误差
-    pid->previous_error = error;
+    This.previous_error = error;
 
     return output;
+}
+
+// 初始化 PID 控制结构体
+PIDController pid_init(double Kp, double Ki, double Kd, double setpoint) {
+    PIDController pid = {0};
+    pid.Kp = Kp;
+    pid.Ki = Ki;
+    pid.Kd = Kd;
+    pid.integral = 0.0;
+    pid.setpoint = setpoint;
+    pid.previous_error = 0.0;
+    pid.pid_compute = _pid_compute;
+    return pid;
 }

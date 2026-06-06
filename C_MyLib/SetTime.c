@@ -1,6 +1,7 @@
 #include "SetTime.h"
 // 对象 api
 #define NowNode This.Head->prev
+
 // 查找某个任务的地址
 static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = This.Head;
@@ -9,6 +10,7 @@ static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
     }
     return Temp;
 }
+
 // 添加某个任务节点
 static int _addTaskNode(struct _timetask This, strnew Name) {
     Task_T *Temp = (Task_T *)malloc(sizeof(Task_T));
@@ -36,6 +38,7 @@ static int _addTaskNode(struct _timetask This, strnew Name) {
     }
     return 0;
 }
+
 // 初始化某个任务
 static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMaxNum, void (*TaskFunc)(void *), void *arg) {
     Task_T *Temp = _getTaskByName(&This, Name);
@@ -51,14 +54,23 @@ static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMa
         }
     }
 }
-// 暂停某个任务
+
+// stop 某个任务
 static void _stopTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = _getTaskByName(&This, Name);
     Temp->isTaskStart = false; // 初始化标记
-    Temp->TimeTask_Falge = false;
     Temp->CountNum = 0; // 复位初始
-    Temp->TaskFunc = NULL;
+    Temp->TimeTask_Falge = false;
 }
+
+// reset 某个任务
+static void _resetTaskByName(struct _timetask This, strnew Name) {
+    Task_T *Temp = _getTaskByName(&This, Name);
+    Temp->isTaskStart = true; // 初始化标记
+    Temp->CountNum = 0; // 复位初始
+    Temp->TimeTask_Falge = false;
+}
+
 // 关闭所有任务,清理所有的链表节点
 static void _closeTaskAll(struct _timetask This) {
     if (This.Head != NULL) {
@@ -107,6 +119,7 @@ timetask initSetTime() {
     TaskInit.addTaskNode = _addTaskNode;
     TaskInit.initTaskByName = _initTaskByName;
     TaskInit.stopTaskByName = _stopTaskByName;
+    TaskInit.resetTaskByName = _resetTaskByName;
     TaskInit.closeTaskAll = _closeTaskAll;
     TaskInit.countSetTimeTask = _countSetTimeTask;
     return TaskInit;

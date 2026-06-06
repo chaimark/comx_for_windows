@@ -73,19 +73,9 @@ static void _closeTaskAll(struct _timetask This) {
     }
     (This).NumberOfTimeTask = 0;
 }
-// 初始化
-timetask initSetTime() {
-    timetask TaskInit = {0};
-    TaskInit.Head = NULL;
-    TaskInit.getTaskByName = _getTaskByName;
-    TaskInit.addTaskNode = _addTaskNode;
-    TaskInit.initTaskByName = _initTaskByName;
-    TaskInit.stopTaskByName = _stopTaskByName;
-    TaskInit.closeTaskAll = _closeTaskAll;
-    return TaskInit;
-}
-// 计数函数
-void CountSetTimeTask(timetask This) {
+
+// 定时器中断轮询 api
+static void _countSetTimeTask(timetask This) {
     Task_T *Temp = This.Head;
     for (int TaskAddr = 0; TaskAddr < This.NumberOfTimeTask; TaskAddr++) {
         if ((*Temp).isTaskStart == false) {
@@ -107,4 +97,17 @@ void CountSetTimeTask(timetask This) {
         }
         Temp = Temp->next;
     }
+}
+
+// 初始化
+timetask initSetTime() {
+    timetask TaskInit = {0};
+    TaskInit.Head = NULL;
+    TaskInit.getTaskByName = _getTaskByName;
+    TaskInit.addTaskNode = _addTaskNode;
+    TaskInit.initTaskByName = _initTaskByName;
+    TaskInit.stopTaskByName = _stopTaskByName;
+    TaskInit.closeTaskAll = _closeTaskAll;
+    TaskInit.countSetTimeTask = _countSetTimeTask;
+    return TaskInit;
 }

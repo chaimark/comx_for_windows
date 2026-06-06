@@ -29,11 +29,10 @@ typedef struct _timetask {
     void (*initTaskByName)(struct _timetask This, strnew Name, uint64_t CountMaxNum, void (*TaskFunc)(void *), void *arg);
     void (*stopTaskByName)(struct _timetask This, strnew Name);
     void (*closeTaskAll)(struct _timetask This);
+    void (*countSetTimeTask)(struct _timetask This);
 } timetask;
 
 // 定时任务初始化
 extern timetask initSetTime(void);
-// 定时器中断轮询 api
-extern void CountSetTimeTask(timetask This);
 
 #endif

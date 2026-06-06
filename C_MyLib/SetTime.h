@@ -8,6 +8,8 @@
 #define SecTo250Ms(sec) (uint64_t)((sec * 4 == 0) ? 1 : (sec * 4))
 #define SecTo10Ms(sec) (uint64_t)((sec * 100 == 0) ? 1 : (sec * 100))
 #define SecTo5Ms(sec) (uint64_t)((sec * 200 == 0) ? 1 : (sec * 200))
+#define MinToSec(min) (uint64_t)((min * 60 == 0) ? 1 : (min * 60))
+#define HourToMin(hour) (uint64_t)((hour * 60 == 0) ? 1 : (hour * 60))
 
 /******************XXTIM********************/
 typedef struct _Task_T {

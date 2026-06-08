@@ -59,7 +59,7 @@ static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMa
 static void _stopTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = _getTaskByName(&This, Name);
     Temp->isTaskStart = false; // 初始化标记
-    Temp->CountNum = 0; // 复位初始
+    Temp->CountNum = 0;        // 复位初始
     Temp->TimeTask_Falge = false;
 }
 
@@ -67,7 +67,7 @@ static void _stopTaskByName(struct _timetask This, strnew Name) {
 static void _resetTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = _getTaskByName(&This, Name);
     Temp->isTaskStart = true; // 初始化标记
-    Temp->CountNum = 0; // 复位初始
+    Temp->CountNum = 0;       // 复位初始
     Temp->TimeTask_Falge = false;
 }
 

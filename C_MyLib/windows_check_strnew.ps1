@@ -72,7 +72,7 @@ foreach ($line in $lines) {
         $glob = $Matches[1]
         $src = $Matches[2]
         if ($tainted_vars.Contains($src)) {
-            Write-Host "${FilePath}:${line_num}: " -NoNewline
+            Write-Host "${FilePath}(${line_num}): " -NoNewline
             Write-Host "warning: " -ForegroundColor Magenta -NoNewline
             Write-Host "[function $current_function] Variable '$src' has been assigned to the global variable '$glob'"
             $total_errors++
@@ -83,7 +83,7 @@ foreach ($line in $lines) {
     if ($line -match '\breturn\s+(\w+)\b') {
         $ret_var = $Matches[1]
         if ($tainted_vars.Contains($ret_var)) {
-            Write-Host "${FilePath}:${line_num}: " -NoNewline
+            Write-Host "${FilePath}(${line_num}): " -NoNewline
             Write-Host "error: " -ForegroundColor Red -NoNewline
             Write-Host "[function $current_function] The variable '$ret_var' is stack data"
             $total_errors++

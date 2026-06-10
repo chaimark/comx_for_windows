@@ -5,6 +5,9 @@ AR = $(CROSS_COMPILE)ar
 # 如果没有定义 BUILD_DIR，则使用当前目录
 BUILD_DIR ?= .
 
+# 如果没有定义 CHECK_SCRIPT，则使用当前目录
+CHECK_SCRIPT ?= ./linux_check_strnew.sh
+
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
     CFLAGS += -g3 -O0
@@ -30,6 +33,7 @@ $(BUILD_DIR)/libMyLib.a: $(objs)
 
 # 规则：从 .c 文件生成 .o 文件
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+	$(CHECK_SCRIPT) $<
 	$(CC) $(CFLAGS) -c $< -o $@
 
 

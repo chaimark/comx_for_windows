@@ -90,7 +90,7 @@ static void _closeTaskAll(struct _timetask This) {
 static void _countSetTimeTask(timetask This) {
     Task_T *Temp = This.Head;
     for (int TaskAddr = 0; TaskAddr < This.NumberOfTimeTask; TaskAddr++) {
-        if ((*Temp).isTaskStart == false) {
+        if (((*Temp).isTaskStart == false) || ((*Temp).TimeTask_Falge == true)) {
             Temp = Temp->next;
             continue;
         }

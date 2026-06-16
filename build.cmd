@@ -15,12 +15,13 @@ set OUTPUT=comx.exe
 :: 初始化对象文件列表
 set OBJS=
 
-:: 编译 C_MyLib 中的源文件
-for %%f in (./C_MyLib/*.c) do (
-    echo 正在编译 %%f...
-    %CC% %CFLAGS% -c "./C_MyLib/%%f" -o "./outflie/%%~nf.o"
+:: 编译 WorkLib 中的源文件
+for %%f in (./WorkLib/*.c) do (
+    echo 正在编译 %%f...  
+    powershell -Command "& { ./WorkLib/windows_check_strnew.ps1 ./WorkLib/%%f }
+	%CC% %CFLAGS% -c "./WorkLib/%%f" -o "./outflie/%%~nf.o"
     if errorlevel 1 (
-        echo 编译失败: ./C_MyLib/%%f
+        echo 编译失败: ./WorkLib/%%f
         exit /b 1
     )
     set OBJS=!OBJS! "./outflie/%%~nf.o"
@@ -28,6 +29,7 @@ for %%f in (./C_MyLib/*.c) do (
 
 :: 编译主程序
 echo 正在编译 comx.c...
+powershell -Command "& { ./WorkLib/windows_check_strnew.ps1 ./comx.c }
 %CC% %CFLAGS% -c comx.c -o "./outflie/comx.o"
 if errorlevel 1 (
     echo 编译失败: comx.c

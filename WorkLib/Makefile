@@ -21,14 +21,14 @@ objs := $(clibs:%.c=$(BUILD_DIR)/%.o)
 # 清理目标
 .PHONY: clear clean distclean distclear fileclean all
 
-all: $(BUILD_DIR)/libMyLib.a
+all: $(BUILD_DIR)/libWorkLib.a
 
 # 创建构建目录(如果需要)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-# 默认目标：生成静态库 MyLib.a
-$(BUILD_DIR)/libMyLib.a: $(objs)
+# 默认目标：生成静态库 WorkLib.a
+$(BUILD_DIR)/libWorkLib.a: $(objs)
 	$(AR) rcs $@ $^
 
 # 规则：从 .c 文件生成 .o 文件
@@ -39,7 +39,7 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 
 clear clean distclean distclear:
 	-rm -rf $(BUILD_DIR)/*.o 
-	-rm -rf $(BUILD_DIR)/libMyLib.a
+	-rm -rf $(BUILD_DIR)/libWorkLib.a
 
 fileclean:
 	-rm -rf *.c1

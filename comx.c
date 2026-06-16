@@ -1,6 +1,6 @@
 #define INITGUID
 #include "comx.h"
-#include "./C_MyLib/StrLib.h"
+#include "./WorkLib/StrLib.h"
 #include <ctype.h>
 #include <signal.h>
 

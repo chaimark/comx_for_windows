@@ -5,7 +5,10 @@
 // 查找某个任务的地址
 static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = This.Head;
-    while (strcmp((*Temp).Name.Name._char, Name.Name._char) != 0) {
+    for (int i = 0; i < This.NumberOfTimeTask; i++) {
+        if (strcmp((*Temp).Name.Name._char, Name.Name._char) == 0) {
+            break;
+        }
         Temp = Temp->next;
     }
     return Temp;

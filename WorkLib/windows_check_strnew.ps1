@@ -98,3 +98,4 @@ if ($total_errors -eq 0) {
     Write-Host "[DONE] check over: find $total_errors errors" -ForegroundColor Red
     exit 1
 }
+

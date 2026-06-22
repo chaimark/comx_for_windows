@@ -24,7 +24,7 @@ typedef struct _TimeStuClass {
 extern TimeStuClass timestampToRTCData(uint32_t timestamp);
 extern int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay);
 extern void DelayUs_General(uint32_t Delay);
-inline void DelayMs_General(uint32_t Delay) {
+static inline void DelayMs_General(uint32_t Delay) {
 #ifdef USE_HAL_DRIVER
     HAL_Delay(Delay);
 #else

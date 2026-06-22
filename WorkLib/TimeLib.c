@@ -133,30 +133,34 @@ int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay) {
     return iWeek;
 }
 
-
+#ifdef __linux__
+void DelayUs_General(uint32_t Delay) {
+    usleep(Delay); // 微秒级延时
+}
+#else
 void DelayUs_General(uint32_t Delay) {
     uint32_t ticks;
     uint32_t told, tnow, reload, tcnt = 0;
-    reload = SysTick->LOAD;                      //获取重装载寄存器值
-    ticks = Delay * (SystemCoreClock / 1000000); //计数时间值 括号里的代表1us秒嘀嗒定时器的value会向下降多少值
+    reload = SysTick->LOAD;
+    ticks = Delay * (SystemCoreClock / 1000000);
 #if (USE_RTOS == 1U)
-    vTaskSuspendAll(); // 阻止OS调度，防止打断us延时
+    vTaskSuspendAll();
 #endif
-    told = SysTick->VAL; //获取当前数值寄存器值（开始时数值）
+    told = SysTick->VAL;
     while (1) {
-        tnow = SysTick->VAL; //获取当前数值寄存器值
-        if (tnow != told)    //当前值不等于开始值说明已在计数
-        {
-            if (tnow < told)         //当前值小于开始数值，说明未计到0
-                tcnt += told - tnow; //计数值=开始值-当前值else //当前值大于开始数值，说明已计到0并重新计数
+        tnow = SysTick->VAL;
+        if (tnow != told) {
+            if (tnow < told)
+                tcnt += told - tnow;
             else
-                tcnt += reload - tnow + told; //计数值=重装载值-当前值+开始值 （已//从开始值计到0）
-            told = tnow;                      //更新开始值
+                tcnt += reload - tnow + told;
+            told = tnow;
             if (tcnt >= ticks)
-                break; //时间超过/等于要延迟的时间,则退出.
+                break;
         }
     }
 #if (USE_RTOS == 1U)
-    xTaskResumeAll(); // 恢复OS调度
+    xTaskResumeAll();
 #endif
 }
+#endif

@@ -1,6 +1,7 @@
 #ifndef __TIMELIB__
 #define __TIMELIB__
 
+#include "PublicLib_No_One.h"
 #include "NumberBaseLib.h"
 #include "StrLib.h"
 #include <stdint.h>
@@ -21,4 +22,7 @@ typedef struct _TimeStuClass {
 extern TimeStuClass timestampToRTCData(uint32_t timestamp);
 extern int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay);
 
+#if (USE_RTOS == 1U)
+extern void RTOS_DelayUs(uint32_t nus);
+#endif
 #endif

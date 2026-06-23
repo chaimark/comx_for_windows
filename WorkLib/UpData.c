@@ -1,11 +1,13 @@
 #include "UpData.h"
-#ifdef OPEN_FL33LXX_LIB
-#include "mf_config.h"
-
+#ifdef OPEN_FLASH_256_LIB
+typedef enum { 
+    FL_FAIL = 0U,
+    FL_PASS = !FL_FAIL
+} FL_ErrorStatus;
 // FL_FLASH_PAGE_SIZE_BYTE   512 页大小
 // 0 ~ 63  块
 // 0 ~ 255 页
-UpdataParam UpdataParam;
+UpdataFlag UpdataParam;
 UpdataDataTemp UpdataData = {0};
 
 // flash 检查 (len%4 * 4) 字节的数据
@@ -57,15 +59,15 @@ void flash_read_page(uint32_t addr, uint8_t *buf) {
 // 读标志扇区
 void updataReadSign(void) {
     uint8_t *p = (uint8_t *)(&UpdataParam);
-    for (size_t i = 0; i < sizeof(UpdataParam_t); i++)
+    for (size_t i = 0; i < sizeof(UpdataFlag); i++)
         p[i] = *(uint8_t *)(UPDATA_PAGE_SIGN + i);
 }
 // 写标志扇区
 void updataWriteSign(void) {
     memset(UpdataData.Page8Buff, 0xFF, PAGE_SIZE);
-    memcpy(UpdataData.Page8Buff, &UpdataParam, sizeof(UpdataParam_t));
+    memcpy(UpdataData.Page8Buff, &UpdataParam, sizeof(UpdataFlag));
     flash_write_page(UPDATA_PAGE_SIGN, UpdataData.Page8Buff);
-    memset((char *)&UpdataParam, 0, sizeof(UpdataParam_t));
+    memset((char *)&UpdataParam, 0, sizeof(UpdataFlag));
     updataReadSign();
 }
 // 初始化标志区

@@ -44,7 +44,7 @@ void flash_read_page(uint32_t addr, uint8_t *buf);
 #define UPDATA_SIGN 0xaa55aa55
 
 // 地址偏移
-#define UPDATA_MCU_BASE 0x8000
+#define UPDATA_MCU_BASE 0x80000000
 #define UPDATA_MCU_OFFSET 0x4000 // 前 16k 是bootloader
 
 typedef struct _UpdataFlag {

@@ -1,6 +1,6 @@
 #include "UpData.h"
 #ifdef OPEN_FLASH_256_LIB
-typedef enum { 
+typedef enum {
     FL_FAIL = 0U,
     FL_PASS = !FL_FAIL
 } FL_ErrorStatus;
@@ -25,21 +25,42 @@ static int flashCheckReadPageData(uint32_t addr, uint8_t *buf, int len) {
 }
 // 把 buf 开始的数据，写入到 addr 开始的地址中, 并读出校验
 int flash_write_page(uint32_t addr, uint8_t *buf) {
+    FLASH_EraseInitTypeDef EraseInitStruct;
+    uint32_t PageError;
+    HAL_StatusTypeDef status;
+    uint32_t words_count = PAGE_SIZE / 4; // 计算需要写入的32位字数
+
+    // 尝试最多3次
     for (int i = 0; i < 3; i++) {
-        if (FL_FLASH_PageErase(FLASH, addr) == FL_FAIL) {
-            break;
+        // 1. 初始化页擦除结构体
+        EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+        EraseInitStruct.PageAddress = addr;
+        EraseInitStruct.NbPages = 1;
+        // 2. 擦除页
+        if (HAL_FLASH_Unlock() != HAL_OK) {
+            return -1;
         }
-        if (FL_FLASH_Program_Page(FLASH, addr / 512, (uint32_t *)buf) == FL_FAIL) {
-            break;
+        status = HAL_FLASHEx_Erase(&EraseInitStruct, &PageError);
+        if (status != HAL_OK) {
+            HAL_FLASH_Lock();
+            continue;
         }
-        // 校验
-        if (flashCheckReadPageData(addr, buf, PAGE_SIZE) < 0) {
-            break;
+        // 3. 写入数据
+        for (uint32_t i = 0; i < words_count; i++) {
+            if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr + i * 4, ((uint32_t *)buf)[i]) != HAL_OK) {
+                HAL_FLASH_Lock();
+                continue;
+            }
         }
-        return 0;
+        HAL_FLASH_Lock();
+        // 4. 校验
+        if (flashCheckReadPageData(addr, buf, PAGE_SIZE) == 0) {
+            return 0; // 写入成功
+        }
     }
-    return -1;
+    return -1; // 写入失败
 }
+
 void flash_read_page(uint32_t addr, uint8_t *buf) {
     uint32_t TempHex = 0;
     uint32_t *PNote = (uint32_t *)addr;

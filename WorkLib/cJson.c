@@ -6,7 +6,6 @@
 //==========================================================================================//
 //==========================================================================================//
 // #define IsOpenFloatHelp_Ability
-
 #ifdef IsOpenFloatHelp_Ability
 static char getNowType(const char *NowAddr, char *UserFromNow) {
     if ((*NowAddr != '%') && (NowAddr + 1 != NULL)) {

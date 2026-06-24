@@ -1,7 +1,7 @@
 #ifndef __UPDATA_H__
 #define __UPDATA_H__
 
-#define OPEN_FLASH_256_LIB
+// #define OPEN_FLASH_256_LIB
 #define ISBootLoader 1
 // true
 // false

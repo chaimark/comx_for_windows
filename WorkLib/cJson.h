@@ -16,7 +16,6 @@ typedef struct _JsonArray {
 } JsonArray;
 // 建立对象示例
 extern JsonArray newJsonArrayByString(strnew DataInit); // 建立对象数组的函数
-extern void cleanJsonArrayClass(JsonArray *_ClearPrt_);
 
 //==========================================================================================//
 //==========================================================================================//
@@ -39,7 +38,6 @@ typedef struct _JsonObject {
 } JsonObject;
 // 建立对象示例
 extern JsonObject newJsonObjectByString(strnew DataInit); // 建立对象的函数
-extern void cleanJsonObjectClass(JsonObject *_ClearPrt_);
 
 /***************** Json 构建 *****************/
 extern void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...);

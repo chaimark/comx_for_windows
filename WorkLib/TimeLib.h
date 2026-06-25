@@ -8,6 +8,9 @@
 #ifdef __linux__
 #include <unistd.h>
 #include <time.h>
+#elif defined(_WIN32)
+#include <windows.h>
+#else
 #endif
 extern int isLeapYear(uint32_t year);
 extern uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour, uint32_t NowMinute, uint32_t NowSecond);

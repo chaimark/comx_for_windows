@@ -137,6 +137,15 @@ int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay) {
 void DelayUs_General(uint32_t Delay) {
     usleep(Delay); // 微秒级延时
 }
+#elif defined(_WIN32)
+void DelayUs_General(uint32_t Delay) {
+    LARGE_INTEGER freq, start, end;
+    QueryPerformanceFrequency(&freq); // 获取高精度计时器频率
+    QueryPerformanceCounter(&start);  // 获取开始计数值
+    do {
+        QueryPerformanceCounter(&end); // 获取当前计数值
+    } while ((end.QuadPart - start.QuadPart) * 1000000 / freq.QuadPart < Delay);
+}
 #else
 void DelayUs_General(uint32_t Delay) {
     uint32_t ticks;

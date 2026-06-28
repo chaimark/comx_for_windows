@@ -18,6 +18,8 @@ extern uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
 extern TimeStuClass timestampToRTCData(uint32_t timestamp);
 extern int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay);
 #if (USE_RTOS == 0U) // 使用 RTOS
+#include "FreeRTOS.h"
+#include "task.h"
 #ifndef ID_OF_CTRL_SUSPEND_DEFINED
 #define ID_OF_CTRL_SUSPEND_DEFINED
 typedef enum {

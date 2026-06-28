@@ -132,28 +132,34 @@ int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay) {
     iWeek = iWeek >= 0 ? (iWeek % 7) : (iWeek % 7 + 7);
     return iWeek;
 }
+#if (USE_RTOS == 0U) // 使用 RTOS
+void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
+    static uint8_t NowUserCtrlID = 0xFF; // 控制调度器的 ID 谁控制谁开启
+    if (!(NowUserCtrlID == 0xFF || NowUserCtrlID == InputCtrID)) {
+        return;
+    }
+    if (IsPause == true) {
+        NowUserCtrlID = InputCtrID;
+        vTaskSuspendAll(); // 暂停调度器
+    } else {
+        NowUserCtrlID = 0xFF;
+        xTaskResumeAll(); // 恢复调度器
+    }
+}
+#endif
 
 #ifdef __linux__
 void DelayUs_General(uint32_t Delay) {
     usleep(Delay); // 微秒级延时
 }
-#elif defined(_WIN32)
-void DelayUs_General(uint32_t Delay) {
-    LARGE_INTEGER freq, start, end;
-    QueryPerformanceFrequency(&freq); // 获取高精度计时器频率
-    QueryPerformanceCounter(&start);  // 获取开始计数值
-    do {
-        QueryPerformanceCounter(&end); // 获取当前计数值
-    } while ((end.QuadPart - start.QuadPart) * 1000000 / freq.QuadPart < Delay);
-}
-#else
+#elif defined(USE_HAL_DRIVER)
 void DelayUs_General(uint32_t Delay) {
     uint32_t ticks;
     uint32_t told, tnow, reload, tcnt = 0;
     reload = SysTick->LOAD;
     ticks = Delay * (SystemCoreClock / 1000000);
-#if (USE_RTOS == 1U)
-    vTaskSuspendAll();
+#if (USE_RTOS == 0U) // 使用 RTOS
+    closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     told = SysTick->VAL;
     while (1) {
@@ -168,8 +174,17 @@ void DelayUs_General(uint32_t Delay) {
                 break;
         }
     }
-#if (USE_RTOS == 1U)
-    xTaskResumeAll();
+#if (USE_RTOS == 0U) // 使用 RTOS
+    closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
+}
+#else
+void DelayUs_General(uint32_t Delay) {
+    LARGE_INTEGER freq, start, end;
+    QueryPerformanceFrequency(&freq); // 获取高精度计时器频率
+    QueryPerformanceCounter(&start);  // 获取开始计数值
+    do {
+        QueryPerformanceCounter(&end); // 获取当前计数值
+    } while ((end.QuadPart - start.QuadPart) * 1000000 / freq.QuadPart < Delay);
 }
 #endif

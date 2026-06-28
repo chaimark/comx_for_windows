@@ -4,7 +4,6 @@
 // 公共库头文件，用于包含一些非库使用的公共定义，或声明一些公共使用的全局结构体
 #include "SetTime.h"
 extern timetask RTC_Task;
-extern timetask Tim_Task;
 extern timetask Uart_Task;
 typedef struct _TimeStuClass {
     uint32_t year;   /** 年 */
@@ -25,19 +24,38 @@ typedef struct _TimeStuClass {
 #if defined(USE_HAL_DRIVER)
 #include "stm32f1xx_hal.h"
 #endif
+#define LIST_MAX_NUM 4
+typedef enum {
+    CmdNumber = 0,
+    CmdBool,
+    CmdString,
+    CmdFloat,
+} SysKeyType;
+typedef struct _CmdNameList {
+    char *Name;
+    SysKeyType Type;
+} CmdNameList_T;
+extern CmdNameList_T CmdNameList[LIST_MAX_NUM];
+//************************************************************************// 字段表定义
 typedef struct _TestGPIO {
-    bool isEnableRelayKey;
+    bool TempStatus;
     uint8_t ReadBCD_Var;
-    bool Keyflag_1;
-    bool Keyflag_2;
-    bool Keyflag_3;
-    bool Keyflag_4;
-    bool Keyflag_5;
-    bool KeyDAC_1;
-    bool KeyDAC_2;
     TimeStuClass TimeData;
 } TestGPIO;
-extern TestGPIO TEST_GPIO_CLASS;
+extern TestGPIO SystemRunData;
 extern void Error_Handler(void);
-
+//************************************************************************// 系统运行时数据
+#define SYSTEM_START_SIGN 0x5A
+typedef struct _ManagerEEprom {
+    uint8_t RunSign;
+} ManagerEEprom;
+extern ManagerEEprom SystemManager;
+//************************************************************************// 系统管理参数
+#define ID_OF_CTRL_SUSPEND_DEFINED
+typedef enum {
+    UsDelayFun = 0,
+    iicReadFun,
+    iicWriteFun,
+} IDOfCtrlSuspend;
+//************************************************************************// 可以关闭调度器的函数ID
 #endif

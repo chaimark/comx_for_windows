@@ -132,6 +132,8 @@ int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay) {
     iWeek = iWeek >= 0 ? (iWeek % 7) : (iWeek % 7 + 7);
     return iWeek;
 }
+
+#ifdef USE_RTOS
 #if (USE_RTOS == 0U) // 使用 RTOS
 void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
     static uint8_t NowUserCtrlID = 0xFF; // 控制调度器的 ID 谁控制谁开启
@@ -147,6 +149,7 @@ void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
     }
 }
 #endif
+#endif
 
 #ifdef __linux__
 void DelayUs_General(uint32_t Delay) {
@@ -158,8 +161,10 @@ void DelayUs_General(uint32_t Delay) {
     uint32_t told, tnow, reload, tcnt = 0;
     reload = SysTick->LOAD;
     ticks = Delay * (SystemCoreClock / 1000000);
+#ifdef USE_RTOS
 #if (USE_RTOS == 0U) // 使用 RTOS
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
+#endif
 #endif
     told = SysTick->VAL;
     while (1) {
@@ -174,8 +179,10 @@ void DelayUs_General(uint32_t Delay) {
                 break;
         }
     }
+#ifdef USE_RTOS
 #if (USE_RTOS == 0U) // 使用 RTOS
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
+#endif
 #endif
 }
 #else

@@ -5,13 +5,17 @@
 // 查找某个任务的地址
 static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = This.Head;
-    for (int i = 0; i < This.NumberOfTimeTask; i++) {
+    int i = 0;
+    for (i = 0; i < This.NumberOfTimeTask; i++) {
         if (strcmp((*Temp).Name.Name._char, Name.Name._char) == 0) {
             break;
         }
         Temp = Temp->next;
     }
-    return Temp;
+    if(i < This.NumberOfTimeTask) {
+        return Temp;
+    }
+    return NULL;
 }
 
 // 添加某个任务节点
@@ -74,6 +78,28 @@ static void _resetTaskByName(struct _timetask This, strnew Name) {
     Temp->TimeTask_Falge = false;
 }
 
+// del 某个任务
+static void _delTaskByName(struct _timetask This, strnew Name) {
+    Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
+        return;
+    }
+    if (This.NumberOfTimeTask < 1) {
+        return;
+    }
+    if (This.NumberOfTimeTask == 1) {
+        This.Head = NULL;
+        This.NumberOfTimeTask = 0;
+        free(Temp);
+        return;
+    }
+    Temp->prev->next = Temp->next;
+    Temp->next->prev = Temp->prev;
+    This.NumberOfTimeTask--;
+    free(Temp);
+    return;
+}
+
 // 关闭所有任务,清理所有的链表节点
 static void _closeTaskAll(struct _timetask This) {
     if (This.Head != NULL) {
@@ -123,6 +149,7 @@ timetask initSetTime() {
     TaskInit.initTaskByName = _initTaskByName;
     TaskInit.stopTaskByName = _stopTaskByName;
     TaskInit.resetTaskByName = _resetTaskByName;
+    TaskInit.delTaskByName = _delTaskByName;
     TaskInit.closeTaskAll = _closeTaskAll;
     TaskInit.countSetTimeTask = _countSetTimeTask;
     return TaskInit;

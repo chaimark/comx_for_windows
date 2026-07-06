@@ -31,6 +31,7 @@ typedef struct _timetask {
     void (*initTaskByName)(struct _timetask This, strnew Name, uint64_t CountMaxNum, void (*TaskFunc)(void *), void *arg);
     void (*stopTaskByName)(struct _timetask This, strnew Name);
     void (*resetTaskByName)(struct _timetask This, strnew Name);
+    void (*delTaskByName)(struct _timetask This, strnew Name);
     void (*closeTaskAll)(struct _timetask This);
     void (*countSetTimeTask)(struct _timetask This);
 } timetask;

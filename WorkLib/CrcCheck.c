@@ -20,7 +20,7 @@ uint16_t get_crc_modbus(const unsigned char *input_str, size_t num_bytes) {
 }
 
 bool is_crc_modbus(strnew InputBuf, size_t num_bytes) {
-    if(InputBuf.MaxLen < num_bytes){
+    if((size_t)InputBuf.MaxLen < num_bytes){
         return false;
     }
     num_bytes -= 2;

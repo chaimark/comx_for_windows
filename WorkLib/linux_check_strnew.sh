@@ -29,7 +29,7 @@ declare -A TAINTED_VARS
 
 # ==================== 预定义正则表达式变量 (解决 Linux 语法报错的核心) ====================
 REGEX_FUNC='(^|[^a-zA-Z0-9_])(strnew|void|int|char)\*?[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\([^)]*\)[[:space:]]*\{'
-REGEX_ARRAY='(^|[^a-zA-Z0-9_])(char|int[0-9]*_t|uint[0-9]*_t|int)[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\[[^]]+\]'
+REGEX_ARRAY='(^|[^a-zA-Z0-9_])(static[[:space:]]+)?(char|int[0-9]*_t|uint[0-9]*_t|int)[[:space:]]+([a-zA-Z0-9_]+)[[:space:]]*\[[^]]+\]'
 REGEX_NEWSTR='(^|[^a-zA-Z0-9_])newString[[:space:]]*\([[:space:]]*([a-zA-Z0-9_]+)'
 REGEX_NEWNAME='([a-zA-Z0-9_]+)[[:space:]]*=[[:space:]]*NEW_NAME[[:space:]]*\([[:space:]]*([a-zA-Z0-9_]+)[[:space:]]*\)'
 REGEX_ALIAS='([a-zA-Z0-9_]+)[[:space:]]*=[[:space:]]*&?([a-zA-Z0-9_]+)([^a-zA-Z0-9_]|$)'
@@ -63,15 +63,19 @@ while IFS= read -r line || [ -n "$line" ]; do
         continue
     fi
 
-    # 如果在全局区域，不进行逃逸分析
+    # 如果在全局区域, 不进行逃逸分析
     if [ "$CURRENT_FUNCTION" = "Global" ]; then
         continue
     fi
 
     # 3. 识别本地栈空间数组
     if [[ "$line" =~ $REGEX_ARRAY ]]; then
-        var_name="${BASH_REMATCH[3]}"
-        LOCAL_ARRAYS["$var_name"]=1
+        var_name="${BASH_REMATCH[4]}"
+        storage="${BASH_REMATCH[2]}"
+        if [ -z "$storage" ]; then
+            # 只有非 static 的数组才标记为栈数据
+            LOCAL_ARRAYS["$var_name"]=1
+        fi
     fi
 
     # 4. 识别 newString 宏
@@ -117,7 +121,7 @@ while IFS= read -r line || [ -n "$line" ]; do
         fi
     fi
 
-done <<< "$CLEANED_CONTENT"
+done <<<"$CLEANED_CONTENT"
 
 # 最终判定退出状态
 if [ "$TOTAL_ERRORS" -eq 0 ]; then

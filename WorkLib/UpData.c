@@ -23,7 +23,7 @@ static int flashCheckReadPageData(uint32_t addr, uint8_t *buf, int len) {
     }
     return 0;
 }
-// 把 buf 开始的数据，写入到 addr 开始的地址中, 并读出校验
+// 把 buf 开始的数据, 写入到 addr 开始的地址中, 并读出校验
 int flash_write_page(uint32_t addr, uint8_t *buf) {
     FLASH_EraseInitTypeDef EraseInitStruct;
     uint32_t PageError;
@@ -32,11 +32,11 @@ int flash_write_page(uint32_t addr, uint8_t *buf) {
 
     // 尝试最多3次
     for (int i = 0; i < 3; i++) {
-        // 1. 初始化页擦除结构体
+        // 初始化页擦除结构体
         EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
         EraseInitStruct.PageAddress = addr;
         EraseInitStruct.NbPages = 1;
-        // 2. 擦除页
+        // 擦除页
         if (HAL_FLASH_Unlock() != HAL_OK) {
             return -1;
         }
@@ -45,7 +45,7 @@ int flash_write_page(uint32_t addr, uint8_t *buf) {
             HAL_FLASH_Lock();
             continue;
         }
-        // 3. 写入数据
+        // 写入数据
         for (uint32_t i = 0; i < words_count; i++) {
             if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr + i * 4, ((uint32_t *)buf)[i]) != HAL_OK) {
                 HAL_FLASH_Lock();
@@ -53,7 +53,7 @@ int flash_write_page(uint32_t addr, uint8_t *buf) {
             }
         }
         HAL_FLASH_Lock();
-        // 4. 校验
+        // 校验
         if (flashCheckReadPageData(addr, buf, PAGE_SIZE) == 0) {
             return 0; // 写入成功
         }
@@ -74,8 +74,8 @@ void flash_read_page(uint32_t addr, uint8_t *buf) {
     }
 }
 
-/////////////////////////////////////
-/////////////////////////////////////
+////////////////***********************************////////////////
+////////////////***********************************////////////////
 
 // 读标志扇区
 void updataReadSign(void) {
@@ -107,7 +107,7 @@ int updataCheck(void) {
         return -1;
     }
     MyPrintf("updata find page = %d\r\n", UpdataParam.pageNum);
-    // 有已经更新的待运行的程序，需要校验
+    // 有已经更新的待运行的程序, 需要校验
     for (int i = 0; i < UpdataParam.pageNum; i++) {
         memset(UpdataData.Page8Buff, 0, PAGE_SIZE);                           // 初始化读取空间
         flash_read_page(UPDATA_PAGE_BEGIN + (i * 512), UpdataData.Page8Buff); // 读
@@ -127,7 +127,7 @@ int updataCheck(void) {
 // copy 程序到运行区
 int updataCopyProgram(void) {
     uint32_t addr = 0;
-    int Flag = 0; //升级标记
+    int Flag = 0; // 升级标记
     for (int j = 0; j < 3; j++) {
         for (int i = 0; i < UpdataParam.pageNum; i++) {
             // 读
@@ -176,7 +176,7 @@ int NowPackIsGotoNextPage(int NowPageNum, int NowPackNum) {
     }
     return ((NowPageNum + 1) * PAGE_SIZE - NowPackNum * UpdataData.PackLen); // 当前页剩余空间
 }
-// 把当前包存入缓存区，如果缓存区满，则写 flash
+// 把当前包存入缓存区, 如果缓存区满, 则写 flash
 // 备注： NowPackNum == -1 则将剩下缓存区写入 flash
 int SaveUpdataToPage8Buff(int NowPageNum, int NowPackNum, strnew NowCodeHex) {
     if (NowPageNum != UpdataData.NowPageNum) { // 不同页, 写 flash
@@ -232,7 +232,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         FlagCodeNum = 3;
         goto OverSub;
     }
-    // 存在版本信息，准备升级，或重新升级
+    // 存在版本信息, 准备升级, 或重新升级
     if (BinCode.isJsonNull(&BinCode, "PackLen") >= 0) {
         updataInit();
         if ((unsigned char)UpdataData.Sign == 0) { // 第一次升级
@@ -248,8 +248,8 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         goto OverSub;
     }
     BinCode.getString(&BinCode, "Code", CodeStr);
-    CodeStr.MaxLen = ASCIIToHEX2(CodeStr.Name._char, CodeStr.getStrlen(&CodeStr), CodeStr.Name._char,
-                                 CodeStr.getStrlen(&CodeStr) / 2);
+#warning "需要评估原地转换造成的影响"
+    CodeStr.MaxLen = ASCIIToHEX2(CodeStr,CodeStr);
     // 计算校验
     for (int i = 0; i < CodeStr.MaxLen; i++) {
         checkSum += CodeStr.Name._char[i];
@@ -260,8 +260,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         goto OverSub;
     }
     UpdataData.NowPackNum = BinCode.getInt(&BinCode, "NowPackNum"); // 获取包序号
-    FlagCodeNum = SaveUpdataToPage8Buff(ComputeNeedPage(UpdataData.NowPackNum, UpdataData.PackLen),
-                                        UpdataData.NowPackNum, CodeStr);
+    FlagCodeNum = SaveUpdataToPage8Buff(ComputeNeedPage(UpdataData.NowPackNum, UpdataData.PackLen),UpdataData.NowPackNum, CodeStr);
 OverSub:
     if (UpdataData.NowLen_Page8Buff == PAGE_SIZE) {
         writeUpdataBuffDataToFlash(UpdataData.NowPageNum);

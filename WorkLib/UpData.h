@@ -1,8 +1,8 @@
 #ifndef __UPDATA_H__
 #define __UPDATA_H__
 
-// #define OPEN_FLASH_256_LIB
-#define ISBootLoader 1
+#define OPEN_FLASH_256_LIB
+#define ISBootLoader 0
 // true
 // false
 #include "PublicLib_No_One.h"
@@ -31,14 +31,14 @@ void flash_read_page(uint32_t addr, uint8_t *buf);
 // #define FM33LC026_FLASH_EN // 选择打开 FM33LC026 的 flash
 #ifndef OPEN_FLASH_256_LIB
 // Flash Size == 128k
-#define UPDATA_PAGE_SIGN 0x1F000
-#define UPDATA_PAGE_BEGIN 0x11800
-#define UPDATA_PAGE_END 0x1F000
+#define UPDATA_PAGE_BEGIN 0x11C00
+#define UPDATA_PAGE_END 0x1F800
+#define UPDATA_PAGE_SIGN 0x1F800
 #else
 // Flash Size == 256k
-#define UPDATA_PAGE_SIGN 0x3E000
-#define UPDATA_PAGE_BEGIN 0x23000
-#define UPDATA_PAGE_END 0x3E000
+#define UPDATA_PAGE_BEGIN 0x21C00
+#define UPDATA_PAGE_END 0x3F800
+#define UPDATA_PAGE_SIGN 0x3F800
 #endif
 
 #define UPDATA_SIGN 0xaa55aa55

@@ -17,8 +17,7 @@ extern uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowD
 extern uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
 extern TimeStuClass timestampToRTCData(uint32_t timestamp);
 extern int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay);
-#ifdef USE_RTOS
-#if (USE_RTOS == 0U) // 使用 RTOS
+#ifdef FREERTOS_CONFIG_H
 #include "FreeRTOS.h"
 #include "task.h"
 #ifndef ID_OF_CTRL_SUSPEND_DEFINED
@@ -28,7 +27,6 @@ typedef enum {
 } IDOfCtrlSuspend;
 #endif
 extern void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend CtrID, bool IsPause);
-#endif
 #endif
 extern void DelayUs_General(uint32_t Delay);
 static inline void DelayMs_General(uint32_t Delay) {

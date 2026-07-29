@@ -212,8 +212,8 @@ int SaveUpdataToPage8Buff(int NowPageNum, int NowPackNum, strnew NowCodeHex) {
     return 2;
 }
 // "data":{"PackLen":128}
-// "data":{"NowPackNum":0,"Code":"11223344556677889900","CsCheckNum":114}
-// "data":{"upDataFlag":true,"CsCheckNum":90,"pageNum":10}
+// "data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
+// "data":{"upDataFlag":true,"CheckNum":90,"pageNum":10}
 int UpData_Receive_Hex(JsonObject BinCode) {
     newString(CodeStr, PAGE_SIZE * 2);
     int FlagCodeNum; // 返回码
@@ -226,7 +226,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     }
     if (BinCode.getBool(&BinCode, "upDataFlag")) {
         UpdataParam.sign = UPDATA_SIGN;
-        UpdataParam.checkSum = BinCode.getInt(&BinCode, "CsCheckNum") + UpdataCsDeart;
+        UpdataParam.checkSum = BinCode.getInt(&BinCode, "CheckNum") + UpdataCsDeart;
         UpdataParam.pageNum = BinCode.getInt(&BinCode, "pageNum");
         updataWriteSign(); // 写标记区
         FlagCodeNum = 3;
@@ -254,7 +254,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     for (int i = 0; i < CodeStr.MaxLen; i++) {
         checkSum += CodeStr.Name._char[i];
     }
-    FlagCodeNum = BinCode.getInt(&BinCode, "CsCheckNum");
+    FlagCodeNum = BinCode.getInt(&BinCode, "CheckNum");
     if (checkSum != FlagCodeNum) {
         FlagCodeNum = 1;
         goto OverSub;

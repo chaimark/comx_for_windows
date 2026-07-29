@@ -76,7 +76,7 @@ static bool getFromTypeCheckDoubleOrFloat(strnew FromStr) {
 #endif
 
 static bool isNeedBySignDivde(strnew InputString, int Addr_Over) {
-    int ReFlag = 1; // 先预留，并寻找最后一个字符 '}'
+    int ReFlag = 1; // 先预留, 并寻找最后一个字符 '}'
     for (int i = Addr_Over; i > 0; i--) {
         if (InputString.Name._char[i] == ' ' || InputString.Name._char[i] == '\0') {
             continue;
@@ -247,27 +247,27 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
         isStringArray = true;
     }
     while (*EndItem != '\0') {
-        if (isEmpty(&s)) {                            // 判断当前栈是否为空，
-            if (*EndItem == '{' || *EndItem == '[') { // 如果是 { 或者 [ 就入栈，
+        if (isEmpty(&s)) {                            // 判断当前栈是否为空,
+            if (*EndItem == '{' || *EndItem == '[') { // 如果是 { 或者 [ 就入栈,
                 push(&s, *EndItem);
             } else if (isStringArray == false) {
-                if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
-                    ItemNum++;                                       // 如果是‘,’，则说明是一个元素结束 ItemNum++;
+                if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
+                    ItemNum++;                                       // 如果是‘,’, 则说明是一个元素结束 ItemNum++;
                     HeadItem = EndItem + 1;
                     EndItem = HeadItem;
                     continue;
                 }
             } else {
                 if (((*(EndItem - 1) == '\"') && (*EndItem == ',')) ||
-                    (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
-                    ItemNum++;                  // 如果是‘,’，则说明是一个元素结束 ItemNum++;
+                    (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
+                    ItemNum++;                  // 如果是‘,’, 则说明是一个元素结束 ItemNum++;
                     HeadItem = EndItem + 1;
                     EndItem = HeadItem;
                     continue;
                 }
             }
         } else {
-            if ((*EndItem == '}' || *EndItem == ']') && ((peek(&s) == '{') || (peek(&s) == '['))) { // 如果当前栈不为空，则在遇到 } 或者 ] 出栈，
+            if ((*EndItem == '}' || *EndItem == ']') && ((peek(&s) == '{') || (peek(&s) == '['))) { // 如果当前栈不为空, 则在遇到 } 或者 ] 出栈,
                 pop(&s);
             }
         }
@@ -300,12 +300,12 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
         isStringArray = true;
     }
     while (ItemNum > 0 && *EndItem != '\0') {
-        if (isEmpty(&s)) {                            // 判断当前栈是否为空，
-            if (*EndItem == '{' || *EndItem == '[') { // 如果是 { 或者 [ 就入栈，
+        if (isEmpty(&s)) {                            // 判断当前栈是否为空,
+            if (*EndItem == '{' || *EndItem == '[') { // 如果是 { 或者 [ 就入栈,
                 push(&s, *EndItem);
             } else if (isStringArray == false) {
-                if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
-                    ItemNum--;                                       // 如果是‘,’，则说明是一个元素结束 ItemNum--;
+                if ((*EndItem == ',') || (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
+                    ItemNum--;                                       // 如果是‘,’, 则说明是一个元素结束 ItemNum--;
                     if (ItemNum != 0) {
                         HeadItem = EndItem + 1;
                         EndItem = HeadItem;
@@ -314,8 +314,8 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
                 }
             } else {
                 if (((*(EndItem - 1) == '\"') && (*EndItem == ',')) ||
-                    (*(EndItem + 1) == '\0')) { // 如果为空，则判断 EndItem 是否是‘,’
-                    ItemNum--;                  // 如果是‘,’，则说明是一个元素结束 ItemNum--;
+                    (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
+                    ItemNum--;                  // 如果是‘,’, 则说明是一个元素结束 ItemNum--;
                     if (ItemNum != 0) {
                         HeadItem = EndItem + 1;
                         EndItem = HeadItem;
@@ -324,7 +324,7 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
                 }
             }
         } else {
-            if (*EndItem == '}' || *EndItem == ']') { // 如果当前栈不为空，则在遇到 } 或者 ] 出栈，
+            if (*EndItem == '}' || *EndItem == ']') { // 如果当前栈不为空, 则在遇到 } 或者 ] 出栈,
                 pop(&s);
             }
         }
@@ -464,7 +464,7 @@ static bool Obj_getBool(struct _JsonObject This, char Key[]) {
     }
     return ResBool;
 }
-// 不支持原地转换，避免破环 json 数据
+// 不支持原地转换, 避免破环 json 数据
 static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
     getKeyName(SonStr, 50, Key);
     char *KeyP = NULL;
@@ -490,7 +490,7 @@ static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
     }
     return;
 }
-// 注意输出地址与原json字符串地址一致时，会破坏原数据
+// 注意输出地址与原json字符串地址一致时, 会破坏原数据
 static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strnew OutStr) {
     JsonArray tempJsonArr = newJsonArrayByString(OutStr);
     getKeyName(SonStr, 50, Key);
@@ -516,7 +516,7 @@ static struct _JsonArray Obj_getArray(struct _JsonObject This, char Key[], strne
     }
     return tempJsonArr;
 }
-// 注意输出地址与原json字符串地址一致时，会破坏原数据
+// 注意输出地址与原json字符串地址一致时, 会破坏原数据
 static struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], strnew OutStr) {
     JsonObject tempJsonObj = newJsonObjectByString(OutStr);
     getKeyName(SonStr, 50, Key);
@@ -560,17 +560,15 @@ JsonObject newJsonObjectByString(strnew DataInit) {
 
 //==========================================================================================//
 //==========================================================================================//
+#include "CrcCheck.h"
 void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
-    int CheckNum = 0;
     int AddrOver = strlen(InputJsonStrObj.JsonString.Name._char);
-    if ((AddrOver + (int)strlen(",\"NowCheckNum\":xxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
+    if ((AddrOver + (int)strlen(",\"NowCheckNum\":xxxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
         return; // 空间不足以生成 cs 校验
     }
     // 计算 cs 或其他检验算法
-    for (int i = 0; i < AddrOver; i++) {
-        CheckNum += InputJsonStrObj.JsonString.Name._char[i];
-    }
-    addJsonItemData(InputJsonStrObj.JsonString, "NowCheckNum:%d", (CheckNum % 256));
+    uint16_t CheckNum = get_crc_modbus(InputJsonStrObj.JsonString, AddrOver);
+    addJsonItemData(InputJsonStrObj.JsonString, "NowCheckNum:%d", CheckNum);
     return;
 }
 bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
@@ -586,13 +584,12 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     }
     (*(PEnd++)) = '}';
     (*PEnd) = '\0';
-    // 计算 cs 或其他检验算法
-    int CheckNum = 0;
-    for (size_t i = 0; i < strlen(JsonInputStr.Name._char); i++) {
-        CheckNum += JsonInputStr.Name._char[i];
-    }
     if (JsonInputStr.Name._char != JsonOutputStr.Name._char) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }
-    return ((CheckNum == NowCheckNum) ? true : false);
+    // 计算 cs 或其他检验算法
+    if (get_crc_modbus(JsonInputStr, strlen(JsonInputStr.Name._char)) == (uint16_t)NowCheckNum) {
+        return true;
+    }
+    return false;
 }

@@ -211,9 +211,17 @@ int SaveUpdataToPage8Buff(int NowPageNum, int NowPackNum, strnew NowCodeHex) {
     addHex_FF_ToBuff(); // 最后一页需要补 0xFF
     return 2;
 }
-// "data":{"PackLen":128}
-// "data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
-// "data":{"upDataFlag":true,"CheckNum":90,"pageNum":10}
+
+/*
+ResFlag == 0 // 单片机准备开始升级 收到 PackLen
+ResFlag == 1 // 校验错误或其天失败
+ResFlag == 2 // 当前包写入成功
+ResFlag == 3 // 单片机准备结束升级 收到 upDataFlag
+
+"data":{"PackLen":128}
+"data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
+"data":{"upDataFlag":true,"CheckNum":114,"pageNum":10}
+*/
 int UpData_Receive_Hex(JsonObject BinCode) {
     newString(CodeStr, PAGE_SIZE * 2);
     int FlagCodeNum; // 返回码
@@ -254,8 +262,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     for (int i = 0; i < CodeStr.MaxLen; i++) {
         checkSum += CodeStr.Name._char[i];
     }
-    FlagCodeNum = BinCode.getInt(&BinCode, "CheckNum");
-    if (checkSum != FlagCodeNum) {
+    if (checkSum != BinCode.getInt(&BinCode, "CheckNum")) {
         FlagCodeNum = 1;
         goto OverSub;
     }

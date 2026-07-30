@@ -151,7 +151,7 @@ int updataCopyProgram(void) {
     return Flag;
 }
 #else
-uint8_t UpdataCsDeart; // 校验差
+uint8_t UpdataCsDelat; // 校验差
 // 读取 flash 数据 ==> 缓存区
 void readFlashDataToUpdataBuff(uint8_t PageNum) {
     flash_read_page((UPDATA_PAGE_BEGIN + PageNum * PAGE_SIZE), UpdataData.Page8Buff);
@@ -206,7 +206,7 @@ int SaveUpdataToPage8Buff(int NowPageNum, int NowPackNum, strnew NowCodeHex) {
         return 2;
     }
     for (int i = 0; i < (PAGE_SIZE - UpdataData.NowLen_Page8Buff); i++) {
-        UpdataCsDeart += 0xFF;
+        UpdataCsDelat += 0xFF;
     }
     addHex_FF_ToBuff(); // 最后一页需要补 0xFF
     return 2;
@@ -218,12 +218,15 @@ ResFlag == 1 // 校验错误或其天失败
 ResFlag == 2 // 当前包写入成功
 ResFlag == 3 // 单片机准备结束升级 收到 upDataFlag
 
-"data":{"PackLen":128}
+"data":{"PackLen":10}
 "data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
 "data":{"upDataFlag":true,"CheckNum":114,"pageNum":10}
 */
 int UpData_Receive_Hex(JsonObject BinCode) {
-    newString(CodeStr, PAGE_SIZE * 2);
+    if(BinCode.JsonString.MaxLen > 1024){
+        return -1;
+    }
+    newString(CodeStr, 1024);
     int FlagCodeNum; // 返回码
     uint8_t checkSum = 0;
     if (UpdataData.Sign != 0xB2) {
@@ -235,7 +238,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     }
     if (BinCode.getBool(&BinCode, "upDataFlag")) {
         UpdataParam.sign = UPDATA_SIGN;
-        UpdataParam.checkSum = BinCode.getInt(&BinCode, "CheckNum") + UpdataCsDeart;
+        UpdataParam.checkSum = BinCode.getInt(&BinCode, "CheckNum") + UpdataCsDelat;
         UpdataParam.pageNum = BinCode.getInt(&BinCode, "pageNum");
         updataWriteSign(); // 写标记区
         FlagCodeNum = 3;

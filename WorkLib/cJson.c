@@ -588,8 +588,5 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }
     // 计算 cs 或其他检验算法
-    if (get_crc_modbus(JsonInputStr, strlen(JsonInputStr.Name._char)) == (uint16_t)NowCheckNum) {
-        return true;
-    }
-    return false;
+    return is_crc_modbus(JsonInputStr, (strlen(JsonInputStr.Name._char) + 2));
 }

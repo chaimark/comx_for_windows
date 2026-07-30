@@ -8,7 +8,8 @@ uint16_t get_crc_modbus(strnew InputBuf, size_t num_bytes) {
         return crc;
     }
     while (num_bytes--) {
-        crc ^= (uint16_t)*input_str++;
+        crc ^= (uint16_t)*input_str;
+        input_str++;
         for (uint8_t i = 0; i < 8; i++) {
             if (crc & 0x0001) {
                 crc = (crc >> 1) ^ CRC_POLY_16;

@@ -222,11 +222,12 @@ ResFlag == 3 // 单片机准备结束升级 收到 upDataFlag
 "data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
 "data":{"upDataFlag":true,"CheckNum":114,"pageNum":10}
 */
+static uint8_t CodeStrSpace[1024] = {0};
 int UpData_Receive_Hex(JsonObject BinCode) {
     if(BinCode.JsonString.MaxLen > 1024){
         return -1;
     }
-    newString(CodeStr, 1024);
+    strnew CodeStr = NEW_NAME(CodeStrSpace);
     int FlagCodeNum; // 返回码
     uint8_t checkSum = 0;
     if (UpdataData.Sign != 0xB2) {
@@ -256,7 +257,6 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         goto OverSub;
     }
     BinCode.getString(&BinCode, "Code", CodeStr);
-#warning "需要评估原地转换造成的影响"
     CodeStr.MaxLen = ASCIIToHEX2(CodeStr, CodeStr);
     // 计算校验
     for (int i = 0; i < CodeStr.MaxLen; i++) {

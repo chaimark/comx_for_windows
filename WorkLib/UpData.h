@@ -20,8 +20,8 @@
 #endif
 
 // PAGE_SIZE == 512
-#ifdef FL_FLASH_PAGE_SIZE_BYTE
-#define PAGE_SIZE FL_FLASH_PAGE_SIZE_BYTE
+#ifdef FLASH_PAGE_SIZE    
+#define PAGE_SIZE FLASH_PAGE_SIZE    
 #else
 #define PAGE_SIZE 512
 #endif
@@ -45,7 +45,7 @@ void flash_read_page(uint32_t addr, uint8_t *buf);
 
 // 地址偏移
 #define UPDATA_MCU_BASE 0x08000000
-#define UPDATA_MCU_OFFSET 0x4000 // 前 16k 是bootloader
+#define UPDATA_MCU_OFFSET 0x00004000 // 前 16k 是bootloader
 
 typedef struct _UpdataFlag {
     uint32_t sign;    // 标志位

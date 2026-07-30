@@ -228,6 +228,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     uint8_t checkSum = 0;
     if (UpdataData.Sign != 0xB2) {
         if (BinCode.isJsonNull(&BinCode, "PackLen") < 0) {
+            UpdataData.Sign = 0; // 没开始升级, 重置标志位
             FlagCodeNum = 0;
             goto OverSub;
         }
@@ -243,12 +244,8 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     // 存在版本信息, 准备升级, 或重新升级
     if (BinCode.isJsonNull(&BinCode, "PackLen") >= 0) {
         updataInit();
-        if ((unsigned char)UpdataData.Sign == 0) { // 第一次升级
-            UpdataData.PackLen = BinCode.getInt(&BinCode, "PackLen");
-        } else { // 重新升级
-            UpdataData.PackLen = BinCode.getInt(&BinCode, "PackLen");
-        }
-        UpdataData.Sign = 0xB2;
+        UpdataData.PackLen = BinCode.getInt(&BinCode, "PackLen");
+        UpdataData.Sign = 0xB2; // 开始升级
         UpdataData.NowPageNum = 0;
         UpdataData.NowLen_Page8Buff = 0;
         memset(UpdataData.Page8Buff, 0xFF, PAGE_SIZE);
@@ -257,7 +254,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
     }
     BinCode.getString(&BinCode, "Code", CodeStr);
 #warning "需要评估原地转换造成的影响"
-    CodeStr.MaxLen = ASCIIToHEX2(CodeStr,CodeStr);
+    CodeStr.MaxLen = ASCIIToHEX2(CodeStr, CodeStr);
     // 计算校验
     for (int i = 0; i < CodeStr.MaxLen; i++) {
         checkSum += CodeStr.Name._char[i];
@@ -267,7 +264,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         goto OverSub;
     }
     UpdataData.NowPackNum = BinCode.getInt(&BinCode, "NowPackNum"); // 获取包序号
-    FlagCodeNum = SaveUpdataToPage8Buff(ComputeNeedPage(UpdataData.NowPackNum, UpdataData.PackLen),UpdataData.NowPackNum, CodeStr);
+    FlagCodeNum = SaveUpdataToPage8Buff(ComputeNeedPage(UpdataData.NowPackNum, UpdataData.PackLen), UpdataData.NowPackNum, CodeStr);
 OverSub:
     if (UpdataData.NowLen_Page8Buff == PAGE_SIZE) {
         writeUpdataBuffDataToFlash(UpdataData.NowPageNum);

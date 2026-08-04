@@ -4,7 +4,7 @@ typedef enum {
     FL_FAIL = 0U,
     FL_PASS = !FL_FAIL
 } FL_ErrorStatus;
-// FL_FLASH_PAGE_SIZE_BYTE   512 页大小
+// FL_FLASH_PAGE_SIZE_BYTE   PAGE_SIZE 页大小
 // 0 ~ 63  块
 // 0 ~ 255 页
 UpdataFlag UpdataParam;
@@ -14,7 +14,7 @@ UpdataDataTemp UpdataData = {0};
 static int flashCheckReadPageData(uint32_t addr, uint8_t *buf, int len) {
     uint32_t TempHex = 0;
     uint32_t *PNote = (uint32_t *)addr;
-    for (size_t i = 0; i < PAGE_SIZE / sizeof(uint32_t); i++) {
+    for (size_t i = 0; i < (PAGE_SIZE / 4); i++) {
         TempHex = (*PNote);
         if (((uint32_t *)buf)[i] != TempHex) {
             return -1;
@@ -24,47 +24,10 @@ static int flashCheckReadPageData(uint32_t addr, uint8_t *buf, int len) {
     return 0;
 }
 // 把 buf 开始的数据, 写入到 addr 开始的地址中, 并读出校验
-int flash_write_page(uint32_t addr, uint8_t *buf) {
-    FLASH_EraseInitTypeDef EraseInitStruct;
-    uint32_t PageError;
-    HAL_StatusTypeDef status;
-    uint32_t words_count = PAGE_SIZE / 4; // 计算需要写入的32位字数
-
-    // 尝试最多3次
-    for (int i = 0; i < 3; i++) {
-        // 初始化页擦除结构体
-        EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
-        EraseInitStruct.PageAddress = addr;
-        EraseInitStruct.NbPages = 1;
-        // 擦除页
-        if (HAL_FLASH_Unlock() != HAL_OK) {
-            return -1;
-        }
-        status = HAL_FLASHEx_Erase(&EraseInitStruct, &PageError);
-        if (status != HAL_OK) {
-            HAL_FLASH_Lock();
-            continue;
-        }
-        // 写入数据
-        for (uint32_t i = 0; i < words_count; i++) {
-            if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr + i * 4, ((uint32_t *)buf)[i]) != HAL_OK) {
-                HAL_FLASH_Lock();
-                continue;
-            }
-        }
-        HAL_FLASH_Lock();
-        // 校验
-        if (flashCheckReadPageData(addr, buf, PAGE_SIZE) == 0) {
-            return 0; // 写入成功
-        }
-    }
-    return -1; // 写入失败
-}
-
 void flash_read_page(uint32_t addr, uint8_t *buf) {
     uint32_t TempHex = 0;
     uint32_t *PNote = (uint32_t *)addr;
-    for (size_t i = 0; i < PAGE_SIZE / sizeof(uint32_t); i++) {
+    for (size_t i = 0; i < (PAGE_SIZE / 4); i++) {
         TempHex = (*PNote);
         buf[i * 4 + 0] = (TempHex & 0x000000FF) >> 0;
         buf[i * 4 + 1] = (TempHex & 0x0000FF00) >> 8;
@@ -72,6 +35,49 @@ void flash_read_page(uint32_t addr, uint8_t *buf) {
         buf[i * 4 + 3] = (TempHex & 0xFF000000) >> 24;
         PNote++;
     }
+}
+
+// 把 buf 开始的数据, 写入到 addr 开始的地址中, 并读出校验
+int flash_write_page(uint32_t addr, uint8_t *buf) {
+    int RsfFlag = -1; // 默认写入失败
+    FLASH_EraseInitTypeDef EraseInitStruct;
+    uint32_t PageError;
+    HAL_StatusTypeDef status;
+    uint32_t words_count = PAGE_SIZE / 4; // 计算需要写入的32位字数
+    if (addr % PAGE_SIZE != 0) {
+        return -1;  // 或者进行页首对齐处理
+    }
+    // 尝试最多3次
+    for (int n = 0; n < 3; n++) {     
+        // 初始化页擦除结构体
+        EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES; /*!<Flash mass erase activation*/
+        EraseInitStruct.PageAddress = addr;
+        EraseInitStruct.NbPages = 1;
+        // 解锁Flash
+        if (HAL_FLASH_Unlock() != HAL_OK) {
+            continue;
+        }
+        // 擦除
+        status = HAL_FLASHEx_Erase(&EraseInitStruct, &PageError);
+        if (status != HAL_OK) {
+            HAL_FLASH_Lock();
+            continue;
+        }
+        __disable_irq();
+        // 写入数据
+        for (uint32_t i = 0; i < words_count; i++) {
+            HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr + i * 4, ((uint32_t *)buf)[i]);
+        }
+        __enable_irq();
+        HAL_FLASH_Lock();
+        // 校验
+        if (flashCheckReadPageData(addr, buf, PAGE_SIZE) == 0) {
+            RsfFlag = 0; // 写入成功
+            goto EndFlash;
+        }
+    }
+EndFlash:
+    return RsfFlag;
 }
 
 ////////////////***********************************////////////////
@@ -110,8 +116,8 @@ int updataCheck(void) {
     // 有已经更新的待运行的程序, 需要校验
     for (int i = 0; i < UpdataParam.pageNum; i++) {
         memset(UpdataData.Page8Buff, 0, PAGE_SIZE);                           // 初始化读取空间
-        flash_read_page(UPDATA_PAGE_BEGIN + (i * 512), UpdataData.Page8Buff); // 读
-        if (flashCheckReadPageData(UPDATA_PAGE_BEGIN + (i * 512), UpdataData.Page8Buff, PAGE_SIZE) < 0) {
+        flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff); // 读
+        if (flashCheckReadPageData(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff, PAGE_SIZE) < 0) {
             return -1; // flash 与 buff 不一致读取失败
         }
         // 累加校验和
@@ -131,10 +137,10 @@ int updataCopyProgram(void) {
     for (int j = 0; j < 3; j++) {
         for (int i = 0; i < UpdataParam.pageNum; i++) {
             // 读
-            flash_read_page(UPDATA_PAGE_BEGIN + (i * 512), UpdataData.Page8Buff);
+            flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff);
 
             // 写
-            addr = UPDATA_MCU_OFFSET + (i * 512);
+            addr = (UPDATA_MCU_BASE + UPDATA_MCU_OFFSET) + (i * PAGE_SIZE);
             if (flash_write_page(addr, UpdataData.Page8Buff) < 0) {
                 MyPrintf("updata page %04x program fail\r\n", addr);
                 Flag = -1;
@@ -164,7 +170,7 @@ void writeUpdataBuffDataToFlash(uint8_t PageNum) {
 int ComputeNeedPage(int PackNum, int PackLen) {
     return ((PackNum * PackLen) / PAGE_SIZE);
 }
-// 为不满 512 的缓存空间 补充 0xff
+// 为不满 PAGE_SIZE 的缓存空间 补充 0xff
 void addHex_FF_ToBuff(void) {
     memset(&UpdataData.Page8Buff[UpdataData.NowLen_Page8Buff], 0xFF, PAGE_SIZE - UpdataData.NowLen_Page8Buff);
     UpdataData.NowLen_Page8Buff = PAGE_SIZE;
@@ -222,10 +228,10 @@ ResFlag == 3 // 单片机准备结束升级 收到 upDataFlag
 "data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
 "data":{"upDataFlag":true,"CheckNum":114,"pageNum":10}
 */
-static uint8_t CodeStrSpace[1024] = {0};
+static uint8_t CodeStrSpace[1025] = {0};
 int UpData_Receive_Hex(JsonObject BinCode) {
-    if(BinCode.JsonString.MaxLen > 1024){
-        return -1;
+    if (BinCode.JsonString.MaxLen > (1024 + 50)) {
+         return -1;
     }
     strnew CodeStr = NEW_NAME(CodeStrSpace);
     int FlagCodeNum; // 返回码

@@ -19,33 +19,33 @@
 #include "../../WorkLib/Inc/NumberBaseLib.h"
 #endif
 
-// PAGE_SIZE == 512
-#ifdef FLASH_PAGE_SIZE    
-#define PAGE_SIZE FLASH_PAGE_SIZE    
+// PAGE_SIZE == 2048
+#ifdef FLASH_PAGE_SIZE
+#define PAGE_SIZE FLASH_PAGE_SIZE
 #else
 #define PAGE_SIZE 512
 #endif
 int flash_write_page(uint32_t addr, uint8_t *buf);
 void flash_read_page(uint32_t addr, uint8_t *buf);
 
-// #define FM33LC026_FLASH_EN // 选择打开 FM33LC026 的 flash
-#ifndef OPEN_FLASH_256_LIB
-// Flash Size == 128k
-#define UPDATA_PAGE_BEGIN 0x11C00
-#define UPDATA_PAGE_END 0x1F800
-#define UPDATA_PAGE_SIGN 0x1F800
-#else
-// Flash Size == 256k
-#define UPDATA_PAGE_BEGIN 0x21C00
-#define UPDATA_PAGE_END 0x3F800
-#define UPDATA_PAGE_SIGN 0x3F800
-#endif
-
-#define UPDATA_SIGN 0xaa55aa55
-
 // 地址偏移
 #define UPDATA_MCU_BASE 0x08000000
 #define UPDATA_MCU_OFFSET 0x00004000 // 前 16k 是bootloader
+
+// #define FM33LC026_FLASH_EN // 选择打开 FM33LC026 的 flash
+#ifndef OPEN_FLASH_256_LIB
+// Flash Size == 128k
+#define UPDATA_PAGE_BEGIN (UPDATA_MCU_BASE + 0x11800)
+#define UPDATA_PAGE_END (UPDATA_MCU_BASE + 0x1F000)
+#define UPDATA_PAGE_SIGN (UPDATA_MCU_BASE + 0x1F000)
+#else
+// Flash Size == 256k
+#define UPDATA_PAGE_BEGIN (UPDATA_MCU_BASE + 0x21800)
+#define UPDATA_PAGE_END (UPDATA_MCU_BASE + 0x3F000)
+#define UPDATA_PAGE_SIGN (UPDATA_MCU_BASE + 0x3F000)
+#endif
+
+#define UPDATA_SIGN 0xaa55aa55
 
 typedef struct _UpdataFlag {
     uint32_t sign;    // 标志位

@@ -6,8 +6,8 @@ XxxxXxxxx <==> 局部变量
 xxxxXxxx() <==> 函数
 xxxxx_xxxx <==> typedef(数据类型)
 */
-#ifndef __NUMBERBASELIC_H__
-#define __NUMBERBASELIC_H__
+#ifndef __NUMBER_BASE_LIB_H__
+#define __NUMBER_BASE_LIB_H__
 
 #include "StrLib.h"
 #include <stdint.h>

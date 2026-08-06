@@ -1,5 +1,5 @@
-#ifndef __TEST__
-#define __TEST__
+#ifndef __TEST_H__
+#define __TEST_H__
 
 #include "./StrLib.h"
 #include <stdbool.h>

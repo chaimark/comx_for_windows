@@ -1,5 +1,5 @@
-#ifndef __CJSON__
-#define __CJSON__
+#ifndef __CJSON_H__
+#define __CJSON_H__
 
 #include "StrLib.h"
 #include <stdint.h>

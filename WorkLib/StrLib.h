@@ -1,5 +1,5 @@
-#ifndef __STRLIB_H__ // 如果 STRLIB_H 未定义
-#define __STRLIB_H__ // 定义 STRLIB_H
+#ifndef __STR_LIB_H__ // 如果 STR_LIB_H 未定义
+#define __STR_LIB_H__ // 定义 STR_LIB_H
 
 #include <stdbool.h>
 #include <stddef.h>

@@ -1,5 +1,5 @@
-#ifndef __TIMELIB__
-#define __TIMELIB__
+#ifndef __TIME_LIB_H__
+#define __TIME_LIB_H__
 
 #include "PublicLib_No_One.h"
 #include "NumberBaseLib.h"

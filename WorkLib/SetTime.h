@@ -1,5 +1,5 @@
-#ifndef __SETTIME_H__
-#define __SETTIME_H__
+#ifndef __SET_TIME_H__
+#define __SET_TIME_H__
 
 #include "StrLib.h"
 #include <stdbool.h>

@@ -45,10 +45,10 @@ int flash_write_page(uint32_t addr, uint8_t *buf) {
     HAL_StatusTypeDef status;
     uint32_t words_count = PAGE_SIZE / 4; // 计算需要写入的32位字数
     if (addr % PAGE_SIZE != 0) {
-        return -1;  // 或者进行页首对齐处理
+        return -1; // 或者进行页首对齐处理
     }
     // 尝试最多3次
-    for (int n = 0; n < 3; n++) {     
+    for (int n = 0; n < 3; n++) {
         // 初始化页擦除结构体
         EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES; /*!<Flash mass erase activation*/
         EraseInitStruct.PageAddress = addr;
@@ -115,7 +115,7 @@ int updataCheck(void) {
     MyPrintf("updata find page = %d\r\n", UpdataParam.pageNum);
     // 有已经更新的待运行的程序, 需要校验
     for (int i = 0; i < UpdataParam.pageNum; i++) {
-        memset(UpdataData.Page8Buff, 0, PAGE_SIZE);                           // 初始化读取空间
+        memset(UpdataData.Page8Buff, 0, PAGE_SIZE);                                 // 初始化读取空间
         flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff); // 读
         if (flashCheckReadPageData(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff, PAGE_SIZE) < 0) {
             return -1; // flash 与 buff 不一致读取失败
@@ -231,7 +231,7 @@ ResFlag == 3 // 单片机准备结束升级 收到 upDataFlag
 static uint8_t CodeStrSpace[1025] = {0};
 int UpData_Receive_Hex(JsonObject BinCode) {
     if (BinCode.JsonString.MaxLen > (1024 + 50)) {
-         return -1;
+        return -1;
     }
     strnew CodeStr = NEW_NAME(CodeStrSpace);
     int FlagCodeNum; // 返回码

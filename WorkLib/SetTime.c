@@ -12,7 +12,7 @@ static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
         }
         Temp = Temp->next;
     }
-    if(i < This.NumberOfTimeTask) {
+    if (i < This.NumberOfTimeTask) {
         return Temp;
     }
     return NULL;

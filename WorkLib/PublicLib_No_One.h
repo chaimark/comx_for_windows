@@ -22,4 +22,3 @@ typedef struct _TimeStuClass {
  * 下面是用户程序相关的定义
  */
 #endif
-

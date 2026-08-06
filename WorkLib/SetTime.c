@@ -1,6 +1,4 @@
 #include "SetTime.h"
-// 对象 api
-#define NowNode This.Head->prev
 
 // 查找某个任务的地址
 static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
@@ -36,11 +34,11 @@ static int _addTaskNode(struct _timetask This, strnew Name) {
         Temp->next = Temp;
         Temp->prev = Temp;
         This.Head = Temp;
-        NowNode = This.Head;
+        This.Head->prev = This.Head;
     } else {
         Temp->next = This.Head;
-        Temp->prev = NowNode;
-        NowNode->next = Temp;
+        Temp->prev = This.Head->prev;
+        This.Head->prev->next = Temp;
         This.Head->prev = Temp;
     }
     return 0;
@@ -109,7 +107,7 @@ static void _closeTaskAll(struct _timetask This) {
             next = cur->next; // 先记住下一个节点
             free(cur);        // 释放当前节点的堆内存
             cur = next;
-        } while (cur != This.Head); // 当 cur 绕了一圈回到 Head 时，安全跳出循环
+        } while (cur != This.Head); // 当 cur 绕了一圈回到 Head 时, 安全跳出循环
         (This).Head = NULL;
     }
     (This).NumberOfTimeTask = 0;

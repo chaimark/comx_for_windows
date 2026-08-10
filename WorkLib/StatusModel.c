@@ -79,7 +79,10 @@ void _closeTaskFuncAll(struct _StatusDev This) {
 }
 
 // 执行某个任务
-void _ExecuteSteep(struct _StatusDev This) {
+void _ExecuteStep(struct _StatusDev This) {
+    if(This.IsRun == false){
+        return;
+    } 
     StatusTaskFunc *Temp = _getTaskById(&This, This.NextId);
     if (Temp != NULL) {
         Temp->TaskFunc(Temp->arg);
@@ -87,11 +90,13 @@ void _ExecuteSteep(struct _StatusDev This) {
 }
 
 // 初始化
-StatusDev initStatusDev(uint16_t NumberOfStatus) {
+StatusDev initStatusDev(void) {
     StatusDev TempStatusDev = {0};
     TempStatusDev.addTaskFuncNode = _addTaskFuncNode;
     TempStatusDev.delTaskFuncById = _delTaskFuncById;
     TempStatusDev.closeTaskFuncAll = _closeTaskFuncAll;
-    TempStatusDev.ExecuteSteep = _ExecuteSteep;
+    TempStatusDev.ExecuteStep = _ExecuteStep;
+    TempStatusDev.NextId = 1;
+    TempStatusDev.IsRun = true;
     return TempStatusDev;
 }

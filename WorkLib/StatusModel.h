@@ -17,14 +17,15 @@ typedef struct _StatusTaskFunc {
 typedef struct _StatusDev { 
     uint16_t NumberOfStatus;
     uint16_t NextId;
+    bool IsRun;
     StatusTaskFunc *Head;
     int (*addTaskFuncNode)(struct _StatusDev This, uint16_t InputId, void (*TaskFunc)(void *), void *arg);
     void (*delTaskFuncById)(struct _StatusDev This, uint16_t InputId);
     void (*closeTaskFuncAll)(struct _StatusDev This);
-    void (*ExecuteSteep)(struct _StatusDev This);
+    void (*ExecuteStep)(struct _StatusDev This);
 } StatusDev;
 
 // 状态机初始化
-extern StatusDev initStatusDev(uint16_t NumberOfStatus);
+extern StatusDev initStatusDev(void);
 
 #endif

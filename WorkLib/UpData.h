@@ -1,7 +1,7 @@
 #ifndef __UPDATA_H__
 #define __UPDATA_H__
 
-#define OPEN_FLASH_256_LIB
+// #define OPEN_FLASH_256_LIB
 #define ISBootLoader 0
 // true
 // false
@@ -15,8 +15,8 @@
 #define MyPrintf(...) HAL_Delay(10)
 
 #if (ISBootLoader == 0)
-#include "../../WorkLib/Inc/cJson.h"
-#include "../../WorkLib/Inc/NumberBaseLib.h"
+#include "cJson.h"
+#include "NumberBaseLib.h"
 #endif
 
 // PAGE_SIZE == 2048

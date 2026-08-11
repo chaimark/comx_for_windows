@@ -1,0 +1,24 @@
+{
+    "isShowTime":false,
+    "cmd_Name_Array":["clsCarLen","readver","rpid","setpid","rfk","wfk","setpwm","readuart","setuartx","rck","wck","readld","setld","updown","motorEEprom","run","reboot","ReSetCarLen"],
+    "cmd_Var_Array":[
+        "{'DevId':'992701','Cmd':'Write','Data':{'ClearPwm':true}}",
+        "{'DevId':'992701','Cmd':'Read','DataArr':['VersionId']}",
+        "{'DevId':'992701','Cmd':'Read','DataArr':['PIDTestCar']}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'PIDTestCar':{'IsOpenPid':$,'GoalResistanceFront':$,'GoalResistanceBack':$}}}",
+        "{'DevId':'992701','Cmd':'Read','DataArr':['KResistanceFront','BResistanceFront','KResistanceBack','BResistanceBack']}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'KResistanceFront':$,'BResistanceFront':$,'KResistanceBack':$,'BResistanceBack':$}}",
+        "{'DevId':'992701','Cmd':'Write','Data':{ 'PwmOutput':{'FreqHz':1000,'Chx':$,'HighPercent':$}}}",
+        "{'DevId':'992701','Cmd':'Read','DataArr':['UartManger']}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'UartManger':{'Com$':{'ByteSize':8,'StopBit':1,'Parity':'N','BaudRate':$}}}}",
+        "{'DevId':'992701','Cmd':'Read','DataArr':['KCarLen','KDegreeSpeed']}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'KCarLen':$,'KDegreeSpeed':$}}",
+        "{'DevId':'992701','Cmd':'Read','DataArr':['CarLen','DegreeSpeed','NowResistanceFront','NowResistanceBack']}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'CarLen':$}}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'LiftLock':$}}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'Inverter':{'MotorType':$,'MotorMaxOutFreq':$,'MotorFreqNow':$,'MotorStatus':0}}}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'Inverter':{'MotorFreqNow':$,'MotorStatus':$}}}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'ReBoot':true}}",
+        "{'DevId':'992701','Cmd':'Write','Data':{'StartCarLen':$,'CarLen':$}}"
+    ]
+}

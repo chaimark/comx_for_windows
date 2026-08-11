@@ -205,7 +205,7 @@ DWORD WINAPI ReadSerialThread(LPVOID lpParam) {
             } else if (bytesRead > 0) {
                 lastReceiveTime = GetTickCount(); // 更新接收时间
                 for (DWORD i = 0; i < bytesRead; i++) {
-                    printf("%02X", (unsigned char)buffer[i]);
+                    printf("%02X ", (unsigned char)buffer[i]);
                     IsResData = TRUE;
                 }
                 fflush(stdout);
@@ -217,7 +217,7 @@ DWORD WINAPI ReadSerialThread(LPVOID lpParam) {
                     if (bytesRead > 0) {
                         lastReceiveTime = GetTickCount(); // 更新接收时间
                         for (DWORD i = 0; i < bytesRead; i++) {
-                            printf("%02X", (unsigned char)buffer[i]);
+                            printf("%02X ", (unsigned char)buffer[i]);
                             IsResData = TRUE;
                         }
                         fflush(stdout);
@@ -255,7 +255,18 @@ DWORD isShortCmd(strnew CmdLine, DWORD bytesRead) {
     strnew_malloc(CmdLine_Copy, CmdLine.MaxLen + 1);
     memcpy_s(CmdLine_Copy.Name._char, CmdLine.MaxLen, CmdLine.Name._char, CmdLine.MaxLen);
     memset(CmdLine.Name._char, 0, CmdLine.MaxLen);
-    return ASCIIToHEX2(CmdLine_Copy, CmdLine);
+    // 使用sscanf读取所有十六进制数字，直到字符串结束
+    DWORD DataLen = 0;
+    unsigned int byte;
+    char *p = CmdLine_Copy.Name._char;
+    
+    while (sscanf(p, "%02x", &byte) == 1) {
+        CmdLine.Name._char[DataLen++] = (unsigned char)byte;
+        p += 2;  // 移动到下一个可能的十六进制数字
+        // 跳过可能的空格
+        while (*p == ' ') p++;
+    }
+    return DataLen;
 }
 
 

@@ -152,28 +152,14 @@ void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
 void DelayUs_General(uint32_t Delay) {
     usleep(Delay); // 微秒级延时
 }
-#elif defined(USE_HAL_DRIVER)
+#elif defined(__STM32F1xx_HAL_H)
 void DelayUs_General(uint32_t Delay) {
-    uint32_t ticks;
-    uint32_t told, tnow, reload, tcnt = 0;
-    reload = SysTick->LOAD;
-    ticks = Delay * (SystemCoreClock / 1000000);
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
-    told = SysTick->VAL;
-    while (1) {
-        tnow = SysTick->VAL;
-        if (tnow != told) {
-            if (tnow < told)
-                tcnt += told - tnow;
-            else
-                tcnt += reload - tnow + told;
-            told = tnow;
-            if (tcnt >= ticks)
-                break;
-        }
-    }
+    uint32_t StartTick = DWT->CYCCNT;
+    uint32_t DelayTicks = Delay * (SystemCoreClock / 1000000);
+    while ((DWT->CYCCNT - StartTick) < DelayTicks);
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif

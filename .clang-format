@@ -26,9 +26,21 @@ SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
 
 # 换行设置
-ColumnLimit: 0 # 行宽限制
+ColumnLimit: 9999 
 MaxEmptyLinesToKeep: 2
 KeepEmptyLinesAtTheStartOfBlocks: false
+
+# 禁止在操作符处换行
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: false
+
+# 禁止在函数参数处换行
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+
+# 禁止在函数调用处换行
+AlignAfterOpenBracket: DontAlign  # 不对齐，保持在一行
 
 # 指针和引用对齐
 PointerAlignment: Right
@@ -41,6 +53,5 @@ SortIncludes: false
 ReflowComments: true
 
 # 其他设置
-AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false

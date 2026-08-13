@@ -153,6 +153,7 @@ void DelayUs_General(uint32_t Delay) {
     usleep(Delay); // 微秒级延时
 }
 #elif defined(__STM32F1xx_HAL_H)
+#if 1
 void DelayUs_General(uint32_t Delay) {
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
@@ -164,6 +165,30 @@ void DelayUs_General(uint32_t Delay) {
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
 }
+#else
+void DelayUs_General(uint32_t Delay) {
+    uint32_t StartTick = (uint32_t)SysTick->VAL; 
+    uint32_t DelayTick = Delay * (SystemCoreClock / 1000000);
+#ifdef FREERTOS_CONFIG_H
+    closeOrOpenTaskSuspendAll(UsDelayFun, true);
+#endif
+    while (1) {
+        uint32_t NowVAL = (uint32_t)SysTick->VAL;
+        if (NowVAL == StartTick) {
+            continue;
+        }
+        uint32_t CountTickDelta = (NowVAL < StartTick ? StartTick - NowVAL : (uint32_t)SysTick->LOAD - (NowVAL - StartTick));
+        if (CountTickDelta >= DelayTick){
+            break;
+        }
+        DelayTick -= CountTickDelta;
+        StartTick = NowVAL;
+    }
+#ifdef FREERTOS_CONFIG_H
+    closeOrOpenTaskSuspendAll(UsDelayFun, false);
+#endif
+}
+#endif
 #else
 void DelayUs_General(uint32_t Delay) {
     LARGE_INTEGER freq, start, end;

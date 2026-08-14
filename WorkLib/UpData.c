@@ -86,8 +86,7 @@ EndFlash:
 // 读标志扇区
 void updataReadSign(void) {
     uint8_t *p = (uint8_t *)(&UpdataParam);
-    for (size_t i = 0; i < sizeof(UpdataFlag); i++)
-        p[i] = *(uint8_t *)(UPDATA_PAGE_SIGN + i);
+    for (size_t i = 0; i < sizeof(UpdataFlag); i++) p[i] = *(uint8_t *)(UPDATA_PAGE_SIGN + i);
 }
 // 写标志扇区
 void updataWriteSign(void) {

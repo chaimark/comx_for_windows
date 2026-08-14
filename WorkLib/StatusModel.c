@@ -80,9 +80,9 @@ void _closeTaskFuncAll(struct _StatusDev This) {
 
 // 执行某个任务
 void _ExecuteStep(struct _StatusDev This) {
-    if(This.IsRun == false){
+    if (This.IsRun == false) {
         return;
-    } 
+    }
     StatusTaskFunc *Temp = _getTaskById(&This, This.NextId);
     if (Temp != NULL) {
         Temp->TaskFunc(Temp->arg);

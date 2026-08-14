@@ -233,8 +233,7 @@ int doubleChStrToShortChStr(const strnew inputArray, strnew OutputArray) {
             return 0;
         }
         for (ResLen = 0; ResLen < (inputArray.MaxLen / 2); ResLen++) {
-            OutputArray.Name._char[ResLen] =
-                ((inputArray.Name._char[ResLen * 2] & 0x0F) << 4) | (inputArray.Name._char[ResLen * 2 + 1] & 0x0F);
+            OutputArray.Name._char[ResLen] = ((inputArray.Name._char[ResLen * 2] & 0x0F) << 4) | (inputArray.Name._char[ResLen * 2 + 1] & 0x0F);
         }
         return ResLen;
     }

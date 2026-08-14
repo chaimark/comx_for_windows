@@ -12,9 +12,9 @@ typedef struct _StatusTaskFunc {
     void *arg;
     struct _StatusTaskFunc *next;
     struct _StatusTaskFunc *prev;
-}StatusTaskFunc;
+} StatusTaskFunc;
 // 状态机
-typedef struct _StatusDev { 
+typedef struct _StatusDev {
     uint16_t NumberOfStatus;
     uint16_t NextId;
     bool IsRun;

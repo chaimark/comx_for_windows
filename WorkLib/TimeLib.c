@@ -28,8 +28,7 @@ static int calculate_days(int year, int month, int day) {
     return TotalDays;
 }
 // 计算时间戳(秒数)
-uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour, uint32_t NowMinute,
-                       uint32_t NowSecond) {
+uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowDay, uint32_t NowHour, uint32_t NowMinute, uint32_t NowSecond) {
     // 计算从1970年1月1日到指定日期的总天数
     int Days = calculate_days(NowYear, NowMonth, NowDay);
     // 转换为秒数
@@ -167,7 +166,7 @@ void DelayUs_General(uint32_t Delay) {
 }
 #else
 void DelayUs_General(uint32_t Delay) {
-    uint32_t StartTick = (uint32_t)SysTick->VAL; 
+    uint32_t StartTick = (uint32_t)SysTick->VAL;
     uint32_t DelayTick = Delay * (SystemCoreClock / 1000000);
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
@@ -178,7 +177,7 @@ void DelayUs_General(uint32_t Delay) {
             continue;
         }
         uint32_t CountTickDelta = (NowVAL < StartTick ? StartTick - NowVAL : (uint32_t)SysTick->LOAD - (NowVAL - StartTick));
-        if (CountTickDelta >= DelayTick){
+        if (CountTickDelta >= DelayTick) {
             break;
         }
         DelayTick -= CountTickDelta;

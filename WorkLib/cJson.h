@@ -42,7 +42,7 @@ extern JsonObject newJsonObjectByString(strnew DataInit); // 建立对象的函�
 /***************** Json 构建 *****************/
 extern void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...);
 #define newRootJsonObject(JsonStringSpace) JsonStringSpace.Name._char[0] = '{'
-#define newRootJsonArray(JsonStringSpace) JsonStringSpace.Name._char[0] = '['
+#define newRootJsonArray(JsonStringSpace)  JsonStringSpace.Name._char[0] = '['
 
 #define newClassJsonItem(JsonStringSpace, name, code, ClassType_1, ClassType_2)           \
     do {                                                                                  \
@@ -58,7 +58,7 @@ extern void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...);
     } while (0)
 
 #define newSubObjectJsonItem(JsonStringSpace, name, code) newClassJsonItem(JsonStringSpace, name, code, "{", "}")
-#define newSubArrayJsonItem(JsonStringSpace, name, code) newClassJsonItem(JsonStringSpace, name, code, "[", "]")
+#define newSubArrayJsonItem(JsonStringSpace, name, code)  newClassJsonItem(JsonStringSpace, name, code, "[", "]")
 
 /***************** Json 校验 *****************/
 extern void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj);

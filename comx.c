@@ -4,11 +4,10 @@
 #include <ctype.h>
 #include <signal.h>
 
-#define stdin_clean                                 \
-    do {                                            \
-        int c;                                      \
-        while ((c = getchar()) != '\n' && c != EOF) \
-            continue;                               \
+#define stdin_clean                                           \
+    do {                                                      \
+        int c;                                                \
+        while ((c = getchar()) != '\n' && c != EOF) continue; \
     } while (0)
 
 // 串口信息
@@ -111,8 +110,7 @@ void ListAvailablePorts() {
     DeviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
     for (DWORD i = 0; SetupDiEnumDeviceInfo(hDevInfo, i, &DeviceInfoData); i++) {
         TCHAR deviceName[256];
-        if (SetupDiGetDeviceRegistryProperty(hDevInfo, &DeviceInfoData, SPDRP_FRIENDLYNAME, NULL, (PBYTE)deviceName,
-                                             sizeof(deviceName), NULL)) {
+        if (SetupDiGetDeviceRegistryProperty(hDevInfo, &DeviceInfoData, SPDRP_FRIENDLYNAME, NULL, (PBYTE)deviceName, sizeof(deviceName), NULL)) {
             _tprintf(_T("devices: %s\n"), deviceName);
         }
     }
@@ -159,8 +157,7 @@ BOOL OpenSerialPort() {
     hSerial = CreateFileA(portName, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 
     if (hSerial == INVALID_HANDLE_VALUE) {
-        printf("Error: An error occurred while opening this serial port %s\n, number of error: %lu\n", portName,
-               GetLastError());
+        printf("Error: An error occurred while opening this serial port %s\n, number of error: %lu\n", portName, GetLastError());
         return FALSE;
     }
 

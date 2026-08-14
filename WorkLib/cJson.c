@@ -140,9 +140,7 @@ void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
 #ifdef IsOpenFloatHelp_Ability
     if (getFromTypeCheckDoubleOrFloat(NEW_NAME(KeyName)) || getFromTypeCheckDoubleOrFloat(NEW_NAME(KeyName))) {
         int NowStrLen = Addr_Over;
-        while (!((JsonStringSpace.Name._char[NowStrLen] == '\0') &&
-                 (JsonStringSpace.Name._char[NowStrLen + 1] == '\0') &&
-                 (JsonStringSpace.Name._char[NowStrLen + 2] == '\0'))) {
+        while (!((JsonStringSpace.Name._char[NowStrLen] == '\0') && (JsonStringSpace.Name._char[NowStrLen + 1] == '\0') && (JsonStringSpace.Name._char[NowStrLen + 2] == '\0'))) {
             NowStrLen++;
         }
         while (Addr_Over < NowStrLen) {
@@ -258,9 +256,8 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
                     continue;
                 }
             } else {
-                if (((*(EndItem - 1) == '\"') && (*EndItem == ',')) ||
-                    (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
-                    ItemNum++;                  // 如果是‘,’, 则说明是一个元素结束 ItemNum++;
+                if (((*(EndItem - 1) == '\"') && (*EndItem == ',')) || (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
+                    ItemNum++;                                                                     // 如果是‘,’, 则说明是一个元素结束 ItemNum++;
                     HeadItem = EndItem + 1;
                     EndItem = HeadItem;
                     continue;
@@ -313,9 +310,8 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
                     }
                 }
             } else {
-                if (((*(EndItem - 1) == '\"') && (*EndItem == ',')) ||
-                    (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
-                    ItemNum--;                  // 如果是‘,’, 则说明是一个元素结束 ItemNum--;
+                if (((*(EndItem - 1) == '\"') && (*EndItem == ',')) || (*(EndItem + 1) == '\0')) { // 如果为空, 则判断 EndItem 是否是‘,’
+                    ItemNum--;                                                                     // 如果是‘,’, 则说明是一个元素结束 ItemNum--;
                     if (ItemNum != 0) {
                         HeadItem = EndItem + 1;
                         EndItem = HeadItem;
@@ -338,18 +334,14 @@ static void Arr_get(struct _JsonArray This, strnew OutStr, int ItemNum) {
     int NowLineMaxLen = strlen(OutStr.Name._char);
     // 找第一个非空字符
     for (int i = 0; i < NowLineMaxLen; i++) {
-        if ((OutStr.Name._char[i] != '\0') &&
-            (OutStr.Name._char[i] != '\t') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') &&
-            (OutStr.Name._char[i] != '\r') && (OutStr.Name._char[i] != '\n') && (OutStr.Name._char[i] != '\"')) {
+        if ((OutStr.Name._char[i] != '\0') && (OutStr.Name._char[i] != '\t') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') && (OutStr.Name._char[i] != '\r') && (OutStr.Name._char[i] != '\n') && (OutStr.Name._char[i] != '\"')) {
             HeadItem = &OutStr.Name._char[i];
             break;
         }
     }
     // 找最后一个非空指挥
     for (int i = (NowLineMaxLen - 1); i > 0; i--) {
-        if ((OutStr.Name._char[i] != '\0') &&
-            (OutStr.Name._char[i] != '\t') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') &&
-            (OutStr.Name._char[i] != '\r') && (OutStr.Name._char[i] != '\n') && (OutStr.Name._char[i] != '\"')) {
+        if ((OutStr.Name._char[i] != '\0') && (OutStr.Name._char[i] != '\t') && (OutStr.Name._char[i] != '[') && (OutStr.Name._char[i] != ' ') && (OutStr.Name._char[i] != '\r') && (OutStr.Name._char[i] != '\n') && (OutStr.Name._char[i] != '\"')) {
             EndItem = &OutStr.Name._char[i];
             break;
         }
@@ -588,8 +580,8 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }
     int DataLen = strlen(JsonInputStr.Name._char);
-    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum) & 0xFF00) >> 8) ;
-    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum) & 0x00FF) >> 0) ;
+    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum) & 0xFF00) >> 8);
+    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum) & 0x00FF) >> 0);
     // 计算 cs 或其他检验算法
     return is_crc_modbus(JsonInputStr, DataLen);
 }

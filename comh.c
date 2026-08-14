@@ -7,11 +7,10 @@
 #include <ctype.h>
 #include <signal.h>
 
-#define stdin_clean                                 \
-    do {                                            \
-        int c;                                      \
-        while ((c = getchar()) != '\n' && c != EOF) \
-            continue;                               \
+#define stdin_clean                                           \
+    do {                                                      \
+        int c;                                                \
+        while ((c = getchar()) != '\n' && c != EOF) continue; \
     } while (0)
 
 // 串口信息
@@ -151,8 +150,7 @@ BOOL OpenSerialPort() {
     hSerial = CreateFileA(portName, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 
     if (hSerial == INVALID_HANDLE_VALUE) {
-        printf("Error: An error occurred while opening this serial port %s\n, number of error: %lu\n", portName,
-               GetLastError());
+        printf("Error: An error occurred while opening this serial port %s\n, number of error: %lu\n", portName, GetLastError());
         return FALSE;
     }
 
@@ -259,10 +257,10 @@ DWORD isShortCmd(strnew CmdLine, DWORD bytesRead) {
     DWORD DataLen = 0;
     unsigned int byte;
     char *p = CmdLine_Copy.Name._char;
-    
+
     while (sscanf(p, "%02x", &byte) == 1) {
         CmdLine.Name._char[DataLen++] = (unsigned char)byte;
-        p += 2;  // 移动到下一个可能的十六进制数字
+        p += 2; // 移动到下一个可能的十六进制数字
         // 跳过可能的空格
         while (*p == ' ') p++;
     }

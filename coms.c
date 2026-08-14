@@ -13,11 +13,10 @@ struct _FileInfoSpaces {
 JsonArray CmdName = {0};
 JsonArray CmdVar = {0};
 
-#define stdin_clean                                 \
-    do {                                            \
-        int c;                                      \
-        while ((c = getchar()) != '\n' && c != EOF) \
-            continue;                               \
+#define stdin_clean                                           \
+    do {                                                      \
+        int c;                                                \
+        while ((c = getchar()) != '\n' && c != EOF) continue; \
     } while (0)
 
 // 串口信息
@@ -157,8 +156,7 @@ BOOL OpenSerialPort() {
     hSerial = CreateFileA(portName, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 
     if (hSerial == INVALID_HANDLE_VALUE) {
-        printf("Error: An error occurred while opening this serial port %s\n, number of error: %lu\n", portName,
-               GetLastError());
+        printf("Error: An error occurred while opening this serial port %s\n, number of error: %lu\n", portName, GetLastError());
         return FALSE;
     }
 
@@ -255,8 +253,7 @@ int _readFile(FILE *file) {
 
     JsonObject FileInfo = newJsonObjectByString(Content);
     FileInfoSpaces.IsShowTime = FileInfo.getBool(&FileInfo, "isShowTime");
-    if ((FileInfo.isJsonNull(&FileInfo, "cmd_Name_Array") >= 0) &&
-        (FileInfo.isJsonNull(&FileInfo, "cmd_Var_Array") >= 0)) {
+    if ((FileInfo.isJsonNull(&FileInfo, "cmd_Name_Array") >= 0) && (FileInfo.isJsonNull(&FileInfo, "cmd_Var_Array") >= 0)) {
         CmdVar = FileInfo.getArray(&FileInfo, "cmd_Var_Array", NEW_NAME(FileInfoSpaces.CmdVarArray));
         CmdName = FileInfo.getArray(&FileInfo, "cmd_Name_Array", NEW_NAME(FileInfoSpaces.CmdNameArray));
     }

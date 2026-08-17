@@ -55,7 +55,8 @@ static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMa
     Temp->TaskFunc = TaskFunc;
     if (Temp->TimeTask_Falge == true) {
         if (Temp->TaskFunc != NULL) {
-            Temp->TaskFunc(arg); // 注意:该函数, 执行时不要太长, 也不要启动同一个定时器的其他任务
+            Temp->TaskFunc(arg); // 注意:该函数, 执行时不要太长,
+                                 // 也不要启动同一个定时器的其他任务
         }
     }
 }
@@ -139,7 +140,7 @@ static void _countSetTimeTask(timetask This) {
 }
 
 // 初始化
-timetask initSetTime() {
+timetask initSetTime(void) {
     timetask TaskInit = {0};
     TaskInit.Head = NULL;
     TaskInit.getTaskByName = _getTaskByName;

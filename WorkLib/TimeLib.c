@@ -131,7 +131,7 @@ int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay) {
     iWeek = iWeek >= 0 ? (iWeek % 7) : (iWeek % 7 + 7);
     return iWeek;
 }
-#ifdef FREERTOS_CONFIG_H
+#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
 void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
     static uint8_t NowUserCtrlID = 0xFF; // 控制调度器的 ID 谁控制谁开启
     if (!(NowUserCtrlID == 0xFF || NowUserCtrlID == InputCtrID)) {
@@ -152,14 +152,15 @@ void DelayUs_General(uint32_t Delay) {
     usleep(Delay); // 微秒级延时
 }
 #elif defined(__STM32F1xx_HAL_H)
-#if 1
+#if 0
 void DelayUs_General(uint32_t Delay) {
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     uint32_t StartTick = DWT->CYCCNT;
     uint32_t DelayTicks = Delay * (SystemCoreClock / 1000000);
-    while ((DWT->CYCCNT - StartTick) < DelayTicks);
+    while ((DWT->CYCCNT - StartTick) < DelayTicks)
+        ;
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif

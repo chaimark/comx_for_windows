@@ -1,5 +1,5 @@
-#ifndef __STR_LIB_H__ // 如果 STR_LIB_H 未定义
-#define __STR_LIB_H__ // 定义 STR_LIB_H
+#ifndef __STR_LIB_H__ // 如果 STRLIB_H 未定义
+#define __STR_LIB_H__ // 定义 STRLIB_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -77,7 +77,16 @@ extern bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
 extern void stringSlice(strnew OutStr, strnew Mather, int start, int end);
 
 #ifdef _Alignas
-#define GET_TYPE(var) (_Generic((var), int: "int", unsigned int: "unsigned int", char: "char", unsigned char: "unsigned char", double: "double", float: "float", char *: "char *", unsigned char *: "unsigned char *", default: "unknown"))
+#define GET_TYPE(var) (_Generic((var), int                   \
+                                : "int", unsigned int        \
+                                : "unsigned int", char       \
+                                : "char", unsigned char      \
+                                : "unsigned char", double    \
+                                : "double", float            \
+                                : "float", char *            \
+                                : "char *", unsigned char *  \
+                                : "unsigned char *", default \
+                                : "unknown"))
 
 typedef struct _Type_T {
     void *var;

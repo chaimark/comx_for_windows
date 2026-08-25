@@ -57,7 +57,8 @@ void doubleOrFloatToBuff(strnew OutBuff, double Number, bool IsDouble) {
 // hex(0x1f)    //表示 hex(0x1f) = 31
 */
 
-// 将数组串转字符串 0x01 0x02 ==> 0x31 0x32(需要注意: NeedLen 是 NumberArray 中需要转换的长度)
+// 将数组串转字符串 0x01 0x02 ==> 0x31 0x32(需要注意: NeedLen 是 NumberArray
+// 中需要转换的长度)
 void numberArrayToStrArray(strnew StrArray, const strnew NumberArray, int NeedLen) {
     if (StrArray.MaxLen < NeedLen) {
         return;
@@ -72,7 +73,8 @@ void numberArrayToStrArray(strnew StrArray, const strnew NumberArray, int NeedLe
         Addr++;
     } while (Addr < NeedLen);
 }
-// 将字符串转数组串 0x31 0x32 ==> 0x01 0x02(需要注意: NeedLen 是 StrArray 中需要转换的长度)
+// 将字符串转数组串 0x31 0x32 ==> 0x01 0x02(需要注意: NeedLen 是 StrArray
+// 中需要转换的长度)
 void strArrayToNumberArray(strnew NumberArray, const strnew StrArray, int NeedLen) {
     if (NumberArray.MaxLen < NeedLen) {
         return;
@@ -197,7 +199,8 @@ int anyBaseNumberToAnyBaseArray(uint64_t Number, int IntputBase, int OutputBase,
 
 // 任意进制数组 转 任意进制数 Array:12345600 ==> 12345600
 int64_t anyBaseArrayToAnyBaseNumber(strnew IntArray, int IntputBase, int OutputBase) {
-    swapStr(IntArray.Name._char, IntArray.MaxLen); // 先将数组从从大端模式改为小端
+    swapStr(IntArray.Name._char,
+            IntArray.MaxLen); // 先将数组从从大端模式改为小端
     int64_t TempNum = anyArrayToSameBaseNumber((uint8_t *)IntArray.Name._char, IntArray.MaxLen);
     TempNum = anyBaseToAnyBase(TempNum, IntputBase, OutputBase);
     return TempNum;

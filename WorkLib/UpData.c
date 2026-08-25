@@ -114,8 +114,9 @@ int updataCheck(void) {
     MyPrintf("updata find page = %d\r\n", UpdataParam.pageNum);
     // 有已经更新的待运行的程序, 需要校验
     for (int i = 0; i < UpdataParam.pageNum; i++) {
-        memset(UpdataData.Page8Buff, 0, PAGE_SIZE);                                 // 初始化读取空间
-        flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff); // 读
+        memset(UpdataData.Page8Buff, 0, PAGE_SIZE); // 初始化读取空间
+        flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE),
+                        UpdataData.Page8Buff); // 读
         if (flashCheckReadPageData(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff, PAGE_SIZE) < 0) {
             return -1; // flash 与 buff 不一致读取失败
         }

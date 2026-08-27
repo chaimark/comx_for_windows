@@ -31,7 +31,7 @@ typedef struct _TimeStuClass {
     malloc 一个 timetask  的总字节大小 = 36 + TaskNum * 72
     malloc 一个 StatusDev 的总字节大小 = 28 + DevNum * 20
     Heap_Size >= ((3 * 36 + 12 * 73) + (28 * 2 + 7 * 20)) * 1.5 = 1180 * 1.5 = 1770
-    
+
     一共 12 个中断, 每个 4 个字节, 所以中断栈大小为 48 字节, 最大深度约7次
     Stack_Size >= 12 * 4 * 7 * 1.5 = 504 字节
 */

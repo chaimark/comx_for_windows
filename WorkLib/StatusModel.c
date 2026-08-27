@@ -84,7 +84,7 @@ void _ExecuteStep(struct _StatusDev This) {
         return;
     }
     StatusTaskFunc *Temp = _getTaskById(&This, This.NextId);
-    if (Temp != NULL) {
+    if ((Temp != NULL) && (Temp->TaskFunc != NULL)) {
         Temp->TaskFunc(Temp->arg);
     }
 }

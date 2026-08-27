@@ -47,6 +47,9 @@ static int _addTaskNode(struct _timetask This, strnew Name) {
 // 初始化某个任务
 static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMaxNum, void (*TaskFunc)(void *), void *arg) {
     Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
+        return;
+    }
     Temp->TimeTask_Falge = (CountMaxNum == 0 ? true : false); // 初始化标记
     Temp->isTaskStart = true;                                 // 开启
     Temp->CountMaxNum = CountMaxNum;                          // 定时任务点
@@ -55,8 +58,7 @@ static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMa
     Temp->TaskFunc = TaskFunc;
     if (Temp->TimeTask_Falge == true) {
         if (Temp->TaskFunc != NULL) {
-            Temp->TaskFunc(arg); // 注意:该函数, 执行时不要太长,
-                                 // 也不要启动同一个定时器的其他任务
+            Temp->TaskFunc(arg); // 注意:该函数, 执行时不要太长, 也不要启动同一个定时器的其他任务
         }
     }
 }
@@ -64,6 +66,9 @@ static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMa
 // stop 某个任务
 static void _stopTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
+        return;
+    }
     Temp->isTaskStart = false; // 初始化标记
     Temp->CountNum = 0;        // 复位初始
     Temp->TimeTask_Falge = false;
@@ -72,6 +77,9 @@ static void _stopTaskByName(struct _timetask This, strnew Name) {
 // reset 某个任务
 static void _resetTaskByName(struct _timetask This, strnew Name) {
     Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
+        return;
+    }
     Temp->isTaskStart = true; // 初始化标记
     Temp->CountNum = 0;       // 复位初始
     Temp->TimeTask_Falge = false;

@@ -169,7 +169,7 @@ void DelayUs_General(uint32_t Delay) {
 void DelayUs_General(uint32_t Delay) {
     uint32_t StartTick = (uint32_t)SysTick->VAL;
     uint32_t DelayTick = Delay * (SystemCoreClock / 1000000);
-#ifdef FREERTOS_CONFIG_H
+#ifdef __RTTHREAD_CFG_H__
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     while (1) {
@@ -184,7 +184,7 @@ void DelayUs_General(uint32_t Delay) {
         DelayTick -= CountTickDelta;
         StartTick = NowVAL;
     }
-#ifdef FREERTOS_CONFIG_H
+#ifdef __RTTHREAD_CFG_H__
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
 }

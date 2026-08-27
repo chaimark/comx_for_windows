@@ -159,8 +159,8 @@ void DelayUs_General(uint32_t Delay) {
 #endif
     uint32_t StartTick = DWT->CYCCNT;
     uint32_t DelayTicks = Delay * (SystemCoreClock / 1000000);
-    while ((DWT->CYCCNT - StartTick) < DelayTicks)
-        ;
+    while ((DWT->CYCCNT - StartTick) < DelayTicks) {
+    }
 #ifdef FREERTOS_CONFIG_H
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif

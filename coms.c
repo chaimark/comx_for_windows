@@ -21,7 +21,7 @@ JsonArray CmdVar = {0};
 
 // 串口信息
 HANDLE hSerial = INVALID_HANDLE_VALUE;
-DWORD baudRate = 1500000;
+DWORD baudRate = 115200 
 BYTE byteSize = 8;
 BYTE stopBits = ONESTOPBIT;
 BYTE parity = NOPARITY;
@@ -128,7 +128,7 @@ void ConfigureSerialPort() {
     snprintf(portName, sizeof(portName), "\\\\.\\%s", userInput);
 
     printf("Input bandRate (key 115200)\n");
-    baudRate = (DWORD)getUserInt(1500000);
+    baudRate = (DWORD)getUserInt(115200);
 
     int choice = 8;
     printf("byte Size (5-8)\n");

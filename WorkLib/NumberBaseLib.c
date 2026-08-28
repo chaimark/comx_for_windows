@@ -199,8 +199,7 @@ int anyBaseNumberToAnyBaseArray(uint64_t Number, int IntputBase, int OutputBase,
 
 // 任意进制数组 转 任意进制数 Array:12345600 ==> 12345600
 int64_t anyBaseArrayToAnyBaseNumber(strnew IntArray, int IntputBase, int OutputBase) {
-    swapStr(IntArray.Name._char,
-            IntArray.MaxLen); // 先将数组从从大端模式改为小端
+    swapStr(IntArray.Name._char, IntArray.MaxLen); // 先将数组从从大端模式改为小端
     int64_t TempNum = anyArrayToSameBaseNumber((uint8_t *)IntArray.Name._char, IntArray.MaxLen);
     TempNum = anyBaseToAnyBase(TempNum, IntputBase, OutputBase);
     return TempNum;

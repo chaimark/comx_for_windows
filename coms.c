@@ -21,8 +21,7 @@ JsonArray CmdVar = {0};
 
 // 串口信息
 HANDLE hSerial = INVALID_HANDLE_VALUE;
-DWORD baudRate = 115200 
-BYTE byteSize = 8;
+DWORD baudRate = 115200 BYTE byteSize = 8;
 BYTE stopBits = ONESTOPBIT;
 BYTE parity = NOPARITY;
 char portName[30] = "COM3";

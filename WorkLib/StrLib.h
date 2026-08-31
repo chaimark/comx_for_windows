@@ -7,8 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 /*-----------------------------------定义数组类----------------------------------*/
-#define This              (*_THIS_MY_)
-#define ARR_SIZE(ArrName) (sizeof(ArrName) / sizeof(ArrName[0])) // 计算数组元素个数
+#define This (*_THIS_MY_)
+#define ARR_SIZE(ArrName) \
+    (sizeof(ArrName) / sizeof(ArrName[0])) // 计算数组元素个数
 /*
 数组类, 包含数组指针和长度
 需要注意的是
@@ -45,7 +46,8 @@ typedef struct New_Arr {
 
 // 建立对象
 extern strnew New_Str_Obj(const void *Master, int SizeNum, int SizeType); // 建立对象的函数
-#define NEW_NAME(ArrName) New_Str_Obj(ArrName, ARR_SIZE(ArrName), sizeof(ArrName[0]))
+#define NEW_NAME(ArrName) \
+    New_Str_Obj(ArrName, ARR_SIZE(ArrName), sizeof(ArrName[0]))
 #define newString(name, Len)   \
     char Str##name[Len] = {0}; \
     strnew name = NEW_NAME(Str##name);
@@ -77,16 +79,17 @@ extern bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
 extern void stringSlice(strnew OutStr, strnew Mather, int start, int end);
 
 #ifdef _Alignas
-#define GET_TYPE(var) (_Generic((var), int                   \
-                                : "int", unsigned int        \
-                                : "unsigned int", char       \
-                                : "char", unsigned char      \
-                                : "unsigned char", double    \
-                                : "double", float            \
-                                : "float", char *            \
-                                : "char *", unsigned char *  \
-                                : "unsigned char *", default \
-                                : "unknown"))
+#define GET_TYPE(var)                      \
+    (_Generic((var), int                   \
+              : "int", unsigned int        \
+              : "unsigned int", char       \
+              : "char", unsigned char      \
+              : "unsigned char", double    \
+              : "double", float            \
+              : "float", char *            \
+              : "char *", unsigned char *  \
+              : "unsigned char *", default \
+              : "unknown"))
 
 typedef struct _Type_T {
     void *var;
@@ -100,7 +103,9 @@ extern Type_T _InitType(void *var, const char *type);
 #define newType2(Name, var) newType_X(Name, var)
 
 #define GET_TYPE_MACRO(_1, _2, NAME, ...) NAME
-#define newType(...)                      GET_TYPE_MACRO(__VA_ARGS__, newType2, newType1)(__VA_ARGS__)
+#define newType(...)                                \
+    GET_TYPE_MACRO(__VA_ARGS__, newType2, newType1) \
+    (__VA_ARGS__)
 #endif
 
 #endif

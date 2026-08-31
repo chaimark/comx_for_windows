@@ -585,4 +585,3 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     // 计算 cs 或其他检验算法
     return is_crc_modbus(JsonInputStr, DataLen);
 }
-

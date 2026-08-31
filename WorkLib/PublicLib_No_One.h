@@ -2,6 +2,7 @@
 #define __PUBLIC_LIB_NO_ONE_H__
 
 // 公共库头文件, 用于包含一些非库使用的公共定义, 或声明一些公共使用的全局结构体
+#include "FreeRTOSConfig.h"
 #include "SetTime.h"
 extern timetask RTC_Task;
 extern timetask Uart_Task;
@@ -22,7 +23,7 @@ typedef struct _TimeStuClass {
  */
 
 // NOW_SYSTEM_VERSION 的长度 Len = 20-3-1 = 16
-#define NOW_SYSTEM_VERSION "v0.12"
+#define NOW_SYSTEM_VERSION "v0.16"
 #define NOW_EEPROM_VERSION 12
 
 
@@ -40,6 +41,7 @@ typedef struct _TimeStuClass {
     硬件中断优先级设为 6~15：属于普通中断, 可以安全调用 FromISR 函数。
     软件定时器优先级 configTIMER_TASK_PRIORITY 32 高于普通线程
     rtos 临界优先级 configMAX_SYSCALL_INTERRUPT_PRIORITY
+    线程正常优先级 osPriorityNormal
 */
 
 #endif

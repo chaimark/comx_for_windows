@@ -15,8 +15,8 @@
 #define MyPrintf(...) HAL_Delay(10)
 
 #if (ISBootLoader == 0)
-#include "cJson.h"
 #include "NumberBaseLib.h"
+#include "cJson.h"
 #endif
 
 // PAGE_SIZE == 2048

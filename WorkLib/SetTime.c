@@ -140,7 +140,7 @@ static void _countSetTimeTask(timetask This) {
         }
         if ((*Temp).TimeTask_Falge == true) {
             if ((*Temp).TaskFunc != NULL) {
-                (*Temp).TaskFunc(Temp->arg); // 注意:该函数, 执行时不要太长, 也不要启动同一个定时器的其他任务
+                (*Temp).TaskFunc(Temp->arg); // 注意:该函数, 执行时不要太长, // 也不要启动同一个定时器的其他任务
             }
         }
         Temp = Temp->next;

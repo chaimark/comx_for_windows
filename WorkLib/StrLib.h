@@ -8,8 +8,7 @@
 #include <string.h>
 /*-----------------------------------定义数组类----------------------------------*/
 #define This (*_THIS_MY_)
-#define ARR_SIZE(ArrName) \
-    (sizeof(ArrName) / sizeof(ArrName[0])) // 计算数组元素个数
+#define ARR_SIZE(ArrName) (sizeof(ArrName) / sizeof(ArrName[0])) // 计算数组元素个数
 /*
 数组类, 包含数组指针和长度
 需要注意的是

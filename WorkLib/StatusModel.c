@@ -18,6 +18,12 @@ static StatusTaskFunc *_getTaskById(struct _StatusDev This, uint16_t InputId) {
 
 // 添加某个任务函数节点
 int _addTaskFuncNode(struct _StatusDev This, uint16_t InputId, void (*TaskFunc)(void *), void *arg) {
+    // 检查是否存在该任务
+    StatusTaskFunc *Temp = _getTaskById(&This, InputId);
+    // 如果存在, 则返回 -1
+    if (Temp != NULL) {
+        return -1;
+    }
     StatusTaskFunc *Temp = (StatusTaskFunc *)malloc(sizeof(StatusTaskFunc));
     if (Temp == NULL) {
         return -1;

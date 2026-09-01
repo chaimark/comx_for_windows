@@ -18,6 +18,12 @@ static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
 
 // 添加某个任务节点
 static int _addTaskNode(struct _timetask This, strnew Name) {
+    // 检查是否存在该任务
+    Task_T *Temp = _getTaskByName(&This, Name);
+    // 如果存在, 则返回 -1
+    if (Temp != NULL) {
+        return -1;
+    }
     Task_T *Temp = (Task_T *)malloc(sizeof(Task_T));
     if (Temp == NULL) {
         return -1;

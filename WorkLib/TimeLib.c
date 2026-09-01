@@ -151,17 +151,16 @@ void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
 void DelayUs_General(uint32_t Delay) {
     usleep(Delay); // 微秒级延时
 }
-#elif defined(__STM32F1xx_HAL_H)
+#elif defined(USER_Delay_General)
 #if 0
 void DelayUs_General(uint32_t Delay) {
-#ifdef FREERTOS_CONFIG_H
+#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     uint32_t StartTick = DWT->CYCCNT;
     uint32_t DelayTicks = Delay * (SystemCoreClock / 1000000);
     while ((DWT->CYCCNT - StartTick) < DelayTicks) {
-    }
-#ifdef FREERTOS_CONFIG_H
+#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
 }
@@ -169,7 +168,7 @@ void DelayUs_General(uint32_t Delay) {
 void DelayUs_General(uint32_t Delay) {
     uint32_t StartTick = (uint32_t)SysTick->VAL;
     uint32_t DelayTick = Delay * (SystemCoreClock / 1000000);
-#ifdef __RTTHREAD_CFG_H__
+#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     while (1) {
@@ -184,7 +183,7 @@ void DelayUs_General(uint32_t Delay) {
         DelayTick -= CountTickDelta;
         StartTick = NowVAL;
     }
-#ifdef __RTTHREAD_CFG_H__
+#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
 }

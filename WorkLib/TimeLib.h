@@ -8,7 +8,7 @@
 #ifdef __linux__
 #include <time.h>
 #include <unistd.h>
-#elif defined(__STM32F1xx_HAL_H)
+#elif defined(USER_Delay_General)
 #else
 #include <windows.h>
 #endif
@@ -37,7 +37,7 @@ extern void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend CtrID, bool IsPause);
 #endif
 extern void DelayUs_General(uint32_t Delay);
 static inline void DelayMs_General(uint32_t Delay) {
-#if defined(__STM32F1xx_HAL_H)
+#if defined(USER_Delay_General)
     HAL_Delay(Delay);
 #else
     (void)Delay;

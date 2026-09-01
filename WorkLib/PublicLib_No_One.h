@@ -2,6 +2,7 @@
 #define __PUBLIC_LIB_NO_ONE_H__
 
 // 公共库头文件, 用于包含一些非库使用的公共定义, 或声明一些公共使用的全局结构体
+// #define USER_Delay_General /* 没有使用时 HAL 库 需要补充 实现 HAL_Delay 函数 */
 #include "SetTime.h"
 extern timetask RTC_Task;
 extern timetask Uart_Task;

@@ -1,38 +1,41 @@
-#include "StatusModel.h"
+#include "SetTime.h"
 
 // 查找某个任务的地址
-static StatusTaskFunc *_getTaskById(struct _StatusDev This, uint16_t InputId) {
-    StatusTaskFunc *Temp = This.Head;
+static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
+    Task_T *Temp = This.Head;
     int i = 0;
-    for (i = 0; i < This.NumberOfStatus; i++) {
-        if ((*Temp).Id == InputId) {
+    for (i = 0; i < This.NumberOfTimeTask; i++) {
+        if (strcmp((*Temp).Name.Name._char, Name.Name._char) == 0) {
             break;
         }
         Temp = Temp->next;
     }
-    if (i < This.NumberOfStatus) {
+    if (i < This.NumberOfTimeTask) {
         return Temp;
     }
     return NULL;
 }
 
-// 添加某个任务函数节点
-int _addTaskFuncNode(struct _StatusDev This, uint16_t InputId, void (*TaskFunc)(void *), void *arg) {
+// 添加某个任务节点
+static int _addTaskNode(struct _timetask This, strnew Name) {
     // 检查是否存在该任务
-    StatusTaskFunc *Temp = _getTaskById(&This, InputId);
+    Task_T *Temp = _getTaskByName(&This, Name);
     // 如果存在, 则返回 -1
     if (Temp != NULL) {
         return -1;
     }
-    StatusTaskFunc *Temp = (StatusTaskFunc *)malloc(sizeof(StatusTaskFunc));
+    Temp = (Task_T *)malloc(sizeof(Task_T));
     if (Temp == NULL) {
         return -1;
     }
-    This.NumberOfStatus++;
+    This.NumberOfTimeTask++;
     // 添加数据
-    Temp->Id = InputId;
-    Temp->TaskFunc = TaskFunc;
-    Temp->arg = arg;
+    (*Temp).Name = Name;
+    Temp->isTaskStart = false; // 初始化标记
+    Temp->TimeTask_Falge = false;
+    Temp->CountNum = 0;    // 复位初始
+    Temp->CountMaxNum = 0; // 复位初始
+    Temp->TaskFunc = NULL;
     if (This.Head == NULL) {
         Temp->next = Temp;
         Temp->prev = Temp;
@@ -47,33 +50,74 @@ int _addTaskFuncNode(struct _StatusDev This, uint16_t InputId, void (*TaskFunc)(
     return 0;
 }
 
-// 删除某个任务函数节点
-void _delTaskFuncById(struct _StatusDev This, uint16_t InputId) {
-    StatusTaskFunc *Temp = _getTaskById(&This, InputId);
+// 初始化某个任务
+static void _initTaskByName(struct _timetask This, strnew Name, uint64_t CountMaxNum, void (*TaskFunc)(void *), void *arg) {
+    Task_T *Temp = _getTaskByName(&This, Name);
     if (Temp == NULL) {
         return;
     }
-    if (This.NumberOfStatus < 1) {
+    Temp->TimeTask_Falge = (CountMaxNum == 0 ? true : false); // 初始化标记
+    Temp->isTaskStart = true;                                 // 开启
+    Temp->CountMaxNum = CountMaxNum;                          // 定时任务点
+    Temp->CountNum = 0;                                       // 复位初始
+    Temp->arg = arg;
+    Temp->TaskFunc = TaskFunc;
+    if (Temp->TimeTask_Falge == true) {
+        if (Temp->TaskFunc != NULL) {
+            Temp->TaskFunc(arg); // 注意:该函数, 执行时不要太长, 也不要启动同一个定时器的其他任务
+        }
+    }
+}
+
+// stop 某个任务
+static void _stopTaskByName(struct _timetask This, strnew Name) {
+    Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
         return;
     }
-    if (This.NumberOfStatus == 1) {
+    Temp->isTaskStart = false; // 初始化标记
+    Temp->CountNum = 0;        // 复位初始
+    Temp->TimeTask_Falge = false;
+}
+
+// reset 某个任务
+static void _resetTaskByName(struct _timetask This, strnew Name) {
+    Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
+        return;
+    }
+    Temp->isTaskStart = true; // 初始化标记
+    Temp->CountNum = 0;       // 复位初始
+    Temp->TimeTask_Falge = false;
+}
+
+// del 某个任务
+static void _delTaskByName(struct _timetask This, strnew Name) {
+    Task_T *Temp = _getTaskByName(&This, Name);
+    if (Temp == NULL) {
+        return;
+    }
+    if (This.NumberOfTimeTask < 1) {
+        return;
+    }
+    if (This.NumberOfTimeTask == 1) {
         This.Head = NULL;
-        This.NumberOfStatus = 0;
+        This.NumberOfTimeTask = 0;
         free(Temp);
         return;
     }
     Temp->prev->next = Temp->next;
     Temp->next->prev = Temp->prev;
-    This.NumberOfStatus--;
+    This.NumberOfTimeTask--;
     free(Temp);
     return;
 }
 
-// 关闭所有任务
-void _closeTaskFuncAll(struct _StatusDev This) {
+// 关闭所有任务,清理所有的链表节点
+static void _closeTaskAll(struct _timetask This) {
     if (This.Head != NULL) {
-        StatusTaskFunc *cur = This.Head;
-        StatusTaskFunc *next = NULL;
+        Task_T *cur = This.Head;
+        Task_T *next = NULL;
         do {
             next = cur->next; // 先记住下一个节点
             free(cur);        // 释放当前节点的堆内存
@@ -81,28 +125,45 @@ void _closeTaskFuncAll(struct _StatusDev This) {
         } while (cur != This.Head); // 当 cur 绕了一圈回到 Head 时, 安全跳出循环
         (This).Head = NULL;
     }
-    (This).NumberOfStatus = 0;
+    (This).NumberOfTimeTask = 0;
 }
 
-// 执行某个任务
-void _ExecuteStep(struct _StatusDev This) {
-    if (This.IsRun == false) {
-        return;
-    }
-    StatusTaskFunc *Temp = _getTaskById(&This, This.NextId);
-    if ((Temp != NULL) && (Temp->TaskFunc != NULL)) {
-        Temp->TaskFunc(Temp->arg);
+// 定时器中断轮询 api
+static void _countSetTimeTask(timetask This) {
+    Task_T *Temp = This.Head;
+    for (int TaskAddr = 0; TaskAddr < This.NumberOfTimeTask; TaskAddr++) {
+        if (((*Temp).isTaskStart == false) || ((*Temp).TimeTask_Falge == true)) {
+            Temp = Temp->next;
+            continue;
+        }
+        if ((*Temp).CountNum < (*Temp).CountMaxNum) {
+            Temp->CountNum++;
+        }
+        if ((*Temp).CountNum >= (*Temp).CountMaxNum) {
+            (*Temp).TimeTask_Falge = true;
+        } else {
+            (*Temp).TimeTask_Falge = false;
+        }
+        if ((*Temp).TimeTask_Falge == true) {
+            if ((*Temp).TaskFunc != NULL) {
+                (*Temp).TaskFunc(Temp->arg); // 注意:该函数, 执行时不要太长, // 也不要启动同一个定时器的其他任务
+            }
+        }
+        Temp = Temp->next;
     }
 }
 
 // 初始化
-StatusDev initStatusDev(void) {
-    StatusDev TempStatusDev = {0};
-    TempStatusDev.addTaskFuncNode = _addTaskFuncNode;
-    TempStatusDev.delTaskFuncById = _delTaskFuncById;
-    TempStatusDev.closeTaskFuncAll = _closeTaskFuncAll;
-    TempStatusDev.ExecuteStep = _ExecuteStep;
-    TempStatusDev.NextId = 1;
-    TempStatusDev.IsRun = true;
-    return TempStatusDev;
+timetask initSetTime(void) {
+    timetask TaskInit = {0};
+    TaskInit.Head = NULL;
+    TaskInit.getTaskByName = _getTaskByName;
+    TaskInit.addTaskNode = _addTaskNode;
+    TaskInit.initTaskByName = _initTaskByName;
+    TaskInit.stopTaskByName = _stopTaskByName;
+    TaskInit.resetTaskByName = _resetTaskByName;
+    TaskInit.delTaskByName = _delTaskByName;
+    TaskInit.closeTaskAll = _closeTaskAll;
+    TaskInit.countSetTimeTask = _countSetTimeTask;
+    return TaskInit;
 }

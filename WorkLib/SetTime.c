@@ -24,7 +24,7 @@ static int _addTaskNode(struct _timetask This, strnew Name) {
     if (Temp != NULL) {
         return -1;
     }
-    Task_T *Temp = (Task_T *)malloc(sizeof(Task_T));
+    Temp = (Task_T *)malloc(sizeof(Task_T));
     if (Temp == NULL) {
         return -1;
     }

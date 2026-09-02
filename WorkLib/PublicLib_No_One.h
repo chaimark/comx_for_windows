@@ -24,7 +24,7 @@ typedef struct _TimeStuClass {
 
 // NOW_SYSTEM_VERSION 的长度 Len = 20-3-1 = 16
 #define NOW_SYSTEM_VERSION "v0.16"
-#define NOW_EEPROM_VERSION 12
+#define NOW_EEPROM_VERSION 13
 
 /*
     malloc 一个 timetask  的总字节大小 = 36 + TaskNum * 72
@@ -42,5 +42,4 @@ typedef struct _TimeStuClass {
     rtos 临界优先级 configMAX_SYSCALL_INTERRUPT_PRIORITY
     线程正常优先级 osPriorityNormal
 */
-
 #endif

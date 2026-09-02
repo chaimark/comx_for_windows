@@ -1,74 +1,97 @@
-# 基于某种预定义样式
+---
+# 基于 LLVM 风格进行定制
 BasedOnStyle: LLVM
 
-# 语言设置
+# 语言
 Language: Cpp
 
-# 缩进设置
+# 缩进宽度
 IndentWidth: 4
-TabWidth: 4
 UseTab: Never
+TabWidth: 4
 
-# 大括号设置
+# 访问修饰符缩进
+AccessModifierOffset: -4
+
+# 括号风格
 BreakBeforeBraces: Attach
-AllowShortLoopsOnASingleLine: true
-AllowShortBlocksOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
 
-# 控制语句设置
-BreakBeforeBinaryOperators: None
-BreakBeforeTernaryOperators: false
+# 单行语句 - 强制所有单语句在同一行（但控制流语句需加括号）
+AllowShortBlocksOnASingleLine: Never
 
-# 空格设置
-SpaceBeforeParens: ControlStatements
-SpaceInEmptyParentheses: false
-SpacesInAngles: false
-SpacesInCStyleCastParentheses: false
-
-# 换行设置
-ColumnLimit: 0
-MaxEmptyLinesToKeep: 2
-KeepEmptyLinesAtTheStartOfBlocks: false
-
-# 禁止在函数参数处换行
+# 函数参数 - 不换行
 AllowAllParametersOfDeclarationOnNextLine: false
-BinPackArguments: false
-BinPackParameters: false
+AllowAllArgumentsOnNextLine: false
 
-# 括号内对齐方式
-AlignAfterOpenBracket: Align
+# 函数声明参数在括号内不换行
+PenaltyExcessCharacter: 10000
+PenaltyReturnTypeOnItsOwnLine: 10000
+
+# 列宽限制（设为较大值避免自动换行）
+ColumnLimit: 0
 
 # 指针和引用对齐
 PointerAlignment: Right
-ReferenceAlignment: Left
+ReferenceAlignment: Right
 
-# 包含文件排序
-SortIncludes: false
-
-# 注释设置
-ReflowComments: true
-
-# 对齐设置
+# 赋值对齐（不对齐）
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 
-# 惩罚值设置 - 降低换行倾向
-PenaltyExcessCharacter: 0
-PenaltyBreakAssignment: 10000
-PenaltyBreakBeforeFirstCallParameter: 10000
-PenaltyBreakString: 10000
-PenaltyBreakComment: 10000
-PenaltyReturnTypeOnItsOwnLine: 10000
-PenaltyBreakFirstLessLess: 10000
+# 注释对齐
+AlignTrailingComments: true
 
-# 宏定义反斜杠对齐
+# 宏定义格式
 AlignConsecutiveMacros: true
-AlignEscapedNewlines: Left
+AlignAfterOpenBracket: DontAlign
 
-# 结构体/枚举/类控制
+# 单行注释
+ReflowComments: false
+
+# 空格控制
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInAngles: false
+SpacesInContainerLiterals: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# 换行控制
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializersBeforeComma: false
+BreakInheritanceList: BeforeColon
+BreakAfterJavaFieldAnnotations: false
+BreakStringLiterals: false
+
+# 缩进控制
+IndentCaseLabels: false
+IndentPPDirectives: None
+
+# 空格在逗号后
+SpaceBeforeRangeBasedForLoopColon: false
+
+# 标准
+Standard: Cpp11
+
+# 枚举控制
 AllowShortEnumsOnASingleLine: false
 
-# 其他设置
+# 其他
 FixNamespaceComments: true
-CompactNamespaces: false
 
+# ========== 头文件相关设置 ==========
+# 不要排序头文件
+SortIncludes: false
+# 不要排序 using 声明
+SortUsingDeclarations: false
+# 不要重新排列 include 块
+IncludeBlocks: Preserve

@@ -26,7 +26,6 @@ typedef struct _TimeStuClass {
 #define NOW_SYSTEM_VERSION "v0.16"
 #define NOW_EEPROM_VERSION 12
 
-
 /*
     malloc 一个 timetask  的总字节大小 = 36 + TaskNum * 72
     malloc 一个 StatusDev 的总字节大小 = 28 + DevNum * 20

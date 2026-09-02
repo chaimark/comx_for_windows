@@ -180,8 +180,7 @@ int NowPackIsGotoNextPage(int NowPageNum, int NowPackNum) {
     if (NowPackNum * UpdataData.PackLen > (NowPageNum + 1) * PAGE_SIZE) {
         return -1; // 确保页面号与 包序号正确
     }
-    return ((NowPageNum + 1) * PAGE_SIZE -
-            NowPackNum * UpdataData.PackLen); // 当前页剩余空间
+    return ((NowPageNum + 1) * PAGE_SIZE - NowPackNum * UpdataData.PackLen); // 当前页剩余空间
 }
 // 把当前包存入缓存区, 如果缓存区满, 则写 flash
 // 备注： NowPackNum == -1 则将剩下缓存区写入 flash
@@ -203,9 +202,8 @@ int SaveUpdataToPage8Buff(int NowPageNum, int NowPackNum, strnew NowCodeHex) {
         memcpy(UpdataData.Page8Buff, NowCodeHex.Name._char + RestLen, NowCodeHex.MaxLen - RestLen);
         UpdataData.NowPageNum = (++NowPageNum);
         UpdataData.NowLen_Page8Buff = NowCodeHex.MaxLen - RestLen;
-    } else { // 不需要跳页
-        int Addr = (NowPackNum * UpdataData.PackLen) %
-                   PAGE_SIZE; // 当前包需要保存到缓存区的角标
+    } else {                                                      // 不需要跳页
+        int Addr = (NowPackNum * UpdataData.PackLen) % PAGE_SIZE; // 当前包需要保存到缓存区的角标
         memcpy(&UpdataData.Page8Buff[Addr], NowCodeHex.Name._char, NowCodeHex.MaxLen);
         UpdataData.NowLen_Page8Buff = Addr + NowCodeHex.MaxLen;
     }

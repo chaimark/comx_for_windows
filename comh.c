@@ -7,10 +7,11 @@
 #include <ctype.h>
 #include <signal.h>
 
-#define stdin_clean                                           \
-    do {                                                      \
-        int c;                                                \
-        while ((c = getchar()) != '\n' && c != EOF) continue; \
+#define stdin_clean                                 \
+    do {                                            \
+        int c;                                      \
+        while ((c = getchar()) != '\n' && c != EOF) \
+            continue;                               \
     } while (0)
 
 // 串口信息
@@ -262,11 +263,11 @@ DWORD isShortCmd(strnew CmdLine, DWORD bytesRead) {
         CmdLine.Name._char[DataLen++] = (unsigned char)byte;
         p += 2; // 移动到下一个可能的十六进制数字
         // 跳过可能的空格
-        while (*p == ' ') p++;
+        while (*p == ' ')
+            p++;
     }
     return DataLen;
 }
-
 
 void InteractiveMode() {
     printf("\n--- Press Ctrl+A then Ctrl+C to exit ---\n\n");

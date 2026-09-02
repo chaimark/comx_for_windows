@@ -67,8 +67,7 @@ void numberArrayToStrArray(strnew StrArray, const strnew NumberArray, int NeedLe
     do {
         if (NumberArray.Name._char[Addr] < 10) {
             StrArray.Name._char[Addr] = NumberArray.Name._char[Addr] + '0';
-        } else if ((NumberArray.Name._char[Addr] >= 0x0A) &&
-                   (NumberArray.Name._char[Addr] <= 0x0F)) {
+        } else if ((NumberArray.Name._char[Addr] >= 0x0A) && (NumberArray.Name._char[Addr] <= 0x0F)) {
             StrArray.Name._char[Addr] = NumberArray.Name._char[Addr] + 0x37;
         }
         Addr++;
@@ -82,14 +81,11 @@ void strArrayToNumberArray(strnew NumberArray, const strnew StrArray, int NeedLe
     }
     int Addr = 0;
     do {
-        if ((StrArray.Name._char[Addr] >= '0') &&
-            (StrArray.Name._char[Addr] <= '9')) {
+        if ((StrArray.Name._char[Addr] >= '0') && (StrArray.Name._char[Addr] <= '9')) {
             NumberArray.Name._char[Addr] = StrArray.Name._char[Addr] - '0';
-        } else if ((StrArray.Name._char[Addr] >= 'A') &&
-                   (StrArray.Name._char[Addr] <= 'Z')) {
+        } else if ((StrArray.Name._char[Addr] >= 'A') && (StrArray.Name._char[Addr] <= 'Z')) {
             NumberArray.Name._char[Addr] = StrArray.Name._char[Addr] - 0x37;
-        } else if ((StrArray.Name._char[Addr] >= 'a') &&
-                   (StrArray.Name._char[Addr] <= 'z')) {
+        } else if ((StrArray.Name._char[Addr] >= 'a') && (StrArray.Name._char[Addr] <= 'z')) {
             NumberArray.Name._char[Addr] = StrArray.Name._char[Addr] - 0x57;
         }
         Addr++;
@@ -239,8 +235,7 @@ int doubleChStrToShortChStr(const strnew inputArray, strnew OutputArray) {
             return 0;
         }
         for (ResLen = 0; ResLen < (inputArray.MaxLen / 2); ResLen++) {
-            OutputArray.Name._char[ResLen] = ((inputArray.Name._char[ResLen * 2] & 0x0F) << 4) |
-                                             (inputArray.Name._char[ResLen * 2 + 1] & 0x0F);
+            OutputArray.Name._char[ResLen] = ((inputArray.Name._char[ResLen * 2] & 0x0F) << 4) | (inputArray.Name._char[ResLen * 2 + 1] & 0x0F);
         }
         return ResLen;
     }
@@ -335,8 +330,7 @@ int HEX2ToASCII(const strnew hex, strnew asc) {
 // 外用接口(不支持原地转换)
 int ASCIIToHEX2(const strnew asc, strnew hex) {
     int strLen = strlen(asc.Name._char);
-    if ((strLen > asc.MaxLen) || (hex.MaxLen < strLen / 2) ||
-        strlen(asc.Name._char) == 0) { // hex_len 太小, 不够
+    if ((strLen > asc.MaxLen) || (hex.MaxLen < strLen / 2) || strlen(asc.Name._char) == 0) { // hex_len 太小, 不够
         return 0;
     }
     // STR TO HEX-------------------
@@ -359,8 +353,7 @@ float getPartOfSetPointOnRing(uint32_t SetPoint, uint32_t Min_Ring, uint32_t Max
     if ((SetPoint < Min_Ring) || (SetPoint > Max_Ring) || (Max_Ring < Min_Ring)) {
         return -1;
     }
-    return ((SetPoint * 1.0 - Min_Ring * 1.0) /
-            (Max_Ring * 1.0 - Min_Ring * 1.0));
+    return ((SetPoint * 1.0 - Min_Ring * 1.0) / (Max_Ring * 1.0 - Min_Ring * 1.0));
 }
 
 // 给定一个 ip 字符串 192.168.1.1 ==> [c0] [a8] [01] [01]

@@ -13,10 +13,11 @@ struct _FileInfoSpaces {
 JsonArray CmdName = {0};
 JsonArray CmdVar = {0};
 
-#define stdin_clean                                           \
-    do {                                                      \
-        int c;                                                \
-        while ((c = getchar()) != '\n' && c != EOF) continue; \
+#define stdin_clean                                 \
+    do {                                            \
+        int c;                                      \
+        while ((c = getchar()) != '\n' && c != EOF) \
+            continue;                               \
     } while (0)
 
 // 串口信息
@@ -397,7 +398,6 @@ DWORD isShortCmd(strnew CmdLine, DWORD bytesRead) {
     findCmdByUserKeyStr(CmdLine);
     return strlen(CmdLine.Name._char);
 }
-
 
 void InteractiveMode() {
     printf("\n--- Press Ctrl+A then Ctrl+C to exit ---\n\n");

@@ -4,10 +4,11 @@
 #include <ctype.h>
 #include <signal.h>
 
-#define stdin_clean                                           \
-    do {                                                      \
-        int c;                                                \
-        while ((c = getchar()) != '\n' && c != EOF) continue; \
+#define stdin_clean                                 \
+    do {                                            \
+        int c;                                      \
+        while ((c = getchar()) != '\n' && c != EOF) \
+            continue;                               \
     } while (0)
 
 // 串口信息

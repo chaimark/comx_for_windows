@@ -167,3 +167,11 @@ timetask initSetTime(void) {
     TaskInit.countSetTimeTask = _countSetTimeTask;
     return TaskInit;
 }
+
+bool isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name) {
+    Task_T *Temp = (*(timetask *)MasterTask).getTaskByName((timetask *)MasterTask, Name);
+    if (Temp == NULL) {
+        return false;
+    }
+    return Temp->TimeTask_Falge;
+}

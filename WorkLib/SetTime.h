@@ -38,5 +38,6 @@ typedef struct _timetask {
 
 // 定时任务初始化
 extern timetask initSetTime(void);
+extern bool isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name);
 
 #endif

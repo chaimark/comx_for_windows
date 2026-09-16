@@ -1,5 +1,14 @@
 #include "StrLib.h"
 #include <stdint.h>
+
+__attribute__((weak)) void *mallocGeneral(size_t size) {
+    return malloc(size);
+}
+
+__attribute__((weak)) void freeGeneral(void *ptr) {
+    free(ptr);
+}
+
 #ifdef _Alignas
 Type_T _InitType(void *var, const char *type) {
     Type_T Temp;
@@ -26,7 +35,7 @@ uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
 void cleanStrnew(strnew This) {
     // 释放私有数据的内存
     if (This.Name._char) {
-        free(This.Name._char);
+        freeGeneral(This.Name._char);
         This.Name._char = NULL;
     }
 }

@@ -1,4 +1,5 @@
 #include "SetTime.h"
+#include "usart.h"
 
 // 查找某个任务的地址
 static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
@@ -17,14 +18,14 @@ static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
 }
 
 // 添加某个任务节点
-static int _addTaskNode(struct _timetask This, strnew Name) {
+static int _addTaskNodeTimer(struct _timetask This, strnew Name) {
     // 检查是否存在该任务
     Task_T *Temp = _getTaskByName(&This, Name);
     // 如果存在, 则返回 -1
     if (Temp != NULL) {
         return -1;
     }
-    Temp = (Task_T *)malloc(sizeof(Task_T));
+    Temp = (Task_T *)mallocGeneral(sizeof(Task_T));
     if (Temp == NULL) {
         return -1;
     }
@@ -103,13 +104,13 @@ static void _delTaskByName(struct _timetask This, strnew Name) {
     if (This.NumberOfTimeTask == 1) {
         This.Head = NULL;
         This.NumberOfTimeTask = 0;
-        free(Temp);
+        freeGeneral(Temp);
         return;
     }
     Temp->prev->next = Temp->next;
     Temp->next->prev = Temp->prev;
     This.NumberOfTimeTask--;
-    free(Temp);
+    freeGeneral(Temp);
     return;
 }
 
@@ -120,7 +121,7 @@ static void _closeTaskAll(struct _timetask This) {
         Task_T *next = NULL;
         do {
             next = cur->next; // 先记住下一个节点
-            free(cur);        // 释放当前节点的堆内存
+            freeGeneral(cur); // 释放当前节点的堆内存
             cur = next;
         } while (cur != This.Head); // 当 cur 绕了一圈回到 Head 时, 安全跳出循环
         (This).Head = NULL;
@@ -158,7 +159,7 @@ timetask initSetTime(void) {
     timetask TaskInit = {0};
     TaskInit.Head = NULL;
     TaskInit.getTaskByName = _getTaskByName;
-    TaskInit.addTaskNode = _addTaskNode;
+    TaskInit.addTaskNodeTimer = _addTaskNodeTimer;
     TaskInit.initTaskByName = _initTaskByName;
     TaskInit.stopTaskByName = _stopTaskByName;
     TaskInit.resetTaskByName = _resetTaskByName;
@@ -168,10 +169,14 @@ timetask initSetTime(void) {
     return TaskInit;
 }
 
-bool isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name) {
+int8_t isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name) {
     Task_T *Temp = (*(timetask *)MasterTask).getTaskByName((timetask *)MasterTask, Name);
     if (Temp == NULL) {
-        return false;
+#warning "打印失败任务名"
+        char SpaceStr[100] = {0};
+        sprintf(SpaceStr, "{\"TaskFalge_Name\":\"%s\"}\n", Name.Name._char);
+        TwoRS232_SendData(SpaceStr, strlen(SpaceStr));
+        return -1;
     }
-    return Temp->TimeTask_Falge;
+    return Temp->TimeTask_Falge; // (true == 1 完成, false == 0 未完成)
 }

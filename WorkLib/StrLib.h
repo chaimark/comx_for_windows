@@ -6,6 +6,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+// 弱定义使用标准C malloc 和 free，可由用户自定义
+extern void *mallocGeneral(size_t size);
+extern void freeGeneral(void *ptr);
+
 /*-----------------------------------定义数组类----------------------------------*/
 #define This              (*_THIS_MY_)
 #define ARR_SIZE(ArrName) (sizeof(ArrName) / sizeof(ArrName[0])) // 计算数组元素个数
@@ -16,8 +20,7 @@
 该指针指向的数组需要定义在全局空间
 该类型容易误认为是实体对象, 需要注意
 可以定义一个全局空间, 用于暂时存放 strnew 对象的数据
-或需要使用时直接定义数据, 并作为参数传入
-*/
+或需要使用时直接定义数据, 并作为参数传入 */
 // 类定义
 typedef struct New_Arr {
     union _Name {
@@ -61,7 +64,7 @@ void cleanStrnew(strnew This);
 #define strnew_malloc(NameStr, Len)                             \
     __attribute__((cleanup(cleanStrnew))) strnew NameStr = {0}; \
     NameStr.MaxLen = Len;                                       \
-    NameStr.Name._char = (char *)malloc(NameStr.MaxLen);        \
+    NameStr.Name._char = (char *)mallocGeneral(NameStr.MaxLen); \
     NameStr.SizeType = 1;                                       \
     memset(NameStr.Name._char, 0, NameStr.MaxLen)
 
@@ -77,7 +80,16 @@ extern bool moveDataOnBuff(strnew IntptBuff, int ShiftLen, bool IsLeft);
 extern void stringSlice(strnew OutStr, strnew Mather, int start, int end);
 
 #ifdef _Alignas
-#define GET_TYPE(var) (_Generic((var), int: "int", unsigned int: "unsigned int", char: "char", unsigned char: "unsigned char", double: "double", float: "float", char *: "char *", unsigned char *: "unsigned char *", default: "unknown"))
+#define GET_TYPE(var) (_Generic((var), int                   \
+                                : "int", unsigned int        \
+                                : "unsigned int", char       \
+                                : "char", unsigned char      \
+                                : "unsigned char", double    \
+                                : "double", float            \
+                                : "float", char *            \
+                                : "char *", unsigned char *  \
+                                : "unsigned char *", default \
+                                : "unknown"))
 
 typedef struct _Type_T {
     void *var;

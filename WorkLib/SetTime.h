@@ -27,7 +27,7 @@ typedef struct _timetask {
     int NumberOfTimeTask;
     Task_T *Head;
     Task_T *(*getTaskByName)(struct _timetask This, strnew Name);
-    int (*addTaskNode)(struct _timetask This, strnew Name);
+    int (*addTaskNodeTimer)(struct _timetask This, strnew Name);
     void (*initTaskByName)(struct _timetask This, strnew Name, uint64_t CountMaxNum, void (*TaskFunc)(void *), void *arg);
     void (*stopTaskByName)(struct _timetask This, strnew Name);
     void (*resetTaskByName)(struct _timetask This, strnew Name);
@@ -38,6 +38,6 @@ typedef struct _timetask {
 
 // 定时任务初始化
 extern timetask initSetTime(void);
-extern bool isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name);
+extern int8_t isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name);
 
 #endif

@@ -19,7 +19,7 @@ typedef struct _StatusDev {
     uint16_t NextId;
     bool IsRun;
     StatusTaskFunc *Head;
-    int (*addTaskFuncNode)(struct _StatusDev This, uint16_t InputId, void (*TaskFunc)(void *), void *arg);
+    int (*addTaskNodeStatus)(struct _StatusDev This, uint16_t InputId, void (*TaskFunc)(void *), void *arg);
     void (*delTaskFuncById)(struct _StatusDev This, uint16_t InputId);
     void (*closeTaskFuncAll)(struct _StatusDev This);
     void (*ExecuteStep)(struct _StatusDev This);

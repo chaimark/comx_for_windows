@@ -13,7 +13,7 @@ typedef enum {
 // 可以关闭调度器的函数ID
 
 // 公共库头文件, 用于包含一些非库使用的公共定义, 或声明一些公共使用的全局结构体
-#include "FreeRTOSConfig.h"
+// #include "FreeRTOSConfig.h"
 #include "SetTime.h"
 extern timetask RTC_Task;
 extern timetask Uart_Task;
@@ -158,7 +158,7 @@ typedef struct _ADC_Data_T {
 ////////////////***********************************//////////////// ADC 数据
 #endif
 
-#include "main.h"
+// #include "main.h"
 
 /*
     malloc 一个 timetask  的总字节大小 = 36 + TaskNum * 72

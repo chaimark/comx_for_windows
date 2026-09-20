@@ -1,5 +1,4 @@
 #include "SetTime.h"
-#include "usart.h"
 
 // 查找某个任务的地址
 static Task_T *_getTaskByName(struct _timetask This, strnew Name) {
@@ -172,10 +171,6 @@ timetask initSetTime(void) {
 int8_t isTrueCheckTaskFalgeByName(void *MasterTask, strnew Name) {
     Task_T *Temp = (*(timetask *)MasterTask).getTaskByName((timetask *)MasterTask, Name);
     if (Temp == NULL) {
-#warning "打印失败任务名"
-        char SpaceStr[100] = {0};
-        sprintf(SpaceStr, "{\"TaskFalge_Name\":\"%s\"}\n", Name.Name._char);
-        TwoRS232_SendData(SpaceStr, strlen(SpaceStr));
         return -1;
     }
     return Temp->TimeTask_Falge; // (true == 1 完成, false == 0 未完成)

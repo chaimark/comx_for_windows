@@ -2,12 +2,12 @@
 #define __TIME_LIB_H__
 
 // #define RTTHREAD_OS /* 嵌入式实时系统 */
-#define FREERTOS_OS /* 嵌入式实时系统 */
+// #define FREERTOS_OS /* 嵌入式实时系统 */
 
 /* 是否使用 IDOfCtrlSuspend 定义的函数ID */
-#define ID_OF_CTRL_SUSPEND_DEFINED
+// #define ID_OF_CTRL_SUSPEND_DEFINED
 /* 没有使用时 HAL 库 需要补充 实现 HAL_Delay 函数 */
-#define USER_Delay_General 
+// #define USER_Delay_General 
 
 #include "NumberBaseLib.h"
 #include "StrLib.h"

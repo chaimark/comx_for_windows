@@ -131,7 +131,7 @@ int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay) {
     iWeek = iWeek >= 0 ? (iWeek % 7) : (iWeek % 7 + 7);
     return iWeek;
 }
-#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
 void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend InputCtrID, bool IsPause) {
     static uint8_t NowUserCtrlID = 0xFF; // 控制调度器的 ID 谁控制谁开启
     if (!(NowUserCtrlID == 0xFF || NowUserCtrlID == InputCtrID)) {
@@ -154,13 +154,13 @@ void DelayUs_General(uint32_t Delay) {
 #elif defined(USER_Delay_General)
 #if 0
 void DelayUs_General(uint32_t Delay) {
-#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     uint32_t StartTick = DWT->CYCCNT;
     uint32_t DelayTicks = Delay * (SystemCoreClock / 1000000);
     while ((DWT->CYCCNT - StartTick) < DelayTicks) {
-#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
 }
@@ -168,7 +168,7 @@ void DelayUs_General(uint32_t Delay) {
 void DelayUs_General(uint32_t Delay) {
     uint32_t StartTick = (uint32_t)SysTick->VAL;
     uint32_t DelayTick = Delay * (SystemCoreClock / 1000000);
-#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
     closeOrOpenTaskSuspendAll(UsDelayFun, true);
 #endif
     while (1) {
@@ -183,7 +183,7 @@ void DelayUs_General(uint32_t Delay) {
         DelayTick -= CountTickDelta;
         StartTick = NowVAL;
     }
-#if defined(FREERTOS_CONFIG_H) || defined(__RTTHREAD_CFG_H__)
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
     closeOrOpenTaskSuspendAll(UsDelayFun, false);
 #endif
 }

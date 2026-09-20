@@ -102,7 +102,10 @@ static bool isNeedBySignDivde(strnew InputString, int Addr_Over) {
 void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
     char KeyName[200] = {0};
     // 查找 :
-    char *Addr_OverName = strchr(FromStr, ':');
+    char *Addr_OverName = NULL;
+    if ((Addr_OverName = strchr(FromStr, ':')) == NULL) {
+        return;
+    }    
     const char *Addr_Start = strchr(FromStr, ',');
     if ((Addr_Start != NULL) && (Addr_Start < Addr_OverName)) {
         Addr_Start++;
@@ -275,8 +278,7 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
 }
 static signed char Arr_isJsonNull(struct _JsonArray This) {
     char *StartP = NULL;
-    StartP = strchr(This.JsonString.Name._char, '[');
-    if (StartP == NULL) {
+    if((StartP = strchr(This.JsonString.Name._char, '[')) == NULL) {
         return false;
     }
     int i = 0;
@@ -467,7 +469,9 @@ static void Obj_getString(struct _JsonObject This, char Key[], strnew OutStr) {
         }
         char *EndP = ++KeyP;
         while (EndP - This.JsonString.Name._char < This.JsonString.MaxLen) {
-            EndP = strchr(EndP, '"');
+            if ((EndP = strchr(EndP, '"')) == NULL) {
+                return;
+            }
             if (*(EndP - 1) != '\\') {
                 break;
             } else {

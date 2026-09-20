@@ -1,6 +1,7 @@
 #ifndef __STR_LIB_H__ // 如果 STRLIB_H 未定义
 #define __STR_LIB_H__ // 定义 STRLIB_H
 
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

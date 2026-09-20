@@ -1,11 +1,10 @@
 #include "StrLib.h"
 #include <stdint.h>
 
-__attribute__((weak)) void *mallocGeneral(size_t size) {
+void *mallocGeneral(size_t size) {
     return malloc(size);
 }
-
-__attribute__((weak)) void freeGeneral(void *ptr) {
+void freeGeneral(void *ptr) {
     free(ptr);
 }
 

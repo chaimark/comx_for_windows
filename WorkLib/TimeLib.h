@@ -1,13 +1,14 @@
 #ifndef __TIME_LIB_H__
 #define __TIME_LIB_H__
 
-// #define RTTHREAD_OS /* 嵌入式实时系统 */
-// #define FREERTOS_OS /* 嵌入式实时系统 */
+// #define RTTHREAD_OS   /* 嵌入式实时系统 */
+#define FREERTOS_OS   /* 嵌入式实时系统 */
+// #define ON_ONE_OS     /* 裸机系统 */
 
 /* 是否使用 IDOfCtrlSuspend 定义的函数ID */
-// #define ID_OF_CTRL_SUSPEND_DEFINED
+#define ID_OF_CTRL_SUSPEND_DEFINED
 /* 没有使用时 HAL 库 需要补充 实现 HAL_Delay 函数 */
-// #define USER_Delay_General 
+#define USER_Delay_General 
 
 #include "NumberBaseLib.h"
 #include "StrLib.h"
@@ -34,7 +35,7 @@ extern uint32_t get_timestamp(uint32_t NowYear, uint32_t NowMonth, uint32_t NowD
 extern uint32_t getTimeNumber_UTCByRTCTime(strnew RTCTime_String);
 extern TimeStuClass timestampToRTCData(uint32_t timestamp);
 extern int getDayOfWeek(uint32_t iYear, uint32_t iMonth, uint32_t iDay);
-#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS) || defined(ON_ONE_OS)
 #ifdef FREERTOS_OS
 #include "FreeRTOS.h"
 #include "task.h"
@@ -52,11 +53,14 @@ typedef enum {
 #else
 #include "PublicLib_No_One.h"
 #endif
+#if defined(FREERTOS_OS) || defined(RTTHREAD_OS)
 extern void closeOrOpenTaskSuspendAll(IDOfCtrlSuspend CtrID, bool IsPause);
+#endif
 #endif
 extern void DelayUs_General(uint32_t Delay);
 static inline void DelayMs_General(uint32_t Delay) {
 #if defined(USER_Delay_General)
+    extern void HAL_Delay(uint32_t Delay);
     HAL_Delay(Delay);
 #else
     (void)Delay;

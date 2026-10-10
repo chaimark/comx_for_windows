@@ -103,11 +103,9 @@ void addJsonItemData(strnew JsonStringSpace, const char *FromStr, ...) {
     char KeyName[200] = {0};
     // 查找 :
     char *Addr_OverName = NULL;
-    if ((Addr_OverName = strchr(FromStr, ':')) == NULL) {
-        return;
-    }    
+    Addr_OverName = strchr(FromStr, ':');
     const char *Addr_Start = strchr(FromStr, ',');
-    if ((Addr_Start != NULL) && (Addr_Start < Addr_OverName)) {
+    if ((Addr_Start != NULL) && (Addr_OverName != NULL) && (Addr_Start < Addr_OverName)) {
         Addr_Start++;
         catString(KeyName, FromStr, 100, (Addr_Start - FromStr));
     } else {
@@ -278,7 +276,7 @@ static int Arr_sizeItemNum(struct _JsonArray This) {
 }
 static signed char Arr_isJsonNull(struct _JsonArray This) {
     char *StartP = NULL;
-    if((StartP = strchr(This.JsonString.Name._char, '[')) == NULL) {
+    if ((StartP = strchr(This.JsonString.Name._char, '[')) == NULL) {
         return false;
     }
     int i = 0;
@@ -538,6 +536,13 @@ static struct _JsonObject Obj_getObject(struct _JsonObject This, char Key[], str
     }
     return tempJsonObj;
 }
+
+// // 判断是否符合 json 格式
+// bool isJsonSrring(){
+//     Stack s;
+//     initStack(&s);
+
+// }
 
 JsonObject newJsonObjectByString(strnew DataInit) {
     JsonObject Temp;

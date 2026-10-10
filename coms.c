@@ -281,15 +281,15 @@ void displayHelp(const char *FileName) {
         return;
     }
     fclose(file);
-        CmdName.sizeItemNum(&CmdName);
-        newString(TempCmdSpace, 1024);
-        for(int i = 0; i < CmdName.ItemNum; i++) {
-                printf("===================\n");
-                CmdName.get(&CmdName, TempCmdSpace, i);
-                printf("  %s\n", TempCmdSpace.Name._char);
-                CmdName.get(&CmdVar, TempCmdSpace, i);
-                printf("  %s\n", TempCmdSpace.Name._char);
-        }
+    CmdName.sizeItemNum(&CmdName);
+    newString(TempCmdSpace, 1024);
+    for (int i = 0; i < CmdName.ItemNum; i++) {
+        printf("===================\n");
+        CmdName.get(&CmdName, TempCmdSpace, i);
+        printf("  %s\n", TempCmdSpace.Name._char);
+        CmdName.get(&CmdVar, TempCmdSpace, i);
+        printf("  %s\n", TempCmdSpace.Name._char);
+    }
 }
 // 提取 CmdLen 中输入的参数
 bool getUserArg(strnew OutItemStr, strnew CmdLen, int Item_I) {

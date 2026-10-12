@@ -36,7 +36,7 @@ bool isModbusCrc(strnew InputBuf, size_t num_bytes) {
 
 uint8_t getSumCs(strnew InputBuf, size_t num_bytes) {
     uint8_t Sum = 0;
-    for (int i = 0; i < num_bytes; i++) {
+    for (size_t i = 0; i < num_bytes; i++) {
         Sum += InputBuf.Name._char[i];
     }
     return Sum;

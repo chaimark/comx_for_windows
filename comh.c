@@ -3,7 +3,7 @@
 #include "./WorkLib/NumberBaseLib.h"
 #include "./WorkLib/StrLib.h"
 #include "./WorkLib/cJson.h"
-#include "./WorkLib/CrcCheck.h"
+#include "./WorkLib/CheckCode.h"
 #include <ctype.h>
 #include <signal.h>
 
@@ -291,7 +291,7 @@ void InteractiveMode() {
         }
         bytesRead = isShortCmd(NEW_NAME(buffer), bytesRead);
 
-        uint16_t CrcWord = get_crc_modbus(NEW_NAME(buffer), bytesRead);
+        uint16_t CrcWord = getModbusCrc(NEW_NAME(buffer), bytesRead);
         buffer[bytesRead++] = (CrcWord & 0x00FF) >> 0;
         buffer[bytesRead++] = (CrcWord & 0xFF00) >> 8;
 

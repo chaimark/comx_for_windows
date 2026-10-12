@@ -561,25 +561,26 @@ JsonObject newJsonObjectByString(strnew DataInit) {
 
 //==========================================================================================//
 //==========================================================================================//
-#include "CrcCheck.h"
+#include "CheckCode.h"
+#define CheckNum_T "CheckCode"
 void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
     int AddrOver = strlen(InputJsonStrObj.JsonString.Name._char);
-    if ((AddrOver + (int)strlen(",\"NowCheckNum\":xxxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
+    if ((AddrOver + (int)strlen(",\"" CheckNum_T ":\":xxxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
         return; // 空间不足以生成 cs 校验
     }
     // 计算 cs 或其他检验算法
-    uint16_t CheckNum = get_crc_modbus(InputJsonStrObj.JsonString, AddrOver);
-    addJsonItemData(InputJsonStrObj.JsonString, "NowCheckNum:%d", CheckNum);
+    uint16_t CheckNum = getModbusCrc(InputJsonStrObj.JsonString, AddrOver);
+    addJsonItemData(InputJsonStrObj.JsonString, CheckNum_T ":%d", CheckNum);
     return;
 }
 bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     JsonObject JsonObj = newJsonObjectByString(JsonInputStr);
     // 如果 NowCheckNum 不存在 直接退出
-    if (JsonObj.isJsonNull(&JsonObj, "NowCheckNum") < 0) {
+    if (JsonObj.isJsonNull(&JsonObj, CheckNum_T) < 0) {
         return false;
     }
-    int NowCheckNum = JsonObj.getInt(&JsonObj, "NowCheckNum");
-    char *PEnd = strstr(JsonObj.JsonString.Name._char, ",\"NowCheckNum\"");
+    int NowCheckNum = JsonObj.getInt(&JsonObj, CheckNum_T);
+    char *PEnd = strstr(JsonObj.JsonString.Name._char, ",\"" CheckNum_T "\"");
     if ((PEnd == NULL) || (PEnd >= JsonObj.JsonString.Name._char + JsonObj.JsonString.MaxLen - 1)) {
         return false;
     }
@@ -589,8 +590,8 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }
     int DataLen = strlen(JsonInputStr.Name._char);
-    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum) & 0xFF00) >> 8);
-    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum) & 0x00FF) >> 0);
+    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0xFF00) >> 8);
+    JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0x00FF) >> 0);
     // 计算 cs 或其他检验算法
-    return is_crc_modbus(JsonInputStr, DataLen);
+    return isModbusCrc(JsonInputStr, DataLen);
 }

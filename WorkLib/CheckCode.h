@@ -1,0 +1,15 @@
+#ifndef __CHECK_CRC_H__
+#define __CHECK_CRC_H__
+
+#include "StrLib.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+
+#define CRC_POLY_16      0xa001
+#define CRC_START_MODBUS 0xFFFF
+extern uint16_t getModbusCrc(strnew InputBuf, size_t num_bytes);
+extern bool isModbusCrc(strnew InputBuf, size_t num_bytes);
+
+#endif

@@ -568,10 +568,16 @@ void addCsToJsonAndPushJsonStr(JsonObject InputJsonStrObj) {
     if ((AddrOver + (int)strlen(",\"" CheckNum_T ":\":xxxxx") > InputJsonStrObj.JsonString.MaxLen) || (AddrOver < 1)) {
         return; // 空间不足以生成 cs 校验
     }
+#if 0
     // 计算 cs 或其他检验算法
     uint16_t CheckNum = getModbusCrc(InputJsonStrObj.JsonString, AddrOver);
     addJsonItemData(InputJsonStrObj.JsonString, CheckNum_T ":%d", CheckNum);
     return;
+#else
+    uint8_t Sum = getSumCs(InputJsonStrObj.JsonString, AddrOver);
+    addJsonItemData(InputJsonStrObj.JsonString, CheckNum_T ":%d", Sum);
+    return;
+#endif
 }
 bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     JsonObject JsonObj = newJsonObjectByString(JsonInputStr);
@@ -590,8 +596,13 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }
     int DataLen = strlen(JsonInputStr.Name._char);
+#if 0
     JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0xFF00) >> 8);
     JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0x00FF) >> 0);
     // 计算 cs 或其他检验算法
     return isModbusCrc(JsonInputStr, DataLen);
+#else
+    JsonInputStr.Name._char[DataLen++] = NowCheckNum;
+    return isSumCs(JsonInputStr, DataLen);
+#endif
 }

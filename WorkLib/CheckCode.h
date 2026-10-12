@@ -11,5 +11,7 @@
 #define CRC_START_MODBUS 0xFFFF
 extern uint16_t getModbusCrc(strnew InputBuf, size_t num_bytes);
 extern bool isModbusCrc(strnew InputBuf, size_t num_bytes);
+extern uint8_t getSumCs(strnew InputBuf, size_t num_bytes);
+extern bool isSumCs(strnew InputBuf, size_t num_bytes);
 
 #endif

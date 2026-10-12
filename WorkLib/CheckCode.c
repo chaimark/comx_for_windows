@@ -27,7 +27,7 @@ bool isModbusCrc(strnew InputBuf, size_t num_bytes) {
     }
     num_bytes -= 2;
     uint16_t crc = getModbusCrc(InputBuf, num_bytes);
-    if (crc == U8_Connect_U8(InputBuf.Name._char[num_bytes], InputBuf.Name._char[num_bytes + 1])) {
+    if (crc == U8_Connect_U8(InputBuf.Name._uint8_t[num_bytes], InputBuf.Name._uint8_t[num_bytes + 1])) {
         return true;
     } else {
         return false;
@@ -37,7 +37,7 @@ bool isModbusCrc(strnew InputBuf, size_t num_bytes) {
 uint8_t getSumCs(strnew InputBuf, size_t num_bytes) {
     uint8_t Sum = 0;
     for (size_t i = 0; i < num_bytes; i++) {
-        Sum += InputBuf.Name._char[i];
+        Sum += InputBuf.Name._uint8_t[i];
     }
     return Sum;
 }
@@ -48,7 +48,7 @@ bool isSumCs(strnew InputBuf, size_t num_bytes) {
     }
     num_bytes -= 1;
     uint8_t Sum = getSumCs(InputBuf, num_bytes);
-    if (Sum == InputBuf.Name._char[num_bytes]) {
+    if (Sum == InputBuf.Name._uint8_t[num_bytes]) {
         return true;
     } else {
         return false;

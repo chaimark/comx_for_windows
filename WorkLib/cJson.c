@@ -586,12 +586,17 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         return false;
     }
     int NowCheckNum = JsonObj.getInt(&JsonObj, CheckNum_T);
-    char *PEnd = strstr(JsonObj.JsonString.Name._char, ",\"" CheckNum_T "\"");
+    char *PEnd = strstr(JsonObj.JsonString.Name._char, "\"" CheckNum_T "\"");
     if ((PEnd == NULL) || (PEnd >= JsonObj.JsonString.Name._char + JsonObj.JsonString.MaxLen - 1)) {
         return false;
     }
-    (*(PEnd++)) = '}';
-    (*PEnd) = '\0';
+    (*(PEnd++)) = '\0';
+    PEnd += strlen(CheckNum_T);
+    while(!((*PEnd) == '\0' || (*PEnd) == ',' || (*PEnd) == '}')){
+        PEnd++;
+    }
+    (*(PEnd++)) = '\0';
+    catString(JsonObj.JsonString.Name._char, PEnd, JsonObj.JsonString.MaxLen, strlen(PEnd));
     if (JsonInputStr.Name._char != JsonOutputStr.Name._char) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }

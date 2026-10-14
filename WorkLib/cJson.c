@@ -586,17 +586,31 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
         return false;
     }
     int NowCheckNum = JsonObj.getInt(&JsonObj, CheckNum_T);
-    char *PEnd = strstr(JsonObj.JsonString.Name._char, "\"" CheckNum_T "\"");
-    if ((PEnd == NULL) || (PEnd >= JsonObj.JsonString.Name._char + JsonObj.JsonString.MaxLen - 1)) {
+    char *P_CheckStart = strstr(JsonObj.JsonString.Name._char, "\"" CheckNum_T "\":");
+    char *P_CheckEnd = strstr(P_CheckStart, ",");
+    if(P_CheckStart == NULL) {
         return false;
     }
-    (*(PEnd++)) = '\0';
-    PEnd += strlen(CheckNum_T);
-    while(!((*PEnd) == '\0' || (*PEnd) == ',' || (*PEnd) == '}')){
-        PEnd++;
+    uint8_t CheckNumLocatFlag = 0;
+    if(*(P_CheckStart - 1) == '{') {    // 校验码在开头
+        CheckNumLocatFlag = setDataBit(CheckNumLocatFlag, 0, 1);
     }
-    (*(PEnd++)) = '\0';
-    catString(JsonObj.JsonString.Name._char, PEnd, JsonObj.JsonString.MaxLen, strlen(PEnd));
+    if(P_CheckEnd == NULL) {    // 校验码在结尾
+        CheckNumLocatFlag = setDataBit(CheckNumLocatFlag, 1, 1);
+    }
+    if(CheckNumLocatFlag == 1)  {   // 校验码在开头
+        (*P_CheckEnd) = '{';
+        JsonInputStr.Name._char = P_CheckEnd;
+        JsonInputStr.MaxLen -= (P_CheckEnd-P_CheckStart);
+    } else if(CheckNumLocatFlag == 2)  {    // 校验码在结尾
+        (*(P_CheckStart - 1)) = '}';
+        (*P_CheckStart) = '\0';
+    } else if(CheckNumLocatFlag == 3)  {    // 校验码在开头和结尾
+        return false;
+    } else {
+        *(P_CheckStart) = '\0';
+        catString(JsonObj.JsonString.Name._char, (P_CheckEnd + 1), JsonObj.JsonString.MaxLen, strlen((P_CheckEnd + 1)));
+    }
     if (JsonInputStr.Name._char != JsonOutputStr.Name._char) {
         copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
     }
@@ -608,6 +622,7 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     return isModbusCrc(JsonInputStr, DataLen);
 #else
     JsonInputStr.Name._char[DataLen++] = NowCheckNum;
+    JsonInputStr.Name._char[DataLen++] = '\0';
     return isSumCs(JsonInputStr, DataLen);
 #endif
 }

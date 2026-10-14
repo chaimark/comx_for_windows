@@ -13,7 +13,7 @@ typedef enum {
 // 可以关闭调度器的函数ID
 
 // 公共库头文件, 用于包含一些非库使用的公共定义, 或声明一些公共使用的全局结构体
-// #include "FreeRTOSConfig.h"
+#include "FreeRTOSConfig.h"
 #include "SetTime.h"
 extern timetask RTC_Task;
 extern timetask Uart_Task;
@@ -25,11 +25,11 @@ extern timetask Tim_Task;
 */
 
 // NOW_SYSTEM_VERSION 的长度 Len = 20-3-1 = 16
-#define NOW_SYSTEM_VERSION "v0.24"
-#define NOW_EEPROM_VERSION 13
+#define NOW_SYSTEM_VERSION "v0.1"
+#define NOW_EEPROM_VERSION 14
 extern void Error_Handler(void);
 
-#define OPEN_SPI
+// #define OPEN_SPI
 
 typedef enum {
     CmdNumber = 0,
@@ -132,7 +132,7 @@ typedef struct _UartManger {
 } UartManger_T;
 typedef struct _ManagerEEprom {
     uint8_t RunSign;
-    char DevId[7];             // 6 位表号
+    char DevId[8];             // 7 位表号 992701
     float KCarLen;             // 轴距传感器修正系数
     float KDegreeSpeed;        // 轴速传感器修正系数
     float KResistanceFront;    // ADC 反拖力修正系数
@@ -152,13 +152,12 @@ typedef struct _ManagerEEprom {
 extern ManagerEEprom SystemManager;
 ////////////////***********************************//////////////// 系统管理参数
 typedef struct _ADC_Data_T {
-    uint16_t VarCh1;
-    uint16_t VarCh2;
+    uint16_t VarCh[6];
 } ADC_Data_T;
 ////////////////***********************************//////////////// ADC 数据
 #endif
 
-// #include "main.h"
+#include "main.h"
 
 /*
     malloc 一个 timetask  的总字节大小 = 36 + TaskNum * 72

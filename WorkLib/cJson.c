@@ -622,7 +622,7 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     return isModbusCrc(JsonInputStr, DataLen);
 #else
     JsonInputStr.Name._char[DataLen++] = NowCheckNum;
-    JsonInputStr.Name._char[DataLen++] = '\0';
+    JsonInputStr.Name._char[DataLen] = '\0';
     return isSumCs(JsonInputStr, DataLen);
 #endif
 }

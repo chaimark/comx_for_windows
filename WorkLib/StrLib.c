@@ -1,13 +1,22 @@
 #include "StrLib.h"
 #include <stdint.h>
 
+// #define FREERTOS_OS
+#ifdef FREERTOS_OS
 __attribute__((weak)) void *mallocGeneral(size_t size) {
     return malloc(size);
 }
-
 __attribute__((weak)) void freeGeneral(void *ptr) {
     free(ptr);
 }
+#else
+void *mallocGeneral(size_t size) {
+    return malloc(size);
+}
+void freeGeneral(void *ptr) {
+    free(ptr);
+}
+#endif
 
 #ifdef _Alignas
 Type_T _InitType(void *var, const char *type) {

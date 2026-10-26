@@ -20,8 +20,8 @@ $lines = $content -split "`r?`n"
 
 $current_function = "Global"
 $brace_level = 0
-$local_arrays = New-Object System.Collections.Generic.HashSet[string]   # ä»…è‡ªåŠ¨ï¼ˆæ ˆï¼‰æ•°ç»„
-$static_arrays = New-Object System.Collections.Generic.HashSet[string]  # static æ•°ç»„
+$local_arrays = New-Object System.Collections.Generic.HashSet[string]   # ½ö×Ô¶¯£¨Õ»£©Êı×é
+$static_arrays = New-Object System.Collections.Generic.HashSet[string]  # static Êı×é
 $tainted_vars = New-Object System.Collections.Generic.HashSet[string]
 $total_errors = 0
 
@@ -31,7 +31,7 @@ foreach ($line in $lines) {
     $line = $line.Trim()
     if (-not $line) { continue }
 
-    # 1. æ£€æµ‹å‡½æ•°å¤´
+    # 1. ¼ì²âº¯ÊıÍ·
     if ($line -match '^\s*(?:static|extern|inline)?\s*[\w\*]+\s+(\w+)\s*\([^)]*\)\s*\{') {
         $current_function = $Matches[1]
         $brace_level = 1
@@ -41,7 +41,7 @@ foreach ($line in $lines) {
         continue
     }
 
-    # 2. æ›´æ–°èŠ±æ‹¬å·æ·±åº¦
+    # 2. ¸üĞÂ»¨À¨ºÅÉî¶È
     if ($current_function -ne "Global") {
         $open = ($line -replace "[^{]", "").Length
         $close = ($line -replace "[^}]", "").Length
@@ -55,7 +55,7 @@ foreach ($line in $lines) {
 
     if ($current_function -eq "Global") { continue }
 
-    # 3. æ£€æµ‹å±€éƒ¨æ•°ç»„å£°æ˜ï¼ˆåŒºåˆ† static å’Œè‡ªåŠ¨ï¼‰
+    # 3. ¼ì²â¾Ö²¿Êı×éÉùÃ÷£¨Çø·Ö static ºÍ×Ô¶¯£©
     if ($line -match '\b(static\s+)?(char|int\d*_t|uint\d*_t|int)\s+(\w+)\s*\[[^\]]+\]') {
         $array_name = $Matches[3]
         if ($Matches[1] -and $Matches[1].Trim() -eq "static") {
@@ -65,22 +65,22 @@ foreach ($line in $lines) {
         }
     }
 
-    # 4. æ£€æµ‹ newStringï¼ˆæš‚æœªä½¿ç”¨ï¼‰
+    # 4. ¼ì²â newString£¨ÔİÎ´Ê¹ÓÃ£©
     if ($line -match '\bnewString\s*\(\s*(\w+)') {
         [void]$tainted_vars.Add($Matches[1])
     }
 
-    # 5. æ£€æµ‹ NEW_NAME èµ‹å€¼ï¼ˆä»…å½“æºæ˜¯è‡ªåŠ¨æ•°ç»„æ—¶æ ‡è®°æ±¡æŸ“ï¼‰
+    # 5. ¼ì²â NEW_NAME ¸³Öµ£¨½öµ±Ô´ÊÇ×Ô¶¯Êı×éÊ±±ê¼ÇÎÛÈ¾£©
     if ($line -match '(\w+)\s*=\s*NEW_NAME\s*\(\s*(\w+)\s*\)') {
         $var = $Matches[1]
         $src = $Matches[2]
-        if ($local_arrays.Contains($src)) {   # åªå…³å¿ƒè‡ªåŠ¨æ•°ç»„
+        if ($local_arrays.Contains($src)) {   # Ö»¹ØĞÄ×Ô¶¯Êı×é
             [void]$tainted_vars.Add($var)
         }
-        # è‹¥ src åœ¨ static_arrays ä¸­ï¼Œåˆ™ä¸æ±¡æŸ“
+        # Èô src ÔÚ static_arrays ÖĞ£¬Ôò²»ÎÛÈ¾
     }
 
-    # 6. æ±¡æŸ“ä¼ æ’­ï¼ˆèµ‹å€¼ï¼‰
+    # 6. ÎÛÈ¾´«²¥£¨¸³Öµ£©
     if ($line -match '(?:strnew\s*\*?\s*)?(\w+)\s*=\s*&?(\w+)\b') {
         $dest = $Matches[1]
         $src = $Matches[2]
@@ -89,7 +89,7 @@ foreach ($line in $lines) {
         }
     }
 
-    # 7. æ£€æŸ¥é€ƒé€¸ç‚¹ï¼šå…¨å±€å˜é‡èµ‹å€¼
+    # 7. ¼ì²éÌÓÒİµã£ºÈ«¾Ö±äÁ¿¸³Öµ
     if ($line -match '\b(g_\w+|g_saved_str)\s*=\s*&?(\w+)\b') {
         $glob = $Matches[1]
         $src = $Matches[2]
@@ -101,7 +101,7 @@ foreach ($line in $lines) {
         }
     }
 
-    # 8. æ£€æŸ¥é€ƒé€¸ç‚¹ï¼šè¿”å›æ ˆæ•°æ®ï¼ˆåªé’ˆå¯¹æ±¡æŸ“å˜é‡ï¼‰
+    # 8. ¼ì²éÌÓÒİµã£º·µ»ØÕ»Êı¾İ£¨Ö»Õë¶ÔÎÛÈ¾±äÁ¿£©
     if ($line -match '\breturn\s+(\w+)\b') {
         $ret_var = $Matches[1]
         if ($tainted_vars.Contains($ret_var)) {

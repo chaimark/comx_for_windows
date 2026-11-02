@@ -588,41 +588,47 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
     int NowCheckNum = JsonObj.getInt(&JsonObj, CheckNum_T);
     char *P_CheckStart = strstr(JsonObj.JsonString.Name._char, "\"" CheckNum_T "\":");
     char *P_CheckEnd = strstr(P_CheckStart, ",");
-    if(P_CheckStart == NULL) {
+    if (P_CheckStart == NULL) {
         return false;
     }
     uint8_t CheckNumLocatFlag = 0;
-    if(*(P_CheckStart - 1) == '{') {    // 校验码在开头
+    if (*(P_CheckStart - 1) == '{') { // 校验码在开头
         CheckNumLocatFlag = setDataBit(CheckNumLocatFlag, 0, 1);
     }
-    if(P_CheckEnd == NULL) {    // 校验码在结尾
+    if (P_CheckEnd == NULL) { // 校验码在结尾
         CheckNumLocatFlag = setDataBit(CheckNumLocatFlag, 1, 1);
     }
-    if(CheckNumLocatFlag == 1)  {   // 校验码在开头
+
+    if (CheckNumLocatFlag == 1) { // 校验码在开头
         (*P_CheckEnd) = '{';
         JsonInputStr.Name._char = P_CheckEnd;
-        JsonInputStr.MaxLen -= (P_CheckEnd-P_CheckStart);
-    } else if(CheckNumLocatFlag == 2)  {    // 校验码在结尾
+        JsonInputStr.MaxLen -= (P_CheckEnd - P_CheckStart);
+    } else if (CheckNumLocatFlag == 2) { // 校验码在结尾
         (*(P_CheckStart - 1)) = '}';
         (*P_CheckStart) = '\0';
-    } else if(CheckNumLocatFlag == 3)  {    // 校验码在开头和结尾
+    } else if (CheckNumLocatFlag == 3) { // 校验码在开头和结尾
         return false;
     } else {
         *(P_CheckStart) = '\0';
         catString(JsonObj.JsonString.Name._char, (P_CheckEnd + 1), JsonObj.JsonString.MaxLen, strlen((P_CheckEnd + 1)));
     }
-    if (JsonInputStr.Name._char != JsonOutputStr.Name._char) {
-        copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
+    copyString(JsonOutputStr.Name._char, JsonInputStr.Name._char, JsonOutputStr.MaxLen, JsonInputStr.MaxLen);
+    int DataLen = strlen(JsonOutputStr.Name._char);
+    while (JsonOutputStr.Name._char[DataLen - 1] != '}' && JsonOutputStr.Name._char[DataLen - 1] != ']' && JsonOutputStr.Name._char[DataLen - 1] != '\0') {
+        JsonOutputStr.Name._char[DataLen - 1] = '\0';
+        DataLen--;
+        if (DataLen == 0) {
+            return false;
+        }
     }
-    int DataLen = strlen(JsonInputStr.Name._char);
 #if 0
     JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0xFF00) >> 8);
     JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0x00FF) >> 0);
     // 计算 cs 或其他检验算法
     return isModbusCrc(JsonInputStr, DataLen);
 #else
-    JsonInputStr.Name._char[DataLen++] = NowCheckNum;
-    JsonInputStr.Name._char[DataLen] = '\0';
-    return isSumCs(JsonInputStr, DataLen);
+    JsonOutputStr.Name._char[DataLen++] = NowCheckNum;
+    JsonOutputStr.Name._char[DataLen] = '\0';
+    return isSumCs(JsonOutputStr, DataLen);
 #endif
 }

@@ -109,12 +109,12 @@ void updataInit(void) {
 int updataCheck(void) {
     updataReadSign();
     uint8_t Check_CS_Num = 0;
-    if (UpdataParam.sign != UPDATA_SIGN || UpdataParam.pageNum < 10) {
+    if (UpdataParam.sign != UPDATA_SIGN || UpdataParam.PageNum < 10) {
         return -1;
     }
-    MyPrintf("updata find page = %d\r\n", UpdataParam.pageNum);
+    MyPrintf("updata find page = %d\r\n", UpdataParam.PageNum);
     // 有已经更新的待运行的程序, 需要校验
-    for (int i = 0; i < UpdataParam.pageNum; i++) {
+    for (int i = 0; i < UpdataParam.PageNum; i++) {
         memset(UpdataData.Page8Buff, 0, PAGE_SIZE);                                 // 初始化读取空间
         flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff); // 读
         if (flashCheckReadPageData(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff, PAGE_SIZE) < 0) {
@@ -135,7 +135,7 @@ int updataCopyProgram(void) {
     uint32_t addr = 0;
     int Flag = 0; // 升级标记
     for (int j = 0; j < 3; j++) {
-        for (int i = 0; i < UpdataParam.pageNum; i++) {
+        for (int i = 0; i < UpdataParam.PageNum; i++) {
             // 读
             flash_read_page(UPDATA_PAGE_BEGIN + (i * PAGE_SIZE), UpdataData.Page8Buff);
 
@@ -222,11 +222,11 @@ int SaveUpdataToPage8Buff(int NowPageNum, int NowPackNum, strnew NowCodeHex) {
 ResFlag == 0 // 单片机准备开始升级 收到 PackLen
 ResFlag == 1 // 校验错误或其天失败
 ResFlag == 2 // 当前包写入成功
-ResFlag == 3 // 单片机准备结束升级 收到 upDataFlag
+ResFlag == 3 // 单片机准备结束升级 收到 UpDataFlag
 
 "data":{"PackLen":10}
 "data":{"NowPackNum":0,"Code":"11223344556677889900","CheckNum":114}
-"data":{"upDataFlag":true,"CheckNum":114,"pageNum":10}
+"data":{"UpDataFlag":true,"TotalCheckNum":114,"PageNum":10}
 */
 static uint8_t CodeStrSpace[1025] = {0};
 int UpData_Receive_Hex(JsonObject BinCode) {
@@ -243,10 +243,10 @@ int UpData_Receive_Hex(JsonObject BinCode) {
             goto OverSub;
         }
     }
-    if (BinCode.getBool(&BinCode, "upDataFlag")) {
+    if (BinCode.getBool(&BinCode, "UpDataFlag")) {
         UpdataParam.sign = UPDATA_SIGN;
-        UpdataParam.checkSum = BinCode.getInt(&BinCode, "CheckNum") + UpdataCsDelat;
-        UpdataParam.pageNum = BinCode.getInt(&BinCode, "pageNum");
+        UpdataParam.checkSum = BinCode.getInt(&BinCode, "TotalCheckNum") + UpdataCsDelat;
+        UpdataParam.PageNum = BinCode.getInt(&BinCode, "PageNum");
         updataWriteSign(); // 写标记区
         FlagCodeNum = 3;
         goto OverSub;
@@ -263,7 +263,7 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         goto OverSub;
     }
     BinCode.getString(&BinCode, "Code", CodeStr);
-    CodeStr.MaxLen = ASCIIToHEX2(CodeStr, CodeStr);
+    CodeStr.MaxLen = ASCIIToHEX2(CodeStr, strlen(CodeStr.Name._char), CodeStr);
     // 计算校验
     for (int i = 0; i < CodeStr.MaxLen; i++) {
         checkSum += CodeStr.Name._char[i];

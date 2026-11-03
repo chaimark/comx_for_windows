@@ -1,8 +1,8 @@
 #include "StrLib.h"
 #include <stdint.h>
 
-// #define FREERTOS_OS
-#ifdef FREERTOS_OS
+// #define WindowsGcc
+#ifdef WindowsGcc
 __attribute__((weak)) void *mallocGeneral(size_t size) {
     return malloc(size);
 }

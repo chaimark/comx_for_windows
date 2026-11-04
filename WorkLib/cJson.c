@@ -807,6 +807,7 @@ bool checkOfCsJsonStrIsRight(strnew JsonInputStr, strnew JsonOutputStr) {
 #if 0
     JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0xFF00) >> 8);
     JsonInputStr.Name._char[DataLen++] = (((uint16_t)(NowCheckNum)&0x00FF) >> 0);
+	JsonOutputStr.Name._char[DataLen] = '\0';
     // 计算 cs 或其他检验算法
     return isModbusCrc(JsonInputStr, DataLen);
 #else

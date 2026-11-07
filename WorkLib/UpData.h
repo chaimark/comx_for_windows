@@ -48,9 +48,9 @@ void flash_read_page(uint32_t addr, uint8_t *buf);
 #define UPDATA_SIGN 0xaa55aa55
 
 typedef struct _UpdataFlag {
-    uint32_t sign;    // 标志位
-    uint32_t pageNum; // 程序占用的 flash 页数
-    uint8_t checkSum; // 校验和
+    uint32_t FlagSign;    // 标志位
+    uint32_t PageNum; // 程序占用的 flash 页数
+    uint8_t CheckSum; // 校验和
 } UpdataFlag;
 extern UpdataFlag UpdataParam;
 

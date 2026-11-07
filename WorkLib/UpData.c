@@ -109,7 +109,7 @@ void updataInit(void) {
 int updataCheck(void) {
     updataReadSign();
     uint8_t Check_CS_Num = 0;
-    if (UpdataParam.sign != UPDATA_SIGN || UpdataParam.PageNum < 10) {
+    if (UpdataParam.FlagSign != UPDATA_SIGN || UpdataParam.PageNum < 10) {
         return -1;
     }
     MyPrintf("updata find page = %d\r\n", UpdataParam.PageNum);
@@ -125,7 +125,7 @@ int updataCheck(void) {
             Check_CS_Num += UpdataData.Page8Buff[i]; // 累加第一页的校验和
         }
     }
-    if (Check_CS_Num != UpdataParam.checkSum) {
+    if (Check_CS_Num != UpdataParam.CheckSum) {
         return -1;
     }
     return 0;
@@ -244,8 +244,8 @@ int UpData_Receive_Hex(JsonObject BinCode) {
         }
     }
     if (BinCode.getBool(&BinCode, "UpDataFlag")) {
-        UpdataParam.sign = UPDATA_SIGN;
-        UpdataParam.checkSum = BinCode.getInt(&BinCode, "TotalCheckNum") + UpdataCsDelat;
+        UpdataParam.FlagSign = UPDATA_SIGN;
+        UpdataParam.CheckSum = BinCode.getInt(&BinCode, "TotalCheckNum") + UpdataCsDelat;
         UpdataParam.PageNum = BinCode.getInt(&BinCode, "PageNum");
         updataWriteSign(); // 写标记区
         FlagCodeNum = 3;

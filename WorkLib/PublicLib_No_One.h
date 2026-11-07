@@ -6,7 +6,6 @@ typedef enum {
     UsDelayFun = 0,
     I2cReadFun,
     I2cWriteFun,
-    SendByUartFun,
     ReBootSystem,
 } IDOfCtrlSuspend;
 #include "TimeLib.h"

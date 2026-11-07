@@ -4,7 +4,7 @@
 uint16_t getModbusCrc(strnew InputBuf, size_t num_bytes) {
     const unsigned char *input_str = (const unsigned char *)InputBuf.Name._uint8_t;
     uint16_t crc = CRC_START_MODBUS;
-    if (input_str == NULL) {
+    if (input_str == NULL || num_bytes <= 0) {
         return crc;
     }
     while (num_bytes--) {
@@ -22,7 +22,7 @@ uint16_t getModbusCrc(strnew InputBuf, size_t num_bytes) {
 }
 
 bool isModbusCrc(strnew InputBuf, size_t num_bytes) {
-    if ((size_t)InputBuf.MaxLen < num_bytes) {
+    if ((size_t)InputBuf.MaxLen < num_bytes || num_bytes <= 2) {
         return false;
     }
     num_bytes -= 2;
@@ -36,6 +36,9 @@ bool isModbusCrc(strnew InputBuf, size_t num_bytes) {
 
 uint8_t getSumCs(strnew InputBuf, size_t num_bytes) {
     uint8_t Sum = 0;
+    if (num_bytes <= 0) {
+        return Sum;
+    }
     for (size_t i = 0; i < num_bytes; i++) {
         Sum += InputBuf.Name._uint8_t[i];
     }
@@ -43,7 +46,7 @@ uint8_t getSumCs(strnew InputBuf, size_t num_bytes) {
 }
 
 bool isSumCs(strnew InputBuf, size_t num_bytes) {
-    if ((size_t)InputBuf.MaxLen < num_bytes) {
+    if ((size_t)InputBuf.MaxLen < num_bytes || num_bytes <= 1) {
         return false;
     }
     num_bytes -= 1;

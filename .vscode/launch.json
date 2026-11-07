@@ -1,0 +1,93 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "调试 comh",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/comh.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:USERPROFILE}/scoop/apps/mingw/current/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "启用 GDB 的 pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "构建全部 (Debug)",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "调试 coms",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/coms.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:USERPROFILE}/scoop/apps/mingw/current/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "启用 GDB 的 pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "构建全部 (Debug)",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "调试 comx",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/comx.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:USERPROFILE}/scoop/apps/mingw/current/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "启用 GDB 的 pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "构建全部 (Debug)",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "调试 comloop",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/comloop.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:USERPROFILE}/scoop/apps/mingw/current/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "启用 GDB 的 pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "构建全部 (Debug)",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

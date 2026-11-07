@@ -1,6 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
 
+:: DEBUG=1 enables debug symbols; default is a release build.
+set "DEBUG=0"
+if /I "%~1"=="DEBUG=1" set "DEBUG=1"
+if /I "%~1"=="DEBUG" if "%~2"=="1" set "DEBUG=1"
+
 :: 清理并重建输出目录
 if exist outflie rmdir /s /q outflie
 mkdir outflie > nul
@@ -13,7 +18,10 @@ if errorlevel 1 (
 
 :: MinGW 编译器设置
 set CC=gcc
-set CFLAGS=-O0 -Wall
+set "CFLAGS=-O0 -Wall"
+if "%DEBUG%"=="1" set "CFLAGS=-O0 -Wall -g3 -fno-omit-frame-pointer"
+echo Build mode: DEBUG=%DEBUG%
+echo CFLAGS=%CFLAGS%
 
 :: 初始化对象文件列表
 set OBJS=
@@ -21,7 +29,7 @@ set OBJS=
 :: 编译 WorkLib 中的所有源文件
 for %%f in (./WorkLib/*.c) do (
     echo 正在编译 %%f...
-    powershell -Command "& { ./WorkLib/windows_check_strnew.ps1 ./WorkLib/%%f } "
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "& { ./WorkLib/windows_check_strnew.ps1 ./WorkLib/%%f } "
     %CC% %CFLAGS% -c "./WorkLib/%%f" -o "./outflie/%%~nf.o"
     if errorlevel 1 (
         echo 编译失败: ./WorkLib/%%f
@@ -34,13 +42,13 @@ for %%f in (./WorkLib/*.c) do (
 set BASE_OBJS=!OBJS!
 
 :: 需要编译的主程序列表
-set MAIN_PROGS=comh coms comx
+set MAIN_PROGS=comh coms comx comloop
 
 :: 循环编译每个主程序
 for %%p in (%MAIN_PROGS%) do (
     echo ============================================
     echo 正在编译 %%p.c...
-    powershell -Command "& { ./WorkLib/windows_check_strnew.ps1 ./%%p.c } "
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "& { ./WorkLib/windows_check_strnew.ps1 ./%%p.c } "
     %CC% %CFLAGS% -c %%p.c -o "./outflie/%%p.o"
     if errorlevel 1 (
         echo 编译失败: %%p.c
@@ -70,4 +78,4 @@ echo ============================================
 echo 所有程序构建完成！
 
 endlocal
-timeout 2
+exit /b 0

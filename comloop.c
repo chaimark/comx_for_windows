@@ -192,6 +192,8 @@ DWORD WINAPI ReadSerialThread(LPVOID lpParam) {
     BOOL fWaitingOnRead = FALSE;
 
     while (g_KeepRunning) {
+        // 释放 CPU
+        Sleep(1);
         if (!fWaitingOnRead) {
             if (!ReadFile(hSerial, buffer, sizeof(buffer) - 1, &bytesRead, &osRead)) {
                 if (GetLastError() != ERROR_IO_PENDING) {
@@ -249,7 +251,10 @@ void InteractiveMode() {
     catString(SendBuf.Name._char, "\n", SendBuf.MaxLen, 1);
     bytesRead = strlen(buffer);
 
+    isRecvJson = true;
     while (g_KeepRunning) {
+        // 释放 CPU
+        Sleep(1);
         if (!isRecvJson) {
             continue;
         }

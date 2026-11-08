@@ -1,5 +1,5 @@
 #define INITGUID
-#include "comloop.h"
+#include "comfor.h"
 #include "./WorkLib/StrLib.h"
 #include "./WorkLib/cJson.h"
 #include <ctype.h>

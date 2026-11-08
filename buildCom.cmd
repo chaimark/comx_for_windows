@@ -42,7 +42,7 @@ for %%f in (./WorkLib/*.c) do (
 set BASE_OBJS=!OBJS!
 
 :: 需要编译的主程序列表
-set MAIN_PROGS=comh coms comx comloop
+set MAIN_PROGS=comh coms comx comfor
 
 :: 循环编译每个主程序
 for %%p in (%MAIN_PROGS%) do (

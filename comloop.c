@@ -189,7 +189,8 @@ BOOL OpenSerialPort() {
 // ======================= 收 <=> 发 之间的共享缓冲 =======================
 // 读线程只负责"收", 把字节追加到 g_rxBuf; 主线程负责判断一帧是否收完、打印、再发。
 // 这样避免读线程直接 fwrite 和主线程 printf 交叉输出, 也避免用"收到任意字节"当触发条件。
-#define RESPONSE_TIMEOUT_MS 2000 // 发送后等"第一个响应字节"的超时, 超时即认为开发板没响应
+#define RESPONSE_TIMEOUT_MS 1000 // 发送后等"第一个响应字节"的超时, 超时即认为开发板没响应
+#define TIMEOUT_LIMIT 5          // 连续超时达到该次数, 自动停止发送并等待按键
 #define RX_IDLE_MS 30            // 收到首字节后, 连续这么久没有新数据就认为一帧收完
 #define SEND_INTERVAL_MS 100     // 两次发送之间的间隔
 #define WRITE_TIMEOUT_MS 1000    // 单次异步写超时
@@ -315,8 +316,49 @@ static BOOL WriteFrame(const char *Data, DWORD Len, DWORD TimeoutMs) {
     return TRUE;
 }
 
+// ======================= 暂停/按键处理 =======================
+// 非阻塞检查是否按了 ESC(顺便丢弃其它排队按键)
+static BOOL EscPressed(void) {
+    while (_kbhit()) {
+        int ch = _getch();
+        if (ch == 0 || ch == 0xE0) { // 方向键/功能键会带扩展码, 再吞掉一个字节
+            _getch();
+            continue;
+        }
+        if (ch == 27) { // ESC
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// 暂停: 打印提示后等待任意键(同时响应 Ctrl+C 退出)
+static void PauseWait(const char *Prompt) {
+    printf("\n%s\n>>> press any key to continue <<<\n", Prompt);
+    fflush(stdout);
+    while (g_KeepRunning) {
+        if (_kbhit()) {
+            int ch = _getch();
+            if (ch == 0 || ch == 0xE0) {
+                _getch();
+            }
+            break;
+        }
+        Sleep(10);
+    }
+}
+
+// 当前本地时间, 形如 "2026-11-08 15:16:30.123"
+static void NowTimeStr(char *Out, size_t Cap) {
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+    snprintf(Out, Cap, "%04d-%02d-%02d %02d:%02d:%02d.%03d",
+             st.wYear, st.wMonth, st.wDay,
+             st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+}
+
 void InteractiveMode() {
-    printf("\n--- Send fixed cmd, wait reply, repeat until no reply. Ctrl+C to exit ---\n\n");
+    printf("\n--- Send fixed cmd, wait reply, repeat. ESC: pause | %d timeouts: stop | Ctrl+C: exit ---\n\n", TIMEOUT_LIMIT);
 
     char buffer[1024] = {0};
     DWORD bytesRead;
@@ -344,35 +386,84 @@ void InteractiveMode() {
 
     char Resp[4096];
     int Round = 0;
+    int TimeoutCnt = 0; // 连续超时次数
 
     while (g_KeepRunning) {
+        // 空闲时按 ESC: 暂停, 不计数也不复位连续超时次数
+        if (EscPressed()) {
+            PauseWait("[paused] ESC pressed");
+            continue;
+        }
+
         Round++;
         RxReset(); // 发之前清掉残留, 保证收到的就是这一次的响应
 
         if (!WriteFrame(buffer, bytesRead, WRITE_TIMEOUT_MS)) {
             break;
         }
-        printf("[%d] tx %lu bytes\n", Round, bytesRead);
+        char TimeStr[40];
+        NowTimeStr(TimeStr, sizeof(TimeStr));
+        // TimeStr: 本地时间(毫秒精度); +N ms: 从本次发送到收完这一帧的耗时
+        printf("\n%s\n", TimeStr);
+        printf("[%d] tx %lu bytes (timeout %d/%d)\n", Round, bytesRead, TimeoutCnt, TIMEOUT_LIMIT);
         fflush(stdout);
 
-        // 1) 等第一个响应字节, 超时 = 开发板没响应, 结束
         DWORD Start = GetTickCount();
-        while (g_KeepRunning && (RxLen() == 0) && ((GetTickCount() - Start) < RESPONSE_TIMEOUT_MS)) {
+        BOOL Paused = FALSE;
+
+        // 1) 等第一个响应字节
+        while (g_KeepRunning) {
+            if (RxLen() > 0) {
+                break;
+            }
+            if (EscPressed()) {
+                PauseWait("[paused] ESC pressed while waiting reply");
+                Paused = TRUE; // 本轮作废, 恢复后重发
+                break;
+            }
+            if ((GetTickCount() - Start) >= RESPONSE_TIMEOUT_MS) {
+                break;
+            }
             Sleep(5);
         }
+        if (Paused) {
+            continue;
+        }
+
+        // 超时: 累加连续超时次数, 达到上限才停止(停止后复位)
         if (RxLen() == 0) {
-            printf("[%d] no response in %lu ms, stop.\n", Round, (unsigned long)RESPONSE_TIMEOUT_MS);
-            break;
+            TimeoutCnt++;
+            printf("[%d] timeout %lu ms (%d/%d)\n", Round, (unsigned long)RESPONSE_TIMEOUT_MS, TimeoutCnt, TIMEOUT_LIMIT);
+            fflush(stdout);
+            if (TimeoutCnt >= TIMEOUT_LIMIT) {
+                printf("\n[!] %d consecutive timeouts, stop sending.\n", TimeoutCnt);
+                fflush(stdout);
+                TimeoutCnt = 0; // 复位连续超时次数
+                PauseWait("[stopped] 5 consecutive timeouts");
+            }
+            continue;
         }
 
         // 2) 等到一帧收完(空闲超时判定)
-        while (g_KeepRunning && ((GetTickCount() - g_rxLastTick) < RX_IDLE_MS)) {
+        while (g_KeepRunning) {
+            if (EscPressed()) {
+                PauseWait("[paused] ESC pressed while receiving reply");
+                Paused = TRUE; // 收了一半就暂停, 恢复后重发这一轮
+                break;
+            }
+            if ((GetTickCount() - g_rxLastTick) >= RX_IDLE_MS) {
+                break;
+            }
             Sleep(1);
+        }
+        if (Paused) {
+            continue;
         }
 
         DWORD n = RxCopyOut(Resp, sizeof(Resp));
-        printf("[%d] rx %lu bytes:\n%s\n", Round, n, Resp);
+        printf("[%d] rx %lu bytes: \n%s", Round, n, Resp);
         fflush(stdout);
+        TimeoutCnt = 0; // 收到回复, 连续超时清零
 
         // 3) 稍微等一下再发下一次
         Sleep(SEND_INTERVAL_MS);

@@ -190,10 +190,10 @@ BOOL OpenSerialPort() {
 // 读线程只负责"收", 把字节追加到 g_rxBuf; 主线程负责判断一帧是否收完、打印、再发。
 // 这样避免读线程直接 fwrite 和主线程 printf 交叉输出, 也避免用"收到任意字节"当触发条件。
 #define RESPONSE_TIMEOUT_MS 1000 // 发送后等"第一个响应字节"的超时, 超时即认为开发板没响应
-#define TIMEOUT_LIMIT 5          // 连续超时达到该次数, 自动停止发送并等待按键
-#define RX_IDLE_MS 30            // 收到首字节后, 连续这么久没有新数据就认为一帧收完
-#define SEND_INTERVAL_MS 100     // 两次发送之间的间隔
-#define WRITE_TIMEOUT_MS 1000    // 单次异步写超时
+#define TIMEOUT_LIMIT       5    // 连续超时达到该次数, 自动停止发送并等待按键
+#define RX_IDLE_MS          30   // 收到首字节后, 连续这么久没有新数据就认为一帧收完
+#define SEND_INTERVAL_MS    100  // 两次发送之间的间隔
+#define WRITE_TIMEOUT_MS    1000 // 单次异步写超时
 
 static CRITICAL_SECTION g_rxLock;
 static char g_rxBuf[4096];
@@ -353,8 +353,8 @@ static void NowTimeStr(char *Out, size_t Cap) {
     SYSTEMTIME st;
     GetLocalTime(&st);
     snprintf(Out, Cap, "%04d-%02d-%02d %02d:%02d:%02d.%03d",
-             st.wYear, st.wMonth, st.wDay,
-             st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+        st.wYear, st.wMonth, st.wDay,
+        st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 }
 
 void InteractiveMode() {
